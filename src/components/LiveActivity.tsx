@@ -85,7 +85,6 @@ function formatRelative(iso: string, time: Dictionary['github']['time']): string
 
 export function LiveActivity({ t }: { t: Dictionary }) {
   const [events, setEvents] = useState<GhEvent[]>([])
-  const [fetchedAt, setFetchedAt] = useState<string | null>(null)
   const [profile, setProfile] = useState<GhProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -103,7 +102,6 @@ export function LiveActivity({ t }: { t: Dictionary }) {
       ])
       if (!mounted.current) return
       setEvents(a.events)
-      setFetchedAt(a.fetchedAt)
       setProfile(p)
     } catch {
       // silent — keep previous data
@@ -142,7 +140,6 @@ export function LiveActivity({ t }: { t: Dictionary }) {
             <span className="inline-flex items-center gap-2 border-2 border-ink bg-coral px-2 py-1 font-display tracking-wider shadow-[3px_3px_0_0_var(--color-ink)]">
               ● {t.github.live}
             </span>
-            <RefreshLabel fetchedAt={fetchedAt} t={t} />
             <button
               onClick={() => load(true)}
               disabled={refreshing}
@@ -158,8 +155,6 @@ export function LiveActivity({ t }: { t: Dictionary }) {
             </button>
           </div>
         </div>
-
-        <p className="mt-4 font-mono text-sm text-ink/70">{t.github.subtitle}</p>
 
         {/* Stats */}
         <Stats profile={profile} t={t} />
@@ -450,22 +445,6 @@ function EventRow({
       </a>
     </li>
   )
-}
-
-function RefreshLabel({
-  fetchedAt,
-  t,
-}: {
-  fetchedAt: string | null
-  t: Dictionary
-}) {
-  if (!fetchedAt) return null
-  const rel = formatRelative(fetchedAt, t.github.time)
-  const label =
-    rel === t.github.time.now
-      ? t.github.refreshedJustNow
-      : `${t.github.refreshedAgo} ${rel}`
-  return <span className="hidden text-ink/60 md:inline">{label}</span>
 }
 
 function Skeleton() {
