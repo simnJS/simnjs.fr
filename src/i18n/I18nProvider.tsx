@@ -1,5 +1,6 @@
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -63,7 +64,7 @@ function resolveInitialLocale(): Locale {
   return detectBrowserLocale()
 }
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
+export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE)
   const [hydrated, setHydrated] = useState(false)
 

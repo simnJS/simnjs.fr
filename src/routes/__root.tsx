@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react'
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -58,7 +59,32 @@ const PERSON_JSONLD = JSON.stringify({
   ],
 })
 
+function NotFound() {
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
+      <p className="font-mono text-sm uppercase tracking-widest text-ink/60">
+        // 404
+      </p>
+      <h1 className="mt-4 font-display leading-none tracking-tighter text-[clamp(5rem,22vw,14rem)]">
+        <span>4</span>
+        <span className="text-coral">0</span>
+        <span>4</span>
+      </h1>
+      <p className="mt-6 max-w-sm font-mono text-sm text-ink/70">
+        Cette page n&apos;existe pas (ou pas encore).
+      </p>
+      <a
+        href="/"
+        className="mt-10 inline-flex items-center gap-2 border-2 border-ink bg-yellow px-6 py-3 font-display shadow-[6px_6px_0_0_var(--color-ink)] transition-all hover:translate-x-1.5 hover:translate-y-1.5 hover:shadow-none"
+      >
+        ← Retour à l&apos;accueil
+      </a>
+    </main>
+  )
+}
+
 export const Route = createRootRoute({
+  notFoundComponent: NotFound,
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
@@ -124,7 +150,7 @@ export const Route = createRootRoute({
   shellComponent: RootDocument,
 })
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>

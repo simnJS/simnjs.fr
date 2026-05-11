@@ -383,6 +383,7 @@ export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
       return profileCache.data
     }
     const token = process.env.GITHUB_TOKEN
+    console.log('[github] getGithubProfile invoked, token present:', !!token, 'length:', token?.length ?? 0)
     if (!token) return profileCache?.data ?? EMPTY_PROFILE
     try {
       const res = await fetch('https://api.github.com/graphql', {
@@ -396,7 +397,12 @@ export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
           variables: { login: 'simnJS' },
         }),
       })
-      if (!res.ok) return profileCache?.data ?? EMPTY_PROFILE
+      console.log('[github] GraphQL status:', res.status)
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '')
+        console.log('[github] GraphQL error body:', errText.slice(0, 300))
+        return profileCache?.data ?? EMPTY_PROFILE
+      }
       const j = (await res.json()) as {
         data?: {
           user?: {
@@ -419,6 +425,7 @@ export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
         }
       }
       const c = j.data?.user?.contributionsCollection
+      console.log('[github] contributionsCollection present:', !!c, 'totalContrib:', c?.contributionCalendar?.totalContributions)
       if (!c) return profileCache?.data ?? EMPTY_PROFILE
 
       const flatDays: Array<{ date: string; count: number }> = []

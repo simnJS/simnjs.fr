@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { type ReactNode, useRef } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import {
   ArrowUpRight,
@@ -365,7 +365,7 @@ function Sticker({
   color,
   rotate,
 }: {
-  children: React.ReactNode
+  children: ReactNode
   color: string
   rotate: string
 }) {
@@ -557,7 +557,7 @@ function Social({
 }: {
   href: string
   label: string
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <a
