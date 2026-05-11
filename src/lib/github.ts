@@ -114,17 +114,30 @@ function shape(raw: RawEvent[]): GhEvent[] {
     switch (e.type) {
       case 'PushEvent': {
         if (isBotRef(e.payload.ref)) break
-        const n = e.payload.size ?? e.payload.commits?.length ?? 0
-        if (n === 0) break
+        const size = e.payload.size
+        const commitCount = e.payload.commits?.length ?? 0
+        // Only skip when we're sure nothing happened
+        // (size === 0 with empty commits = force-push that reset the branch).
+        // size === null/undefined just means GitHub didn't include the count.
+        if (size === 0 && commitCount === 0) break
         const branch = (e.payload.ref ?? '').replace(/^refs\/heads\//, '')
         const firstMsg = e.payload.commits?.[0]?.message?.split('\n')[0] ?? ''
+        const n = typeof size === 'number' ? size : commitCount
+        let message: string
+        if (firstMsg) {
+          message = firstMsg
+        } else if (n > 0) {
+          message = `${n} commit${n > 1 ? 's' : ''} → ${branch}`
+        } else {
+          message = `→ ${branch}`
+        }
         groupKey = `push::${repo}::${branch}`
         evt = {
           id: e.id,
           type: 'push',
           repo,
           createdAt: e.created_at,
-          message: firstMsg || `→ ${branch}`,
+          message,
           url: repoUrl,
         }
         break
