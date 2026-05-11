@@ -77,7 +77,7 @@ function ghHeaders(): Record<string, string> {
     'X-GitHub-Api-Version': '2022-11-28',
     'User-Agent': 'simnjs-portfolio',
   }
-  const token = process.env.GITHUB_TOKEN
+  const token = process.env.GITHUB_TOKEN?.trim()
   if (token) h.Authorization = `Bearer ${token}`
   return h
 }
@@ -382,7 +382,7 @@ export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
     if (profileCache && Date.now() - profileCache.at < TTL_MS) {
       return profileCache.data
     }
-    const token = process.env.GITHUB_TOKEN
+    const token = process.env.GITHUB_TOKEN?.trim()
     console.log('[github] getGithubProfile invoked, token present:', !!token, 'length:', token?.length ?? 0)
     if (!token) return profileCache?.data ?? EMPTY_PROFILE
     try {
@@ -477,7 +477,8 @@ export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
       }
       profileCache = { at: Date.now(), data }
       return data
-    } catch {
+    } catch (err) {
+      console.log('[github] getGithubProfile threw:', err instanceof Error ? err.message : String(err))
       return profileCache?.data ?? EMPTY_PROFILE
     }
   },
