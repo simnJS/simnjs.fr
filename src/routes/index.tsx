@@ -276,31 +276,59 @@ function IntroOverlay() {
   )
 }
 
+function scrollToId(id: string) {
+  if (id === 'top') {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+function NavLink({
+  id,
+  className,
+  children,
+}: {
+  id: string
+  className?: string
+  children: ReactNode
+}) {
+  return (
+    <a
+      href={`#${id}`}
+      onClick={(e) => {
+        e.preventDefault()
+        scrollToId(id)
+      }}
+      className={className}
+    >
+      {children}
+    </a>
+  )
+}
+
 function Nav({ t }: { t: Dictionary }) {
   return (
     <header className="sticky top-0 z-40 border-b-2 border-ink bg-bg/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a
-          href="#top"
-          className="font-display text-2xl tracking-tight"
-        >
+        <NavLink id="top" className="font-display text-2xl tracking-tight">
           {ME.name}<span className="text-coral">.</span>
-        </a>
+        </NavLink>
         <nav className="hidden gap-6 font-mono text-sm md:flex">
-          <a href="#work" className="hover:text-coral">{t.nav.work}</a>
-          <a href="#stack" className="hover:text-coral">{t.nav.stack}</a>
-          <a href="#now" className="hover:text-coral">{t.nav.now}</a>
-          <a href="#about" className="hover:text-coral">{t.nav.about}</a>
+          <NavLink id="work" className="hover:text-coral">{t.nav.work}</NavLink>
+          <NavLink id="stack" className="hover:text-coral">{t.nav.stack}</NavLink>
+          <NavLink id="now" className="hover:text-coral">{t.nav.now}</NavLink>
+          <NavLink id="about" className="hover:text-coral">{t.nav.about}</NavLink>
         </nav>
         <div className="flex items-center gap-3">
           <LanguageSelector />
-          <a
-            href="#contact"
+          <NavLink
+            id="contact"
             className="group relative inline-flex items-center gap-2 border-2 border-ink bg-yellow px-4 py-2 font-display text-sm shadow-[4px_4px_0_0_var(--color-ink)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
           >
             {t.nav.contact}
             <ArrowUpRight size={16} strokeWidth={3} />
-          </a>
+          </NavLink>
         </div>
       </div>
     </header>
