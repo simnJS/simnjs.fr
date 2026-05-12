@@ -89,7 +89,9 @@ type Dict = {
     kicker: string
     title: string
     github: string
-    website: string
+    linkedin: string
+    discord: string
+    discordCopied: string
     studio: string
   }
   footer: {
@@ -197,7 +199,9 @@ export const translations: Record<Locale, Dict> = {
       kicker: '// un projet ? un café ?',
       title: 'Écris-moi.',
       github: 'GitHub',
-      website: 'Site personnel',
+      linkedin: 'LinkedIn',
+      discord: 'Discord',
+      discordCopied: 'Copié !',
       studio: 'Safia Creative',
     },
     footer: {
@@ -301,7 +305,9 @@ export const translations: Record<Locale, Dict> = {
       kicker: '// got a project? a coffee?',
       title: 'Write me.',
       github: 'GitHub',
-      website: 'Personal site',
+      linkedin: 'LinkedIn',
+      discord: 'Discord',
+      discordCopied: 'Copied!',
       studio: 'Safia Creative',
     },
     footer: {
@@ -405,7 +411,9 @@ export const translations: Record<Locale, Dict> = {
       kicker: '// ¿un proyecto? ¿un café?',
       title: 'Escríbeme.',
       github: 'GitHub',
-      website: 'Sitio personal',
+      linkedin: 'LinkedIn',
+      discord: 'Discord',
+      discordCopied: '¡Copiado!',
       studio: 'Safia Creative',
     },
     footer: {

@@ -1,10 +1,11 @@
-import { type ReactNode, useRef } from 'react'
+import { type ReactNode, useRef, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import {
   ArrowUpRight,
   Github,
-  Globe,
+  Linkedin,
   Mail,
+  MessageCircle,
   Star,
 } from 'lucide-react'
 import gsap from 'gsap'
@@ -25,7 +26,8 @@ const ME = {
   fullName: 'Simon GAY',
   location: 'Lyon, FR',
   email: 'contact@simnjs.fr',
-  website: 'https://simnjs.fr',
+  linkedin: 'https://www.linkedin.com/in/simon-gay-806103388/',
+  discord: 'simnjs_',
   github: 'https://github.com/simnJS',
   studio: { name: 'Safia Creative', url: 'https://www.safia-creative.com/' },
 }
@@ -538,9 +540,10 @@ function Contact({ t }: { t: Dictionary }) {
           <Social href={ME.github} label={t.contact.github}>
             <Github size={20} strokeWidth={2.5} />
           </Social>
-          <Social href={ME.website} label={t.contact.website}>
-            <Globe size={20} strokeWidth={2.5} />
+          <Social href={ME.linkedin} label={t.contact.linkedin}>
+            <Linkedin size={20} strokeWidth={2.5} />
           </Social>
+          <DiscordCopy username={ME.discord} label={t.contact.discord} copied={t.contact.discordCopied} />
           <Social href={ME.studio.url} label={t.contact.studio}>
             <Star size={20} strokeWidth={2.5} />
           </Social>
@@ -569,6 +572,34 @@ function Social({
     >
       {children}
     </a>
+  )
+}
+
+function DiscordCopy({
+  username,
+  label,
+  copied,
+}: {
+  username: string
+  label: string
+  copied: string
+}) {
+  const [done, setDone] = useState(false)
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        navigator.clipboard?.writeText(username).then(() => {
+          setDone(true)
+          window.setTimeout(() => setDone(false), 1500)
+        })
+      }}
+      aria-label={`${label}: ${username}`}
+      title={done ? copied : username}
+      className="grid h-12 w-12 place-items-center border-2 border-ink bg-bg shadow-[3px_3px_0_0_var(--color-ink)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
+    >
+      <MessageCircle size={20} strokeWidth={2.5} />
+    </button>
   )
 }
 
