@@ -62,6 +62,9 @@ type RawEvent = {
 
 // ─── Cache ──────────────────────────────────────────────────────────────────
 
+// Orgs whose events should count toward stats but stay anonymous in the feed.
+const PRIVATE_ORG_PREFIXES = ['Ca-Stake-Engine-Ou-Quoi-La/']
+
 const TTL_MS = 60_000
 let eventsCache: {
   at: number
@@ -107,7 +110,9 @@ function shape(raw: RawEvent[]): GhEvent[] {
   for (const e of raw) {
     const repo = e.repo.name
     const repoUrl = `https://github.com/${repo}`
-    const isPrivate = e.public === false
+    const isPrivate =
+      e.public === false ||
+      PRIVATE_ORG_PREFIXES.some((p) => repo.startsWith(p))
     let evt: GhEvent | null = null
     let groupKey: string | null = null
 
