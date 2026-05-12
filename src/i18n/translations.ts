@@ -92,7 +92,6 @@ type Dict = {
     linkedin: string
     discord: string
     discordCopied: string
-    studio: string
   }
   footer: {
     built: string
@@ -202,7 +201,6 @@ export const translations: Record<Locale, Dict> = {
       linkedin: 'LinkedIn',
       discord: 'Discord',
       discordCopied: 'Copié !',
-      studio: 'Safia Creative',
     },
     footer: {
       built: 'built with care',
@@ -308,7 +306,6 @@ export const translations: Record<Locale, Dict> = {
       linkedin: 'LinkedIn',
       discord: 'Discord',
       discordCopied: 'Copied!',
-      studio: 'Safia Creative',
     },
     footer: {
       built: 'built with care',
@@ -414,7 +411,6 @@ export const translations: Record<Locale, Dict> = {
       linkedin: 'LinkedIn',
       discord: 'Discord',
       discordCopied: '¡Copiado!',
-      studio: 'Safia Creative',
     },
     footer: {
       built: 'hecho con cuidado',

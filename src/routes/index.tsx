@@ -5,7 +5,6 @@ import {
   Github,
   Linkedin,
   Mail,
-  MessageCircle,
   Star,
 } from 'lucide-react'
 import gsap from 'gsap'
@@ -29,7 +28,6 @@ const ME = {
   linkedin: 'https://www.linkedin.com/in/simon-gay-806103388/',
   discord: 'simnjs_',
   github: 'https://github.com/simnJS',
-  studio: { name: 'Safia Creative', url: 'https://www.safia-creative.com/' },
 }
 
 type ProjectKey = 'safia' | 'playandchill' | 'stakeplayer' | 'uefnstore'
@@ -572,9 +570,6 @@ function Contact({ t }: { t: Dictionary }) {
             <Linkedin size={20} strokeWidth={2.5} />
           </Social>
           <DiscordCopy username={ME.discord} label={t.contact.discord} copied={t.contact.discordCopied} />
-          <Social href={ME.studio.url} label={t.contact.studio}>
-            <Star size={20} strokeWidth={2.5} />
-          </Social>
         </div>
       </div>
     </section>
@@ -603,6 +598,21 @@ function Social({
   )
 }
 
+function DiscordIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.6 14.6 0 0 0-.69 1.418 18.27 18.27 0 0 0-5.737 0A14 14 0 0 0 9.44 3a19.74 19.74 0 0 0-3.762 1.369C2.345 9.36 1.475 14.225 1.91 19.027a19.9 19.9 0 0 0 6.073 3.072c.49-.667.927-1.376 1.301-2.118a13 13 0 0 1-2.05-.985c.172-.127.34-.258.503-.395 3.94 1.84 8.197 1.84 12.09 0 .164.137.331.268.503.395-.654.39-1.34.72-2.052.987.374.741.81 1.45 1.302 2.117a19.83 19.83 0 0 0 6.075-3.072c.512-5.572-.875-10.39-3.687-14.66M8.02 16.114c-1.225 0-2.234-1.13-2.234-2.516s.99-2.518 2.234-2.518c1.245 0 2.255 1.131 2.234 2.518 0 1.386-.99 2.516-2.234 2.516m8.232 0c-1.225 0-2.234-1.13-2.234-2.516s.99-2.518 2.234-2.518c1.245 0 2.254 1.131 2.234 2.518 0 1.386-.99 2.516-2.234 2.516" />
+    </svg>
+  )
+}
+
 function DiscordCopy({
   username,
   label,
@@ -623,10 +633,15 @@ function DiscordCopy({
         })
       }}
       aria-label={`${label}: ${username}`}
-      title={done ? copied : username}
-      className="grid h-12 w-12 place-items-center border-2 border-ink bg-bg shadow-[3px_3px_0_0_var(--color-ink)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
+      title={done ? copied : `${label} — ${username}`}
+      className="relative grid h-12 w-12 place-items-center border-2 border-ink bg-bg shadow-[3px_3px_0_0_var(--color-ink)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
     >
-      <MessageCircle size={20} strokeWidth={2.5} />
+      <DiscordIcon size={22} />
+      {done && (
+        <span className="absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap border-2 border-ink bg-yellow px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider shadow-[2px_2px_0_0_var(--color-ink)]">
+          {copied}
+        </span>
+      )}
     </button>
   )
 }
