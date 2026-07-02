@@ -54,6 +54,8 @@ type RawEvent = {
     commits?: Array<{ message: string; sha: string }>
     size?: number
     distinct_size?: number
+    before?: string
+    head?: string
     pull_request?: { number?: number; title?: string; merged?: boolean }
     issue?: { number?: number; title?: string }
     release?: { name: string | null; tag_name: string; html_url: string }
@@ -61,12 +63,22 @@ type RawEvent = {
   }
 }
 
+// ─── Identity ───────────────────────────────────────────────────────────────
+
+const LOGIN = 'simnJS'
+// Alt accounts whose commits count as mine — work signed with git emails
+// linked to these accounts instead of the main one.
+const AUTHOR_LOGINS = [LOGIN, 'simn24']
+
 // ─── Cache ──────────────────────────────────────────────────────────────────
 
 // Orgs whose events should count toward stats but stay anonymous in the feed.
-const PRIVATE_ORG_PREFIXES = ['Ca-Stake-Engine-Ou-Quoi-La/']
+const PRIVATE_ORG_PREFIXES = ['Ca-Stake-Engine-Ou-Quoi-La/', 'Roblox-Simon/']
 
 const TTL_MS = 60_000
+// The profile sweep (repo listing + per-repo commit counts) is heavier,
+// refresh it less often.
+const PROFILE_TTL_MS = 300_000
 let eventsCache: {
   at: number
   data: { events: GhEvent[]; fetchedAt: string }
@@ -103,8 +115,15 @@ function levelOf(count: number, max: number): 0 | 1 | 2 | 3 | 4 {
 
 // ─── Events shaping ─────────────────────────────────────────────────────────
 
-function shape(raw: RawEvent[]): GhEvent[] {
-  const out: GhEvent[] = []
+// The authenticated /users/{login}/events endpoint returns slim push payloads
+// (no commits array, no size) — only ref/before/head. `_push` carries what we
+// need to recover the real commit count and message via the compare API.
+type ShapedEvent = GhEvent & {
+  _push?: { repo: string; before: string; head: string }
+}
+
+function shape(raw: RawEvent[]): ShapedEvent[] {
+  const out: ShapedEvent[] = []
   // dedup/group key → index in out
   const groupIdx = new Map<string, number>()
 
@@ -114,7 +133,7 @@ function shape(raw: RawEvent[]): GhEvent[] {
     const isPrivate =
       e.public === false ||
       PRIVATE_ORG_PREFIXES.some((p) => repo.startsWith(p))
-    let evt: GhEvent | null = null
+    let evt: ShapedEvent | null = null
     let groupKey: string | null = null
 
     switch (e.type) {
@@ -155,6 +174,14 @@ function shape(raw: RawEvent[]): GhEvent[] {
           message,
           url: repoUrl,
           count: Math.max(n, 1),
+        }
+        // Slim payload (authenticated endpoint): recover the real commit
+        // count/message later via the compare API. Skip branch creations
+        // (before is all zeros — nothing to compare against).
+        if (!firstMsg && e.payload.before && e.payload.head) {
+          if (!/^0+$/.test(e.payload.before)) {
+            evt._push = { repo, before: e.payload.before, head: e.payload.head }
+          }
         }
         break
       }
@@ -273,7 +300,7 @@ function shape(raw: RawEvent[]): GhEvent[] {
         ...evt,
         repo: 'private',
         message: '',
-        url: 'https://github.com/simnJS',
+        url: `https://github.com/${LOGIN}`,
         private: true,
       }
     }
@@ -281,8 +308,11 @@ function shape(raw: RawEvent[]): GhEvent[] {
     if (groupKey && groupIdx.has(groupKey)) {
       // Fold into the existing row: sum commit counts, not push counts.
       // Keep folding even once the feed is full so ×N stays accurate.
-      const idx = groupIdx.get(groupKey)!
-      out[idx].count = (out[idx].count ?? 1) + (evt.count ?? 1)
+      const row = out[groupIdx.get(groupKey)!]
+      row.count = (row.count ?? 1) + (evt.count ?? 1)
+      // Events arrive newest first: widen the compare span down to the
+      // oldest push of the group so ×N covers all its commits.
+      if (row._push && evt._push) row._push.before = evt._push.before
     } else if (out.length < 12) {
       if (groupKey) groupIdx.set(groupKey, out.length)
       out.push(evt)
@@ -290,6 +320,40 @@ function shape(raw: RawEvent[]): GhEvent[] {
   }
 
   return out
+}
+
+// ─── Push enrichment (compare API, parallel) ────────────────────────────────
+
+// Recover the real commit count (and first message for public rows) of each
+// push group by comparing oldest `before` → newest `head`. Needed because the
+// authenticated events endpoint strips commits/size from push payloads.
+async function enrichPushes(events: ShapedEvent[]): Promise<ShapedEvent[]> {
+  const headers = ghHeaders()
+  return Promise.all(
+    events.map(async (e) => {
+      const p = e._push
+      if (!p) return e
+      try {
+        const res = await fetch(
+          `https://api.github.com/repos/${p.repo}/compare/${p.before}...${p.head}?per_page=1`,
+          { headers },
+        )
+        if (!res.ok) return e
+        const j = (await res.json()) as {
+          total_commits?: number
+          commits?: Array<{ commit?: { message?: string } }>
+        }
+        if (typeof j.total_commits === 'number' && j.total_commits > 0) {
+          e.count = j.total_commits
+        }
+        const firstMsg = j.commits?.[0]?.commit?.message?.split('\n')[0]
+        if (firstMsg && !e.private) e.message = firstMsg
+        return e
+      } catch {
+        return e
+      }
+    }),
+  )
 }
 
 // ─── Title enrichment (lazy, parallel) ──────────────────────────────────────
@@ -332,8 +396,8 @@ export const getGithubActivity = createServerFn({ method: 'GET' }).handler(
       // Authenticated user endpoint: returns public + private events.
       // Falls back to /events/public behaviour if the token is missing.
       const endpoint = process.env.GITHUB_TOKEN?.trim()
-        ? 'https://api.github.com/users/simnJS/events?per_page=100'
-        : 'https://api.github.com/users/simnJS/events/public?per_page=100'
+        ? `https://api.github.com/users/${LOGIN}/events?per_page=100`
+        : `https://api.github.com/users/${LOGIN}/events/public?per_page=100`
       const res = await fetch(endpoint, { headers: ghHeaders() })
       if (!res.ok) {
         return (
@@ -345,8 +409,13 @@ export const getGithubActivity = createServerFn({ method: 'GET' }).handler(
       }
       const raw = (await res.json()) as RawEvent[]
       const shaped = shape(raw)
-      const enriched = await enrichTitles(shaped)
-      const data = { events: enriched, fetchedAt: new Date().toISOString() }
+      const withCounts = await enrichPushes(shaped)
+      const enriched = await enrichTitles(withCounts)
+      const events = enriched.map((e) => {
+        const { _push, ...rest } = e as ShapedEvent
+        return rest
+      })
+      const data = { events, fetchedAt: new Date().toISOString() }
       eventsCache = { at: Date.now(), data }
       return data
     } catch {
@@ -379,7 +448,90 @@ query Profile($login: String!) {
       }
     }
   }
+${AUTHOR_LOGINS.map(
+  (l, i) => `  author${i}: user(login: ${JSON.stringify(l)}) { id }`,
+).join('\n')}
 }`
+
+// ─── Real commit count ──────────────────────────────────────────────────────
+// GitHub's contributionsCollection buries every private-repo contribution in
+// restrictedContributionsCount, even for your own token. To show a real
+// commit count we sum default-branch commits authored by AUTHOR_LOGINS across
+// every accessible repo pushed within the window.
+
+type RepoRef = { owner: string; name: string }
+
+async function listReposPushedSince(sinceIso: string): Promise<RepoRef[]> {
+  const headers = ghHeaders()
+  const out: RepoRef[] = []
+  for (let page = 1; page <= 5; page++) {
+    const res = await fetch(
+      `https://api.github.com/user/repos?per_page=100&page=${page}&sort=pushed&direction=desc&affiliation=owner,collaborator,organization_member`,
+      { headers },
+    )
+    if (!res.ok) break
+    const batch = (await res.json()) as Array<{
+      full_name: string
+      pushed_at: string | null
+    }>
+    for (const r of batch) {
+      // Sorted by pushed_at desc — past the window, nothing left to count.
+      if (!r.pushed_at || r.pushed_at < sinceIso) return out
+      const [owner, name] = r.full_name.split('/')
+      out.push({ owner, name })
+    }
+    if (batch.length < 100) break
+  }
+  return out
+}
+
+async function countCommitsSince(
+  authorIds: string[],
+  sinceIso: string,
+): Promise<number | null> {
+  if (authorIds.length === 0) return null
+  const repos = await listReposPushedSince(sinceIso)
+  if (repos.length === 0) return 0
+  const headers = { ...ghHeaders(), 'Content-Type': 'application/json' }
+
+  const fields: string[] = []
+  repos.forEach((r, ri) => {
+    authorIds.forEach((id, ai) => {
+      fields.push(
+        `r${ri}_a${ai}: repository(owner: ${JSON.stringify(r.owner)}, name: ${JSON.stringify(r.name)}) { defaultBranchRef { target { ... on Commit { history(author: {id: ${JSON.stringify(id)}}, since: $since) { totalCount } } } } }`,
+      )
+    })
+  })
+
+  let total = 0
+  const CHUNK = 40
+  for (let i = 0; i < fields.length; i += CHUNK) {
+    const query = `query Commits($since: GitTimestamp!) {\n${fields
+      .slice(i, i + CHUNK)
+      .join('\n')}\n}`
+    const res = await fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ query, variables: { since: sinceIso } }),
+    })
+    if (!res.ok) return null
+    const j = (await res.json()) as {
+      data?: Record<
+        string,
+        {
+          defaultBranchRef?: {
+            target?: { history?: { totalCount?: number } }
+          } | null
+        } | null
+      > | null
+    }
+    if (!j.data) return null
+    for (const key of Object.keys(j.data)) {
+      total += j.data[key]?.defaultBranchRef?.target?.history?.totalCount ?? 0
+    }
+  }
+  return total
+}
 
 const EMPTY_PROFILE: GhProfile = {
   totalContributions: 0,
@@ -395,11 +547,10 @@ const EMPTY_PROFILE: GhProfile = {
 
 export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
   async (): Promise<GhProfile> => {
-    if (profileCache && Date.now() - profileCache.at < TTL_MS) {
+    if (profileCache && Date.now() - profileCache.at < PROFILE_TTL_MS) {
       return profileCache.data
     }
     const token = process.env.GITHUB_TOKEN?.trim()
-    console.log('[github] getGithubProfile invoked, token present:', !!token, 'length:', token?.length ?? 0)
     if (!token) return profileCache?.data ?? EMPTY_PROFILE
     try {
       const res = await fetch('https://api.github.com/graphql', {
@@ -410,10 +561,9 @@ export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
         },
         body: JSON.stringify({
           query: PROFILE_QUERY,
-          variables: { login: 'simnJS' },
+          variables: { login: LOGIN },
         }),
       })
-      console.log('[github] GraphQL status:', res.status)
       if (!res.ok) {
         const errText = await res.text().catch(() => '')
         console.log('[github] GraphQL error body:', errText.slice(0, 300))
@@ -438,11 +588,14 @@ export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
               }
             }
           }
-        }
+        } & Record<string, { id?: string } | undefined>
       }
       const c = j.data?.user?.contributionsCollection
-      console.log('[github] contributionsCollection present:', !!c, 'totalContrib:', c?.contributionCalendar?.totalContributions)
       if (!c) return profileCache?.data ?? EMPTY_PROFILE
+
+      const authorIds = AUTHOR_LOGINS.map(
+        (_, i) => j.data?.[`author${i}`]?.id,
+      ).filter((id): id is string => typeof id === 'string')
 
       const flatDays: Array<{ date: string; count: number }> = []
       const weeks: Array<{ days: GhDay[] }> = c.contributionCalendar.weeks.map(
@@ -483,9 +636,19 @@ export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
         else break
       }
 
+      // Real commit count across all accessible repos (private included) —
+      // totalCommitContributions only covers public ones. Fall back to it if
+      // the sweep fails.
+      let totalCommits = c.totalCommitContributions
+      const since = new Date(Date.now() - 365 * 86_400_000).toISOString()
+      const counted = await countCommitsSince(authorIds, since).catch(
+        () => null,
+      )
+      if (counted != null) totalCommits = Math.max(totalCommits, counted)
+
       const data: GhProfile = {
         totalContributions: c.contributionCalendar.totalContributions,
-        totalCommits: c.totalCommitContributions,
+        totalCommits,
         totalPRs: c.totalPullRequestContributions,
         totalIssues: c.totalIssueContributions,
         totalActiveRepos: c.totalRepositoriesWithContributedCommits,
