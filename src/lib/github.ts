@@ -53,6 +53,7 @@ type RawEvent = {
     number?: number
     commits?: Array<{ message: string; sha: string }>
     size?: number
+    distinct_size?: number
     pull_request?: { number?: number; title?: string; merged?: boolean }
     issue?: { number?: number; title?: string }
     release?: { name: string | null; tag_name: string; html_url: string }
@@ -127,7 +128,16 @@ function shape(raw: RawEvent[]): GhEvent[] {
         if (size === 0 && commitCount === 0) break
         const branch = (e.payload.ref ?? '').replace(/^refs\/heads\//, '')
         const firstMsg = e.payload.commits?.[0]?.message?.split('\n')[0] ?? ''
-        const n = typeof size === 'number' ? size : commitCount
+        // distinct_size = commits actually new to the repo (excludes commits
+        // re-pushed by merges/force-pushes); fall back to size, then to the
+        // (capped at 20) commits array.
+        const distinct = e.payload.distinct_size
+        const n =
+          typeof distinct === 'number' && distinct > 0
+            ? distinct
+            : typeof size === 'number'
+              ? size
+              : commitCount
         let message: string
         if (firstMsg) {
           message = firstMsg
@@ -144,6 +154,7 @@ function shape(raw: RawEvent[]): GhEvent[] {
           createdAt: e.created_at,
           message,
           url: repoUrl,
+          count: Math.max(n, 1),
         }
         break
       }
@@ -268,14 +279,14 @@ function shape(raw: RawEvent[]): GhEvent[] {
     }
 
     if (groupKey && groupIdx.has(groupKey)) {
+      // Fold into the existing row: sum commit counts, not push counts.
+      // Keep folding even once the feed is full so ×N stays accurate.
       const idx = groupIdx.get(groupKey)!
-      out[idx].count = (out[idx].count ?? 1) + 1
-    } else {
+      out[idx].count = (out[idx].count ?? 1) + (evt.count ?? 1)
+    } else if (out.length < 12) {
       if (groupKey) groupIdx.set(groupKey, out.length)
       out.push(evt)
     }
-
-    if (out.length >= 12) break
   }
 
   return out
@@ -320,7 +331,7 @@ export const getGithubActivity = createServerFn({ method: 'GET' }).handler(
     try {
       // Authenticated user endpoint: returns public + private events.
       // Falls back to /events/public behaviour if the token is missing.
-      const endpoint = process.env.GITHUB_TOKEN
+      const endpoint = process.env.GITHUB_TOKEN?.trim()
         ? 'https://api.github.com/users/simnJS/events?per_page=100'
         : 'https://api.github.com/users/simnJS/events/public?per_page=100'
       const res = await fetch(endpoint, { headers: ghHeaders() })
@@ -464,8 +475,11 @@ export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
         }
       }
       let current = 0
-      for (let i = sorted.length - 1; i >= 0; i--) {
-        if (sorted[i].count > 0) current += 1
+      let ci = sorted.length - 1
+      // Today without contributions (yet) doesn't break the streak.
+      if (ci >= 0 && sorted[ci].count === 0) ci--
+      for (; ci >= 0; ci--) {
+        if (sorted[ci].count > 0) current += 1
         else break
       }
 

@@ -35,8 +35,16 @@ Le site tourne sur `http://localhost:3000`.
 Copie `.env.example` vers `.env` puis renseigne :
 
 ```bash
-GITHUB_TOKEN=  # optionnel, mais recommandé pour passer de 60 à 5000 req/h sur l'API GitHub
+GITHUB_TOKEN=  # optionnel — PAT classic avec scopes `repo` + `read:org`
 ```
+
+Sans token : 60 req/h et événements publics uniquement. Avec un PAT **classic**
+(scopes `repo` + `read:org`) : 5000 req/h et l'activité de **tous** les repos
+(privés et orgas comprises) apparaît — anonymisée pour les repos privés
+(repo affiché comme `private`, message vidé, pas d'URL réelle).
+
+Un fine-grained token ne convient pas : il est limité à un seul owner (compte
+_ou_ orga) et ne remonte pas les événements privés via l'API Events.
 
 Le token est lu uniquement côté serveur (`src/lib/github.ts`).
 

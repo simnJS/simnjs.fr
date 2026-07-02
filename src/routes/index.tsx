@@ -30,7 +30,12 @@ const ME = {
   github: 'https://github.com/simnJS',
 }
 
-type ProjectKey = 'safia' | 'playandchill' | 'stakeplayer' | 'uefnstore'
+type ProjectKey =
+  | 'safia'
+  | 'playandchill'
+  | 'stakeplayer'
+  | 'uefnstore'
+  | 'tacline'
 
 const PROJECTS: Array<{
   n: string
@@ -76,6 +81,14 @@ const PROJECTS: Array<{
     year: '2026 →',
     href: 'https://www.uefnstore.com/',
     image: '/projects/uefnstore.jpg',
+  },
+  {
+    n: '05',
+    key: 'tacline',
+    title: 'Tacline',
+    accent: 'bg-yellow',
+    year: '2026 →',
+    href: 'https://tacline.co/fr',
   },
 ]
 
