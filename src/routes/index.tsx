@@ -52,7 +52,7 @@ const PROJECTS: Array<{
     title: 'Safia Creative',
     accent: 'bg-yellow',
     year: '2024 →',
-    href: 'https://www.safia-creative.com/',
+    href: 'https://fortnite.gg/creator/safia',
     image: '/projects/safia.jpg',
   },
   {
@@ -663,7 +663,7 @@ function Footer({ t }: { t: Dictionary }) {
   return (
     <footer className="bg-ink py-6 text-bg">
       <div className="mx-auto flex max-w-6xl items-center justify-center px-6 font-mono text-xs uppercase tracking-wider">
-        <span>© {new Date().getFullYear()} {ME.name} — {t.footer.built}</span>
+        <span>© {new Date().getFullYear()} {ME.fullName} ({ME.name}) — {t.footer.built}</span>
       </div>
     </footer>
   )

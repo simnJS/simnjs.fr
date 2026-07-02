@@ -7,55 +7,73 @@ import appCss from '../styles.css?url'
 import { I18nProvider } from '../i18n/I18nProvider'
 
 const SITE_URL = 'https://simnjs.fr'
-const SITE_TITLE = 'simnJS — UGC Creator & Studio Founder · Lyon'
+const SITE_TITLE = 'simnJS (Simon GAY) — UGC Creator & Studio Founder · Lyon'
 const SITE_DESC =
-  'Software engineer à Lyon. Founder de Safia Creative (UEFN, 3M+ plays sur Fortnite) et Play & Chill (slots & casino pour Stake Engine). UGC, tooling, bots.'
+  'Portfolio de Simon GAY, alias simnJS — software engineer à Lyon. Founder de Safia Creative (UEFN, 3M+ plays sur Fortnite) et Play & Chill (slots & casino pour Stake Engine).'
 const OG_IMAGE = `${SITE_URL}/og.png`
 
-const PERSON_JSONLD = JSON.stringify({
+const JSONLD = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Simon GAY',
-  alternateName: 'simnJS',
-  url: SITE_URL,
-  email: 'mailto:contact@simnjs.fr',
-  image: `${SITE_URL}/logo512.png`,
-  jobTitle: 'UGC Creator & Studio Founder',
-  worksFor: [
+  '@graph': [
     {
-      '@type': 'Organization',
-      name: 'Safia Creative',
-      url: 'https://www.safia-creative.com/',
+      '@type': 'Person',
+      '@id': `${SITE_URL}/#person`,
+      name: 'Simon GAY',
+      givenName: 'Simon',
+      familyName: 'GAY',
+      alternateName: 'simnJS',
+      url: SITE_URL,
+      mainEntityOfPage: `${SITE_URL}/`,
+      email: 'mailto:contact@simnjs.fr',
+      image: `${SITE_URL}/logo512.png`,
+      jobTitle: 'UGC Creator & Studio Founder',
+      worksFor: [
+        {
+          '@type': 'Organization',
+          name: 'Safia Creative',
+          url: 'https://fortnite.gg/creator/safia',
+        },
+        {
+          '@type': 'Organization',
+          name: 'Play & Chill',
+          url: 'https://playandchill.bet/',
+        },
+      ],
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Lyon',
+        addressCountry: 'FR',
+      },
+      sameAs: [
+        'https://github.com/simnJS',
+        'https://www.linkedin.com/in/simon-gay-806103388/',
+        'https://fortnite.gg/creator/safia',
+        'https://playandchill.bet/',
+        'https://stakeplayercount.com/',
+        'https://www.uefnstore.com/',
+      ],
+      knowsAbout: [
+        'UEFN',
+        'Fortnite Creative',
+        'Verse',
+        'Roblox',
+        'Luau',
+        'Stake Engine',
+        's&box',
+        'TypeScript',
+        'Node.js',
+        'Rust',
+      ],
     },
     {
-      '@type': 'Organization',
-      name: 'Play & Chill',
-      url: 'https://playandchill.bet/',
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: 'simnJS',
+      alternateName: 'Portfolio de Simon GAY',
+      inLanguage: ['fr', 'en', 'es'],
+      publisher: { '@id': `${SITE_URL}/#person` },
     },
-  ],
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Lyon',
-    addressCountry: 'FR',
-  },
-  sameAs: [
-    'https://github.com/simnJS',
-    'https://www.safia-creative.com/',
-    'https://playandchill.bet/',
-    'https://stakeplayercount.com/',
-    'https://www.uefnstore.com/',
-  ],
-  knowsAbout: [
-    'UEFN',
-    'Fortnite Creative',
-    'Verse',
-    'Roblox',
-    'Luau',
-    'Stake Engine',
-    's&box',
-    'TypeScript',
-    'Node.js',
-    'Rust',
   ],
 })
 
@@ -95,7 +113,7 @@ export const Route = createRootRoute({
       {
         name: 'keywords',
         content:
-          'UEFN, Fortnite Creative, Roblox, Stake Engine, UGC creator, slot games, Verse, Luau, s&box, Discord bot, Lyon, freelance, simnJS, Safia Creative, Play & Chill',
+          'simnJS, Simon GAY, UEFN, Fortnite Creative, Roblox, Stake Engine, UGC creator, slot games, Verse, Luau, s&box, Discord bot, Lyon, freelance, Safia Creative, Play & Chill',
       },
       { name: 'theme-color', content: '#0A0A0A' },
       { name: 'color-scheme', content: 'light' },
@@ -125,7 +143,8 @@ export const Route = createRootRoute({
     links: [
       { rel: 'stylesheet', href: appCss },
       { rel: 'canonical', href: SITE_URL },
-      { rel: 'icon', href: '/favicon.ico', sizes: 'any' },
+      { rel: 'icon', href: '/favicon.ico', sizes: '48x48 32x32 16x16' },
+      { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
       { rel: 'apple-touch-icon', href: '/logo192.png' },
       { rel: 'manifest', href: '/manifest.json' },
       { rel: 'alternate', hrefLang: 'fr', href: SITE_URL },
@@ -152,13 +171,13 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning>
       <head>
         <HeadContent />
         <script
           type="application/ld+json"
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: PERSON_JSONLD }}
+          dangerouslySetInnerHTML={{ __html: JSONLD }}
         />
       </head>
       <body suppressHydrationWarning>
