@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+/* Polices self-hostées (subsets latin, variable) — évite les requêtes
+   tierces vers Google Fonts, bloquantes pour le rendu. */
+@font-face {
+  font-family: "Archivo Black";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/archivo-black.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/space-grotesk.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono.woff2") format("woff2");
+}
+
 @theme {
   --color-bg: #FAF7F0;
   --color-ink: #0A0A0A;
