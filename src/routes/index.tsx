@@ -113,6 +113,7 @@ const PROJECTS: Array<{
     accent: 'bg-yellow',
     year: '2026 →',
     href: 'https://tacline.co/fr',
+    image: '/projects/tacline.png',
     categories: ['saas'],
   },
   {
@@ -122,6 +123,7 @@ const PROJECTS: Array<{
     accent: 'bg-cyan',
     year: '2026 →',
     href: 'https://www.roblox.com/communities/35788348/Playn-Chill',
+    image: '/projects/playnchill-roblox.png',
     categories: ['roblox'],
   },
 ]
