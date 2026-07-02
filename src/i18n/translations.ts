@@ -76,12 +76,28 @@ type Dict = {
       more: string
     }
   }
+  workFilters: {
+    all: string
+    fortnite: string
+    stake: string
+    saas: string
+    roblox: string
+    opensource: string
+  }
   projects: {
     safia: { tag: string; desc: string }
     playandchill: { tag: string; desc: string }
     stakeplayer: { tag: string; desc: string }
     uefnstore: { tag: string; desc: string }
     tacline: { tag: string; desc: string }
+  }
+  caseStudy: {
+    kicker: string
+    back: string
+    visit: string
+    stack: string
+    cta: string
+    ctaButton: string
   }
   about: {
     bio: string
@@ -174,6 +190,14 @@ export const translations: Record<Locale, Dict> = {
         more: 'plus',
       },
     },
+    workFilters: {
+      all: 'Tout',
+      fortnite: 'Fortnite',
+      stake: 'Stake',
+      saas: 'SaaS',
+      roblox: 'Roblox',
+      opensource: 'Open Source',
+    },
     projects: {
       safia: {
         tag: 'UEFN · Studio',
@@ -195,6 +219,14 @@ export const translations: Record<Locale, Dict> = {
         tag: 'Airsoft · SaaS',
         desc: 'Plateforme qui connecte joueurs et organisateurs d\'airsoft : recherche de parties, carte des terrains, inscriptions et paiement en ligne.',
       },
+    },
+    caseStudy: {
+      kicker: '// étude de cas',
+      back: 'retour',
+      visit: 'Voir le site',
+      stack: 'Stack',
+      cta: 'Un projet dans le même genre ?',
+      ctaButton: 'Écris-moi',
     },
     about: {
       bio: `Software engineer à Lyon. Je dirige Safia Creative (UEFN, 3M+ plays cumulés sur Fortnite) et Play & Chill (slots et jeux casino pour Stake Engine). Entre les deux, je code tout ce qui me tombe sous la main : outils, bots, systèmes scalables.`,
@@ -283,6 +315,14 @@ export const translations: Record<Locale, Dict> = {
         more: 'more',
       },
     },
+    workFilters: {
+      all: 'All',
+      fortnite: 'Fortnite',
+      stake: 'Stake',
+      saas: 'SaaS',
+      roblox: 'Roblox',
+      opensource: 'Open Source',
+    },
     projects: {
       safia: {
         tag: 'UEFN · Studio',
@@ -304,6 +344,14 @@ export const translations: Record<Locale, Dict> = {
         tag: 'Airsoft · SaaS',
         desc: 'Platform connecting airsoft players and organizers: game discovery, field map, sign-ups and online payment.',
       },
+    },
+    caseStudy: {
+      kicker: '// case study',
+      back: 'back',
+      visit: 'Visit site',
+      stack: 'Stack',
+      cta: 'Got a similar project in mind?',
+      ctaButton: 'Write me',
     },
     about: {
       bio: `Software engineer in Lyon. I run Safia Creative (UEFN, 3M+ plays on Fortnite) and Play & Chill (slots and casino games on Stake Engine). In between, I build whatever falls into my hands: tools, bots, scalable systems.`,
@@ -392,6 +440,14 @@ export const translations: Record<Locale, Dict> = {
         more: 'más',
       },
     },
+    workFilters: {
+      all: 'Todo',
+      fortnite: 'Fortnite',
+      stake: 'Stake',
+      saas: 'SaaS',
+      roblox: 'Roblox',
+      opensource: 'Open Source',
+    },
     projects: {
       safia: {
         tag: 'UEFN · Studio',
@@ -413,6 +469,14 @@ export const translations: Record<Locale, Dict> = {
         tag: 'Airsoft · SaaS',
         desc: 'Plataforma que conecta jugadores y organizadores de airsoft: búsqueda de partidas, mapa de campos, inscripciones y pago online.',
       },
+    },
+    caseStudy: {
+      kicker: '// caso de estudio',
+      back: 'volver',
+      visit: 'Ver el sitio',
+      stack: 'Stack',
+      cta: '¿Tienes un proyecto parecido?',
+      ctaButton: 'Escríbeme',
     },
     about: {
       bio: `Ingeniero de software en Lyon. Dirijo Safia Creative (UEFN, 3M+ plays en Fortnite) y Play & Chill (slots y juegos de casino para Stake Engine). Entre medio, codeo todo lo que me cae en las manos: herramientas, bots, sistemas escalables.`,

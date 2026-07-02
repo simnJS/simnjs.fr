@@ -1,5 +1,5 @@
 import { type ReactNode, useRef, useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import {
   ArrowUpRight,
   Github,
@@ -14,10 +14,16 @@ import { useI18n } from '../i18n/I18nProvider'
 import { LanguageSelector } from '../i18n/LanguageSelector'
 import type { Dictionary } from '../i18n/translations'
 import { LiveActivity } from '../components/LiveActivity'
+import { CASE_STUDY_SLUG_BY_PROJECT } from '../content/caseStudies'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
-export const Route = createFileRoute('/')({ component: Home })
+export const Route = createFileRoute('/')({
+  component: Home,
+  head: () => ({
+    links: [{ rel: 'canonical', href: 'https://simnjs.fr' }],
+  }),
+})
 
 // ─── Édite ici pour mettre à jour ───────────────────────────────────────────
 const ME = {
@@ -37,6 +43,18 @@ type ProjectKey =
   | 'uefnstore'
   | 'tacline'
 
+type ProjectCategory = 'fortnite' | 'stake' | 'saas' | 'roblox' | 'opensource'
+
+// Ordre d'affichage des filtres de la section Work. Un filtre n'apparaît
+// que si au moins un projet porte sa catégorie.
+const WORK_CATEGORIES: ProjectCategory[] = [
+  'fortnite',
+  'stake',
+  'saas',
+  'roblox',
+  'opensource',
+]
+
 const PROJECTS: Array<{
   n: string
   key: ProjectKey
@@ -45,6 +63,7 @@ const PROJECTS: Array<{
   year: string
   href: string
   image?: string
+  categories: ProjectCategory[]
 }> = [
   {
     n: '01',
@@ -54,6 +73,7 @@ const PROJECTS: Array<{
     year: '2024 →',
     href: 'https://fortnite.gg/creator/safia',
     image: '/projects/safia.jpg',
+    categories: ['fortnite'],
   },
   {
     n: '02',
@@ -63,6 +83,7 @@ const PROJECTS: Array<{
     year: '2025 →',
     href: 'https://playandchill.bet/',
     image: '/projects/playandchill.png',
+    categories: ['stake'],
   },
   {
     n: '03',
@@ -72,6 +93,7 @@ const PROJECTS: Array<{
     year: '2025 →',
     href: 'https://stakeplayercount.com/',
     image: '/projects/stakeplayer.jpg',
+    categories: ['stake', 'saas'],
   },
   {
     n: '04',
@@ -81,6 +103,7 @@ const PROJECTS: Array<{
     year: '2026 →',
     href: 'https://www.uefnstore.com/',
     image: '/projects/uefnstore.jpg',
+    categories: ['fortnite', 'saas'],
   },
   {
     n: '05',
@@ -89,6 +112,7 @@ const PROJECTS: Array<{
     accent: 'bg-yellow',
     year: '2026 →',
     href: 'https://tacline.co/fr',
+    categories: ['saas'],
   },
 ]
 
@@ -449,20 +473,67 @@ function FloatingShape({ className }: { className?: string }) {
 }
 
 function Work({ t }: { t: Dictionary }) {
+  const [filter, setFilter] = useState<'all' | ProjectCategory>('all')
+  const categories = WORK_CATEGORIES.filter((c) =>
+    PROJECTS.some((p) => p.categories.includes(c)),
+  )
+  const visible =
+    filter === 'all'
+      ? PROJECTS
+      : PROJECTS.filter((p) => p.categories.includes(filter))
   return (
     <section id="work" className="border-b-2 border-ink">
       <div className="mx-auto max-w-6xl px-6 py-20">
         <SectionTitle index="01" title={t.sections.work} />
+        <div className="mt-10 flex flex-wrap items-center gap-3">
+          <WorkFilterChip
+            active={filter === 'all'}
+            onClick={() => setFilter('all')}
+            label={t.workFilters.all}
+          />
+          {categories.map((c) => (
+            <WorkFilterChip
+              key={c}
+              active={filter === c}
+              onClick={() => setFilter(c)}
+              label={t.workFilters[c]}
+            />
+          ))}
+        </div>
         <div
           data-anim="project-grid"
-          className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {PROJECTS.map((p) => (
+          {visible.map((p) => (
             <ProjectCard key={p.n} project={p} t={t} />
           ))}
         </div>
       </div>
     </section>
+  )
+}
+
+function WorkFilterChip({
+  active,
+  onClick,
+  label,
+}: {
+  active: boolean
+  onClick: () => void
+  label: string
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={
+        'border-2 border-ink px-3 py-1 font-display text-sm transition-all ' +
+        (active
+          ? 'bg-yellow shadow-[3px_3px_0_0_var(--color-ink)]'
+          : 'bg-bg hover:bg-yellow/30')
+      }
+    >
+      {label}
+    </button>
   )
 }
 
@@ -474,14 +545,11 @@ function ProjectCard({
   t: Dictionary
 }) {
   const meta = t.projects[p.key]
-  return (
-    <a
-      data-anim="project-card"
-      href={p.href}
-      target="_blank"
-      rel="noreferrer"
-      className="group block border-2 border-ink bg-bg shadow-[6px_6px_0_0_var(--color-ink)] transition-all hover:translate-x-1.5 hover:translate-y-1.5 hover:shadow-none"
-    >
+  const caseSlug = CASE_STUDY_SLUG_BY_PROJECT[p.key]
+  const cardClass =
+    'group block border-2 border-ink bg-bg shadow-[6px_6px_0_0_var(--color-ink)] transition-all hover:translate-x-1.5 hover:translate-y-1.5 hover:shadow-none'
+  const inner = (
+    <>
       <div
         className={`${p.accent} relative aspect-[4/3] overflow-hidden border-b-2 border-ink`}
       >
@@ -512,6 +580,31 @@ function ProjectCard({
         <h3 className="font-display text-lg leading-tight">{p.title}</h3>
         <p className="mt-2 text-xs leading-snug text-ink/80">{meta.desc}</p>
       </div>
+    </>
+  )
+
+  // Étude de cas dispo → lien interne ; sinon lien externe vers le projet.
+  if (caseSlug) {
+    return (
+      <Link
+        data-anim="project-card"
+        to="/work/$slug"
+        params={{ slug: caseSlug }}
+        className={cardClass}
+      >
+        {inner}
+      </Link>
+    )
+  }
+  return (
+    <a
+      data-anim="project-card"
+      href={p.href}
+      target="_blank"
+      rel="noreferrer"
+      className={cardClass}
+    >
+      {inner}
     </a>
   )
 }

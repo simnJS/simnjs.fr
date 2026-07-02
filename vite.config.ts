@@ -14,12 +14,10 @@ const config = defineConfig({
     tailwindcss(),
     tanstackStart(),
     nitro({
-      config: {
-        routeRules: {
-          // Les polices sont versionnées à la main : cache long, revalidation inutile.
-          '/fonts/**': {
-            headers: { 'cache-control': 'public, max-age=31536000, immutable' },
-          },
+      routeRules: {
+        // Les polices sont versionnées à la main : cache long, revalidation inutile.
+        '/fonts/**': {
+          headers: { 'cache-control': 'public, max-age=31536000, immutable' },
         },
       },
     }),

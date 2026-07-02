@@ -142,7 +142,7 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
-      { rel: 'canonical', href: SITE_URL },
+      // Le canonical est posé par chaque route (index, work/$slug).
       { rel: 'icon', href: '/favicon.ico', sizes: '48x48 32x32 16x16' },
       { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
       { rel: 'apple-touch-icon', href: '/logo192.png' },
