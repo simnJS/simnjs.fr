@@ -503,34 +503,42 @@ async function countCommitsSince(
     })
   })
 
-  let total = 0
   const CHUNK = 40
+  const chunks: string[][] = []
   for (let i = 0; i < fields.length; i += CHUNK) {
-    const query = `query Commits($since: GitTimestamp!) {\n${fields
-      .slice(i, i + CHUNK)
-      .join('\n')}\n}`
-    const res = await fetch('https://api.github.com/graphql', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ query, variables: { since: sinceIso } }),
-    })
-    if (!res.ok) return null
-    const j = (await res.json()) as {
-      data?: Record<
-        string,
-        {
-          defaultBranchRef?: {
-            target?: { history?: { totalCount?: number } }
-          } | null
-        } | null
-      > | null
-    }
-    if (!j.data) return null
-    for (const key of Object.keys(j.data)) {
-      total += j.data[key]?.defaultBranchRef?.target?.history?.totalCount ?? 0
-    }
+    chunks.push(fields.slice(i, i + CHUNK))
   }
-  return total
+  const sums = await Promise.all(
+    chunks.map(async (chunk) => {
+      const query = `query Commits($since: GitTimestamp!) {\n${chunk.join('\n')}\n}`
+      const res = await fetch('https://api.github.com/graphql', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ query, variables: { since: sinceIso } }),
+      })
+      if (!res.ok) return null
+      const j = (await res.json()) as {
+        data?: Record<
+          string,
+          {
+            defaultBranchRef?: {
+              target?: { history?: { totalCount?: number } }
+            } | null
+          } | null
+        > | null
+      }
+      if (!j.data) return null
+      let sum = 0
+      for (const key of Object.keys(j.data)) {
+        sum += j.data[key]?.defaultBranchRef?.target?.history?.totalCount ?? 0
+      }
+      return sum
+    }),
+  )
+  // One failed chunk means an incomplete (understated) total — bail out and
+  // let the caller fall back instead of showing a silently wrong number.
+  if (sums.some((s) => s == null)) return null
+  return sums.reduce<number>((a, b) => a + (b ?? 0), 0)
 }
 
 const EMPTY_PROFILE: GhProfile = {
