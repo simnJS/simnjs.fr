@@ -51,6 +51,7 @@ const JSONLD = JSON.stringify({
         'https://playandchill.bet/',
         'https://stakeplayercount.com/',
         'https://www.uefnstore.com/',
+        'https://www.roblox.com/communities/35788348/Playn-Chill',
       ],
       knowsAbout: [
         'UEFN',

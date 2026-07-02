@@ -42,6 +42,7 @@ type ProjectKey =
   | 'stakeplayer'
   | 'uefnstore'
   | 'tacline'
+  | 'playnchill'
 
 type ProjectCategory = 'fortnite' | 'stake' | 'saas' | 'roblox' | 'opensource'
 
@@ -113,6 +114,15 @@ const PROJECTS: Array<{
     year: '2026 →',
     href: 'https://tacline.co/fr',
     categories: ['saas'],
+  },
+  {
+    n: '06',
+    key: 'playnchill',
+    title: "Play'n Chill",
+    accent: 'bg-cyan',
+    year: '2026 →',
+    href: 'https://www.roblox.com/communities/35788348/Playn-Chill',
+    categories: ['roblox'],
   },
 ]
 

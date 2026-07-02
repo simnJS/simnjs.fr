@@ -90,6 +90,7 @@ type Dict = {
     stakeplayer: { tag: string; desc: string }
     uefnstore: { tag: string; desc: string }
     tacline: { tag: string; desc: string }
+    playnchill: { tag: string; desc: string }
   }
   caseStudy: {
     kicker: string
@@ -98,6 +99,10 @@ type Dict = {
     stack: string
     cta: string
     ctaButton: string
+    liveTitle: string
+    livePlaying: string
+    liveVisits: string
+    liveMembers: string
   }
   about: {
     bio: string
@@ -219,6 +224,10 @@ export const translations: Record<Locale, Dict> = {
         tag: 'Airsoft · SaaS',
         desc: 'Plateforme qui connecte joueurs et organisateurs d\'airsoft : recherche de parties, carte des terrains, inscriptions et paiement en ligne.',
       },
+      playnchill: {
+        tag: 'Roblox · Studio',
+        desc: 'Mon studio Roblox. Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — un jeu publié toutes les six à huit semaines.',
+      },
     },
     caseStudy: {
       kicker: '// étude de cas',
@@ -227,6 +236,10 @@ export const translations: Record<Locale, Dict> = {
       stack: 'Stack',
       cta: 'Un projet dans le même genre ?',
       ctaButton: 'Écris-moi',
+      liveTitle: 'En direct de Roblox',
+      livePlaying: 'en ligne',
+      liveVisits: 'visites',
+      liveMembers: 'membres',
     },
     about: {
       bio: `Software engineer à Lyon. Je dirige Safia Creative (UEFN, 3M+ plays cumulés sur Fortnite) et Play & Chill (slots et jeux casino pour Stake Engine). Entre les deux, je code tout ce qui me tombe sous la main : outils, bots, systèmes scalables.`,
@@ -344,6 +357,10 @@ export const translations: Record<Locale, Dict> = {
         tag: 'Airsoft · SaaS',
         desc: 'Platform connecting airsoft players and organizers: game discovery, field map, sign-ups and online payment.',
       },
+      playnchill: {
+        tag: 'Roblox · Studio',
+        desc: "My Roblox studio. Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — a game shipped every six to eight weeks.",
+      },
     },
     caseStudy: {
       kicker: '// case study',
@@ -352,6 +369,10 @@ export const translations: Record<Locale, Dict> = {
       stack: 'Stack',
       cta: 'Got a similar project in mind?',
       ctaButton: 'Write me',
+      liveTitle: 'Live from Roblox',
+      livePlaying: 'playing now',
+      liveVisits: 'visits',
+      liveMembers: 'members',
     },
     about: {
       bio: `Software engineer in Lyon. I run Safia Creative (UEFN, 3M+ plays on Fortnite) and Play & Chill (slots and casino games on Stake Engine). In between, I build whatever falls into my hands: tools, bots, scalable systems.`,
@@ -469,6 +490,10 @@ export const translations: Record<Locale, Dict> = {
         tag: 'Airsoft · SaaS',
         desc: 'Plataforma que conecta jugadores y organizadores de airsoft: búsqueda de partidas, mapa de campos, inscripciones y pago online.',
       },
+      playnchill: {
+        tag: 'Roblox · Studio',
+        desc: 'Mi estudio Roblox. Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — un juego publicado cada seis a ocho semanas.',
+      },
     },
     caseStudy: {
       kicker: '// caso de estudio',
@@ -477,6 +502,10 @@ export const translations: Record<Locale, Dict> = {
       stack: 'Stack',
       cta: '¿Tienes un proyecto parecido?',
       ctaButton: 'Escríbeme',
+      liveTitle: 'En directo desde Roblox',
+      livePlaying: 'jugando ahora',
+      liveVisits: 'visitas',
+      liveMembers: 'miembros',
     },
     about: {
       bio: `Ingeniero de software en Lyon. Dirijo Safia Creative (UEFN, 3M+ plays en Fortnite) y Play & Chill (slots y juegos de casino para Stake Engine). Entre medio, codeo todo lo que me cae en las manos: herramientas, bots, sistemas escalables.`,

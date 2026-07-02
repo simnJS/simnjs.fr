@@ -1,8 +1,11 @@
+import { useEffect, useState } from 'react'
 import { Link, createFileRoute, notFound } from '@tanstack/react-router'
-import { ArrowLeft, ArrowUpRight, Mail } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, Mail, Users } from 'lucide-react'
 import { CASE_STUDIES } from '../content/caseStudies'
+import { getRobloxStats, type RbxStats } from '../lib/roblox'
 import { useI18n } from '../i18n/I18nProvider'
 import { LanguageSelector } from '../i18n/LanguageSelector'
+import type { Dictionary } from '../i18n/translations'
 
 const SITE_URL = 'https://simnjs.fr'
 
@@ -144,6 +147,8 @@ function CaseStudyPage() {
               </div>
             ))}
           </div>
+
+          {cs.live === 'roblox' && <RobloxLive t={t} />}
         </div>
       </section>
 
@@ -241,5 +246,93 @@ function CaseStudyPage() {
         </div>
       </footer>
     </main>
+  )
+}
+
+// ─── Stats Roblox en direct ─────────────────────────────────────────────────
+
+function RobloxLive({ t }: { t: Dictionary }) {
+  const [stats, setStats] = useState<RbxStats | null>(null)
+
+  useEffect(() => {
+    let mounted = true
+    const load = () => {
+      getRobloxStats()
+        .then((s) => {
+          if (mounted && s) setStats(s)
+        })
+        .catch(() => {
+          // silencieux — on garde les dernières données affichées
+        })
+    }
+    load()
+    const id = setInterval(load, 60_000)
+    return () => {
+      mounted = false
+      clearInterval(id)
+    }
+  }, [])
+
+  if (!stats) return null
+
+  return (
+    <div className="mt-8 border-2 border-ink bg-bg shadow-[6px_6px_0_0_var(--color-ink)]">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-ink px-4 py-3">
+        <span className="inline-flex items-center gap-2 border-2 border-ink bg-coral px-2 py-1 font-display text-xs tracking-wider shadow-[3px_3px_0_0_var(--color-ink)]">
+          ● {t.caseStudy.liveTitle}
+        </span>
+        <div className="flex flex-wrap items-center gap-4 font-mono text-xs text-ink/70">
+          <span>
+            <span className="font-display text-base text-ink">
+              {stats.totalPlaying.toLocaleString()}
+            </span>{' '}
+            {t.caseStudy.livePlaying}
+          </span>
+          <span>
+            <span className="font-display text-base text-ink">
+              {stats.totalVisits.toLocaleString()}
+            </span>{' '}
+            {t.caseStudy.liveVisits}
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Users size={13} strokeWidth={2.5} />
+            <span className="font-display text-base text-ink">
+              {stats.members.toLocaleString()}
+            </span>{' '}
+            {t.caseStudy.liveMembers}
+          </span>
+        </div>
+      </div>
+      <ul className="divide-y-2 divide-ink">
+        {stats.games.map((g) => (
+          <li key={g.url}>
+            <a
+              href={g.url}
+              target="_blank"
+              rel="noreferrer"
+              className="group flex items-center gap-4 px-4 py-3 transition-colors hover:bg-yellow/30"
+            >
+              <span
+                className={`h-2.5 w-2.5 shrink-0 border-2 border-ink ${g.playing > 0 ? 'bg-coral' : 'bg-bg'}`}
+              />
+              <span className="min-w-0 flex-1 truncate font-display text-sm">
+                {g.name}
+              </span>
+              <span className="shrink-0 font-mono text-xs text-ink/70">
+                {g.playing.toLocaleString()} {t.caseStudy.livePlaying}
+              </span>
+              <span className="hidden shrink-0 font-mono text-xs text-ink/60 sm:inline">
+                {g.visits.toLocaleString()} {t.caseStudy.liveVisits}
+              </span>
+              <ArrowUpRight
+                size={14}
+                strokeWidth={3}
+                className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+              />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

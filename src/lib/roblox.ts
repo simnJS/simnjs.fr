@@ -1,0 +1,93 @@
+import { createServerFn } from '@tanstack/react-start'
+
+// ─── Play'n Chill (Roblox) — stats live du groupe ────────────────────────────
+
+const GROUP_ID = 35788348
+
+export type RbxGame = {
+  name: string
+  playing: number
+  visits: number
+  favorites: number
+  url: string
+}
+
+export type RbxStats = {
+  members: number
+  totalPlaying: number
+  totalVisits: number
+  games: RbxGame[]
+  fetchedAt: string
+}
+
+const TTL_MS = 60_000
+let cache: { at: number; data: RbxStats } | null = null
+
+// roproxy en premier (roblox.com bloque certains ranges datacenter),
+// puis l'API officielle en secours.
+async function rbxFetch<T>(path: string): Promise<T | null> {
+  for (const host of ['roproxy.com', 'roblox.com']) {
+    try {
+      const res = await fetch(`https://${path.replace('{host}', host)}`, {
+        headers: { Accept: 'application/json' },
+      })
+      if (!res.ok) continue
+      return (await res.json()) as T
+    } catch {
+      continue
+    }
+  }
+  return null
+}
+
+export const getRobloxStats = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<RbxStats | null> => {
+    if (cache && Date.now() - cache.at < TTL_MS) return cache.data
+
+    const group = await rbxFetch<{ memberCount?: number }>(
+      `groups.{host}/v1/groups/${GROUP_ID}`,
+    )
+    const list = await rbxFetch<{
+      data?: Array<{ id: number; rootPlace?: { id: number } }>
+    }>(`games.{host}/v2/groups/${GROUP_ID}/games?accessFilter=2&limit=50`)
+
+    const universes = list?.data ?? []
+    if (universes.length === 0) return cache?.data ?? null
+
+    const ids = universes.map((g) => g.id).join(',')
+    const stats = await rbxFetch<{
+      data?: Array<{
+        id: number
+        name: string
+        playing?: number
+        visits?: number
+        favoritedCount?: number
+        rootPlaceId?: number
+      }>
+    }>(`games.{host}/v1/games?universeIds=${ids}`)
+    if (!stats?.data) return cache?.data ?? null
+
+    const placeByUniverse = new Map(
+      universes.map((g) => [g.id, g.rootPlace?.id]),
+    )
+    const games: RbxGame[] = stats.data
+      .map((g) => ({
+        name: g.name,
+        playing: g.playing ?? 0,
+        visits: g.visits ?? 0,
+        favorites: g.favoritedCount ?? 0,
+        url: `https://www.roblox.com/games/${g.rootPlaceId ?? placeByUniverse.get(g.id) ?? ''}`,
+      }))
+      .sort((a, b) => b.playing - a.playing || b.visits - a.visits)
+
+    const data: RbxStats = {
+      members: group?.memberCount ?? 0,
+      totalPlaying: games.reduce((s, g) => s + g.playing, 0),
+      totalVisits: games.reduce((s, g) => s + g.visits, 0),
+      games,
+      fetchedAt: new Date().toISOString(),
+    }
+    cache = { at: Date.now(), data }
+    return data
+  },
+)
