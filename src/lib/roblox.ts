@@ -9,6 +9,8 @@ export type RbxGame = {
   playing: number
   visits: number
   favorites: number
+  // undefined si l'endpoint votes n'a pas répondu (plutôt qu'un faux 0)
+  likes?: number
   url: string
 }
 
@@ -67,6 +69,13 @@ export const getRobloxStats = createServerFn({ method: 'GET' }).handler(
     }>(`games.{host}/v1/games?universeIds=${ids}`)
     if (!stats?.data) return cache?.data ?? null
 
+    const votes = await rbxFetch<{
+      data?: Array<{ id: number; upVotes?: number; downVotes?: number }>
+    }>(`games.{host}/v1/games/votes?universeIds=${ids}`)
+    const upVotesByUniverse = new Map(
+      (votes?.data ?? []).map((v) => [v.id, v.upVotes]),
+    )
+
     const placeByUniverse = new Map(
       universes.map((g) => [g.id, g.rootPlace?.id]),
     )
@@ -76,6 +85,7 @@ export const getRobloxStats = createServerFn({ method: 'GET' }).handler(
         playing: g.playing ?? 0,
         visits: g.visits ?? 0,
         favorites: g.favoritedCount ?? 0,
+        likes: upVotesByUniverse.get(g.id),
         url: `https://www.roblox.com/games/${g.rootPlaceId ?? placeByUniverse.get(g.id) ?? ''}`,
       }))
       .sort((a, b) => b.playing - a.playing || b.visits - a.visits)

@@ -103,6 +103,8 @@ type Dict = {
     livePlaying: string
     liveVisits: string
     liveMembers: string
+    liveLikes: string
+    liveFavs: string
   }
   about: {
     bio: string
@@ -240,6 +242,8 @@ export const translations: Record<Locale, Dict> = {
       livePlaying: 'en ligne',
       liveVisits: 'visites',
       liveMembers: 'membres',
+      liveLikes: 'likes',
+      liveFavs: 'favoris',
     },
     about: {
       bio: `Software engineer à Lyon. Je dirige Safia Creative (UEFN, 3M+ plays cumulés sur Fortnite) et Play & Chill (slots et jeux casino pour Stake Engine). Entre les deux, je code tout ce qui me tombe sous la main : outils, bots, systèmes scalables.`,
@@ -373,6 +377,8 @@ export const translations: Record<Locale, Dict> = {
       livePlaying: 'playing now',
       liveVisits: 'visits',
       liveMembers: 'members',
+      liveLikes: 'likes',
+      liveFavs: 'favorites',
     },
     about: {
       bio: `Software engineer in Lyon. I run Safia Creative (UEFN, 3M+ plays on Fortnite) and Play & Chill (slots and casino games on Stake Engine). In between, I build whatever falls into my hands: tools, bots, scalable systems.`,
@@ -506,6 +512,8 @@ export const translations: Record<Locale, Dict> = {
       livePlaying: 'jugando ahora',
       liveVisits: 'visitas',
       liveMembers: 'miembros',
+      liveLikes: 'likes',
+      liveFavs: 'favoritos',
     },
     about: {
       bio: `Ingeniero de software en Lyon. Dirijo Safia Creative (UEFN, 3M+ plays en Fortnite) y Play & Chill (slots y juegos de casino para Stake Engine). Entre medio, codeo todo lo que me cae en las manos: herramientas, bots, sistemas escalables.`,

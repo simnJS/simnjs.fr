@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, createFileRoute, notFound } from '@tanstack/react-router'
-import { ArrowLeft, ArrowUpRight, Mail, Users } from 'lucide-react'
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Mail,
+  Star,
+  ThumbsUp,
+  Users,
+} from 'lucide-react'
 import { CASE_STUDIES } from '../content/caseStudies'
 import { getRobloxStats, type RbxStats } from '../lib/roblox'
 import { useI18n } from '../i18n/I18nProvider'
@@ -323,6 +330,24 @@ function RobloxLive({ t }: { t: Dictionary }) {
               </span>
               <span className="hidden shrink-0 font-mono text-xs text-ink/60 sm:inline">
                 {g.visits.toLocaleString()} {t.caseStudy.liveVisits}
+              </span>
+              {typeof g.likes === 'number' && (
+                <span
+                  className="hidden shrink-0 items-center gap-1 font-mono text-xs text-ink/60 md:inline-flex"
+                  title={t.caseStudy.liveLikes}
+                  aria-label={t.caseStudy.liveLikes}
+                >
+                  <ThumbsUp size={12} strokeWidth={2.5} />
+                  {g.likes.toLocaleString()}
+                </span>
+              )}
+              <span
+                className="hidden shrink-0 items-center gap-1 font-mono text-xs text-ink/60 md:inline-flex"
+                title={t.caseStudy.liveFavs}
+                aria-label={t.caseStudy.liveFavs}
+              >
+                <Star size={12} strokeWidth={2.5} />
+                {g.favorites.toLocaleString()}
               </span>
               <ArrowUpRight
                 size={14}
