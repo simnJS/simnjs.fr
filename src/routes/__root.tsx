@@ -7,9 +7,9 @@ import appCss from '../styles.css?url'
 import { I18nProvider } from '../i18n/I18nProvider'
 
 const SITE_URL = 'https://simnjs.fr'
-const SITE_TITLE = 'simnJS (Simon GAY) — UGC Creator & Studio Founder · Lyon'
+const SITE_TITLE = 'simnJS (Simon GAY) · UGC Creator & Studio Founder · Lyon'
 const SITE_DESC =
-  'Portfolio de Simon GAY, alias simnJS — software engineer à Lyon. Founder de Safia Creative (UEFN, 3M+ plays sur Fortnite) et Play & Chill (slots & casino pour Stake Engine).'
+  'Portfolio de Simon GAY, alias simnJS, software engineer à Lyon. Founder de Safia Creative (UEFN, 3M+ plays sur Fortnite) et Play & Chill (slots & casino pour Stake Engine).'
 const OG_IMAGE = `${SITE_URL}/og.png`
 
 const JSONLD = JSON.stringify({
@@ -129,7 +129,7 @@ export const Route = createRootRoute({
       { property: 'og:image', content: OG_IMAGE },
       { property: 'og:image:width', content: '1200' },
       { property: 'og:image:height', content: '630' },
-      { property: 'og:image:alt', content: 'simnJS — portfolio Neo-Brutalism' },
+      { property: 'og:image:alt', content: 'simnJS · portfolio Neo-Brutalism' },
       { property: 'og:locale', content: 'fr_FR' },
       { property: 'og:locale:alternate', content: 'en_US' },
       { property: 'og:locale:alternate', content: 'es_ES' },

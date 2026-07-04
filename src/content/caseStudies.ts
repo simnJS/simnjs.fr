@@ -69,7 +69,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
     ],
     content: {
       fr: {
-        metaTitle: 'Play & Chill — studio casino Stake Engine de Simon GAY (simnJS)',
+        metaTitle: 'Play & Chill · studio casino Stake Engine de Simon GAY (simnJS)',
         metaDescription:
           'Étude de cas : Play & Chill, le studio de Simon GAY (simnJS) qui produit slots et jeux casino pour Stake Engine, la plateforme de jeux tiers de Stake.com.',
         tag: 'Casino · Studio',
@@ -78,15 +78,15 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'Le contexte',
-            body: 'En 2025, Stake — un des plus gros casinos en ligne au monde — a ouvert son catalogue aux studios tiers avec Stake Engine : des équipes indépendantes peuvent y publier leurs propres jeux et toucher une part des revenus, sans monter un opérateur, gérer des licences ni acquérir des joueurs. Historiquement, le développement de jeux casino était verrouillé par une poignée de studios B2B établis — cette porte-là ne s\'ouvre pas souvent.\n\nJ\'ai fondé Play & Chill pour prendre cette vague tôt, avec la même logique que Safia Creative sur Fortnite : arriver sur une plateforme UGC naissante avec une vraie capacité de production.',
+            body: 'En 2025, Stake, un des plus gros casinos en ligne au monde, a ouvert son catalogue aux studios tiers avec Stake Engine : des équipes indépendantes peuvent y publier leurs propres jeux et toucher une part des revenus, sans monter un opérateur, gérer des licences ni acquérir des joueurs. Historiquement, le développement de jeux casino était verrouillé par une poignée de studios B2B établis. Cette porte-là ne s\'ouvre pas souvent.\n\nJ\'ai fondé Play & Chill pour prendre cette vague tôt, avec la même logique que Safia Creative sur Fortnite : arriver sur une plateforme UGC naissante avec une vraie capacité de production.',
           },
           {
             heading: 'Mon rôle',
-            body: 'Je dirige le studio et la production : game design des slots, modèles mathématiques, développement front-end et pipeline.\n\nSur un jeu casino, la moitié du travail est invisible : le modèle mathématique — RTP, volatilité, table des gains — doit être simulé sur des millions de spins et validé avant toute publication. L\'autre moitié, celle qu\'on voit — le rendu, le game feel, les animations — décide si les joueurs restent. Je travaille sur les deux.',
+            body: 'Je dirige le studio et la production : game design des slots, modèles mathématiques, développement front-end et pipeline.\n\nSur un jeu casino, la moitié du travail est invisible : le modèle mathématique (RTP, volatilité, table des gains) doit être simulé sur des millions de spins et validé avant toute publication. L\'autre moitié, celle qu\'on voit (le rendu, le game feel, les animations), décide si les joueurs restent. Je travaille sur les deux.',
           },
           {
             heading: 'La tech',
-            body: 'Les jeux tournent sur le RGS de Stake Engine : chaque résultat est calculé côté serveur, le front ne fait que le mettre en scène. Le front est en TypeScript/React, construit au-dessus du web SDK de Stake Engine que nous avons adapté à nos besoins.\n\nPour enchaîner les jeux sans repartir de zéro, tout est industrialisé : templates de jeu réutilisables, simulateurs pour valider les modèles mathématiques, et de l\'outillage maison autour de l\'écosystème — dont stake-dev-tool, publié en open source, et StakePlayerCount, notre tracker d\'audience des jeux Stake Engine.',
+            body: 'Les jeux tournent sur le RGS de Stake Engine : chaque résultat est calculé côté serveur, le front ne fait que le mettre en scène. Le front est en TypeScript/React, construit au-dessus du web SDK de Stake Engine que nous avons adapté à nos besoins.\n\nPour enchaîner les jeux sans repartir de zéro, tout est industrialisé : templates de jeu réutilisables, simulateurs pour valider les modèles mathématiques, et de l\'outillage maison autour de l\'écosystème, dont stake-dev-tool, publié en open source, et StakePlayerCount, notre tracker d\'audience des jeux Stake Engine.',
           },
           {
             heading: 'La suite',
@@ -95,7 +95,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         ],
       },
       en: {
-        metaTitle: 'Play & Chill — Stake Engine casino studio by Simon GAY (simnJS)',
+        metaTitle: 'Play & Chill · Stake Engine casino studio by Simon GAY (simnJS)',
         metaDescription:
           'Case study: Play & Chill, the studio by Simon GAY (simnJS) building slots and casino games for Stake Engine, Stake.com\'s third-party games platform.',
         tag: 'Casino · Studio',
@@ -104,15 +104,15 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'Context',
-            body: 'In 2025, Stake — one of the biggest online casinos in the world — opened its catalogue to third-party studios with Stake Engine: independent teams can publish their own games and earn a revenue share, without becoming an operator, handling licences or acquiring players. Historically, casino game development was locked up by a handful of established B2B studios — that door doesn\'t open often.\n\nI founded Play & Chill to catch that wave early, with the same logic as Safia Creative on Fortnite: show up on a nascent UGC platform with real production capacity.',
+            body: 'In 2025, Stake, one of the biggest online casinos in the world, opened its catalogue to third-party studios with Stake Engine: independent teams can publish their own games and earn a revenue share, without becoming an operator, handling licences or acquiring players. Historically, casino game development was locked up by a handful of established B2B studios. That door doesn\'t open often.\n\nI founded Play & Chill to catch that wave early, with the same logic as Safia Creative on Fortnite: show up on a nascent UGC platform with real production capacity.',
           },
           {
             heading: 'My role',
-            body: 'I run the studio and its production: slot game design, math models, front-end development and pipeline.\n\nHalf the work on a casino game is invisible: the math model — RTP, volatility, paytable — has to be simulated over millions of spins and validated before anything ships. The other half, the visible one — rendering, game feel, animations — decides whether players stay. I work on both.',
+            body: 'I run the studio and its production: slot game design, math models, front-end development and pipeline.\n\nHalf the work on a casino game is invisible: the math model (RTP, volatility, paytable) has to be simulated over millions of spins and validated before anything ships. The other half, the visible one (rendering, game feel, animations), decides whether players stay. I work on both.',
           },
           {
             heading: 'The tech',
-            body: 'Games run on Stake Engine\'s RGS: every outcome is computed server-side, the front-end only stages it. The front-end is TypeScript/React, built on top of Stake Engine\'s web SDK, which we adapted to our needs.\n\nTo ship game after game without starting over, everything is industrialised: reusable game templates, simulators to validate math models, and in-house tooling around the ecosystem — including stake-dev-tool, released open source, and StakePlayerCount, our audience tracker for Stake Engine games.',
+            body: 'Games run on Stake Engine\'s RGS: every outcome is computed server-side, the front-end only stages it. The front-end is TypeScript/React, built on top of Stake Engine\'s web SDK, which we adapted to our needs.\n\nTo ship game after game without starting over, everything is industrialised: reusable game templates, simulators to validate math models, and in-house tooling around the ecosystem, including stake-dev-tool, released open source, and StakePlayerCount, our audience tracker for Stake Engine games.',
           },
           {
             heading: 'What\'s next',
@@ -121,7 +121,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         ],
       },
       es: {
-        metaTitle: 'Play & Chill — estudio casino Stake Engine de Simon GAY (simnJS)',
+        metaTitle: 'Play & Chill · estudio casino Stake Engine de Simon GAY (simnJS)',
         metaDescription:
           'Caso de estudio: Play & Chill, el estudio de Simon GAY (simnJS) que produce slots y juegos de casino para Stake Engine, la plataforma de juegos de terceros de Stake.com.',
         tag: 'Casino · Studio',
@@ -130,15 +130,15 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'El contexto',
-            body: 'En 2025, Stake — uno de los casinos online más grandes del mundo — abrió su catálogo a estudios terceros con Stake Engine: equipos independientes pueden publicar sus propios juegos y cobrar una parte de los ingresos, sin montar un operador, gestionar licencias ni captar jugadores. Históricamente, el desarrollo de juegos de casino estaba cerrado a un puñado de estudios B2B establecidos — esa puerta no se abre a menudo.\n\nFundé Play & Chill para tomar esa ola temprano, con la misma lógica que Safia Creative en Fortnite: llegar a una plataforma UGC naciente con capacidad real de producción.',
+            body: 'En 2025, Stake, uno de los casinos online más grandes del mundo, abrió su catálogo a estudios terceros con Stake Engine: equipos independientes pueden publicar sus propios juegos y cobrar una parte de los ingresos, sin montar un operador, gestionar licencias ni captar jugadores. Históricamente, el desarrollo de juegos de casino estaba cerrado a un puñado de estudios B2B establecidos. Esa puerta no se abre a menudo.\n\nFundé Play & Chill para tomar esa ola temprano, con la misma lógica que Safia Creative en Fortnite: llegar a una plataforma UGC naciente con capacidad real de producción.',
           },
           {
             heading: 'Mi rol',
-            body: 'Dirijo el estudio y su producción: diseño de slots, modelos matemáticos, desarrollo front-end y pipeline.\n\nLa mitad del trabajo en un juego de casino es invisible: el modelo matemático — RTP, volatilidad, tabla de pagos — debe simularse sobre millones de spins y validarse antes de publicar. La otra mitad, la visible — render, game feel, animaciones — decide si los jugadores se quedan. Trabajo en ambas.',
+            body: 'Dirijo el estudio y su producción: diseño de slots, modelos matemáticos, desarrollo front-end y pipeline.\n\nLa mitad del trabajo en un juego de casino es invisible: el modelo matemático (RTP, volatilidad, tabla de pagos) debe simularse sobre millones de spins y validarse antes de publicar. La otra mitad, la visible (render, game feel, animaciones), decide si los jugadores se quedan. Trabajo en ambas.',
           },
           {
             heading: 'La tecnología',
-            body: 'Los juegos corren sobre el RGS de Stake Engine: cada resultado se calcula en el servidor, el front solo lo pone en escena. El front es TypeScript/React, construido sobre el web SDK de Stake Engine, adaptado a nuestras necesidades.\n\nPara encadenar juegos sin empezar de cero, todo está industrializado: templates reutilizables, simuladores para validar los modelos matemáticos y herramientas propias del ecosistema — incluyendo stake-dev-tool, publicado open source, y StakePlayerCount, nuestro tracker de audiencia de juegos Stake Engine.',
+            body: 'Los juegos corren sobre el RGS de Stake Engine: cada resultado se calcula en el servidor, el front solo lo pone en escena. El front es TypeScript/React, construido sobre el web SDK de Stake Engine, adaptado a nuestras necesidades.\n\nPara encadenar juegos sin empezar de cero, todo está industrializado: templates reutilizables, simuladores para validar los modelos matemáticos y herramientas propias del ecosistema, incluyendo stake-dev-tool, publicado open source, y StakePlayerCount, nuestro tracker de audiencia de juegos Stake Engine.',
           },
           {
             heading: 'Lo que viene',
@@ -178,7 +178,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
     ],
     content: {
       fr: {
-        metaTitle: 'Safia Creative — studio UEFN de Simon GAY (simnJS)',
+        metaTitle: 'Safia Creative · studio UEFN de Simon GAY (simnJS)',
         metaDescription:
           'Étude de cas : Safia Creative, le studio UEFN fondé par Simon GAY (simnJS). Maps Fortnite Creative scriptées en Verse, 3M+ plays cumulés, 10+ expériences publiées.',
         tag: 'UEFN · Studio',
@@ -187,7 +187,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'Le contexte',
-            body: 'Fortnite Creative est devenu une vraie plateforme UGC : Epic reverse 40 % des revenus de l\'Item Shop aux créateurs, proportionnellement au temps de jeu généré. Pour exister sur ce marché, il ne suffit pas de construire une belle map — il faut de la rétention, des systèmes de jeu solides et un rythme de publication soutenu.\n\nJ\'ai fondé Safia Creative en 2024 pour attaquer ce marché sérieusement, avec une approche studio : pipeline de production, outillage, et itération guidée par les données plutôt que des maps one-shot.',
+            body: 'Fortnite Creative est devenu une vraie plateforme UGC : Epic reverse 40 % des revenus de l\'Item Shop aux créateurs, proportionnellement au temps de jeu généré. Pour exister sur ce marché, une belle map ne suffit pas : il faut de la rétention, des systèmes de jeu solides et un rythme de publication soutenu.\n\nJ\'ai fondé Safia Creative en 2024 pour attaquer ce marché sérieusement, avec une approche studio : pipeline de production, outillage, et itération guidée par les données plutôt que des maps one-shot.',
           },
           {
             heading: 'Mon rôle',
@@ -195,16 +195,16 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'La tech',
-            body: 'Tout le gameplay est scripté en Verse, le langage d\'Epic pour UEFN. Les systèmes récurrents — progression persistante des joueurs, boutiques en jeu, événements timés, UI custom — sont construits comme des modules réutilisables d\'une map à l\'autre, ce qui permet de publier vite sans repartir de zéro.\n\nChaque expérience est instrumentée : on suit les plays, le temps de session et la rétention pour décider quoi itérer. C\'est cette boucle build → mesure → itération qui a fait passer le studio de zéro à plusieurs millions de plays.',
+            body: 'Tout le gameplay est scripté en Verse, le langage d\'Epic pour UEFN. Les systèmes récurrents (progression persistante des joueurs, boutiques en jeu, événements timés, UI custom) sont construits comme des modules réutilisables d\'une map à l\'autre, ce qui permet de publier vite sans repartir de zéro.\n\nChaque expérience est instrumentée : on suit les plays, le temps de session et la rétention pour décider quoi itérer. Cette boucle build → mesure → itération a fait passer le studio de zéro à plusieurs millions de plays.',
           },
           {
             heading: 'Les résultats',
-            body: 'Plus de 3 millions de plays cumulés et une dizaine d\'expériences publiées depuis 2024. Le studio continue de publier et d\'itérer — l\'activité en temps réel est visible sur la section Now de ce site.',
+            body: 'Plus de 3 millions de plays cumulés et une dizaine d\'expériences publiées depuis 2024. Le studio continue de publier et d\'itérer. L\'activité en temps réel est visible sur la section Now de ce site.',
           },
         ],
       },
       en: {
-        metaTitle: 'Safia Creative — UEFN studio by Simon GAY (simnJS)',
+        metaTitle: 'Safia Creative · UEFN studio by Simon GAY (simnJS)',
         metaDescription:
           'Case study: Safia Creative, the UEFN studio founded by Simon GAY (simnJS). Fortnite Creative maps scripted in Verse, 3M+ total plays, 10+ shipped experiences.',
         tag: 'UEFN · Studio',
@@ -213,7 +213,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'Context',
-            body: 'Fortnite Creative has become a real UGC platform: Epic shares 40% of Item Shop revenue with creators, proportional to the playtime they generate. To exist in this market, a pretty map is not enough — you need retention, solid game systems and a steady release cadence.\n\nI founded Safia Creative in 2024 to attack this market seriously, with a studio approach: production pipeline, tooling, and data-driven iteration instead of one-shot maps.',
+            body: 'Fortnite Creative has become a real UGC platform: Epic shares 40% of Item Shop revenue with creators, proportional to the playtime they generate. To exist in this market, a pretty map is not enough: you need retention, solid game systems and a steady release cadence.\n\nI founded Safia Creative in 2024 to attack this market seriously, with a studio approach: production pipeline, tooling, and data-driven iteration instead of one-shot maps.',
           },
           {
             heading: 'My role',
@@ -221,16 +221,16 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'The tech',
-            body: 'All gameplay is scripted in Verse, Epic\'s language for UEFN. Recurring systems — persistent player progression, in-game shops, timed events, custom UI — are built as modules reused across maps, which lets us ship fast without starting from scratch.\n\nEvery experience is instrumented: we track plays, session time and retention to decide what to iterate on. That build → measure → iterate loop is what took the studio from zero to millions of plays.',
+            body: 'All gameplay is scripted in Verse, Epic\'s language for UEFN. Recurring systems (persistent player progression, in-game shops, timed events, custom UI) are built as modules reused across maps, which lets us ship fast without starting from scratch.\n\nEvery experience is instrumented: we track plays, session time and retention to decide what to iterate on. That build → measure → iterate loop took the studio from zero to millions of plays.',
           },
           {
             heading: 'Results',
-            body: 'Over 3 million total plays and about ten experiences shipped since 2024. The studio keeps shipping and iterating — live activity is visible in the Now section of this site.',
+            body: 'Over 3 million total plays and about ten experiences shipped since 2024. The studio keeps shipping and iterating. Live activity is visible in the Now section of this site.',
           },
         ],
       },
       es: {
-        metaTitle: 'Safia Creative — estudio UEFN de Simon GAY (simnJS)',
+        metaTitle: 'Safia Creative · estudio UEFN de Simon GAY (simnJS)',
         metaDescription:
           'Caso de estudio: Safia Creative, el estudio UEFN fundado por Simon GAY (simnJS). Mapas de Fortnite Creative en Verse, 3M+ plays totales, 10+ experiencias publicadas.',
         tag: 'UEFN · Studio',
@@ -239,7 +239,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'El contexto',
-            body: 'Fortnite Creative se ha convertido en una verdadera plataforma UGC: Epic reparte el 40% de los ingresos de la Item Shop entre los creadores, en proporción al tiempo de juego generado. Para existir en este mercado no basta con un mapa bonito — hacen falta retención, sistemas de juego sólidos y un ritmo de publicación constante.\n\nFundé Safia Creative en 2024 para atacar este mercado en serio, con enfoque de estudio: pipeline de producción, herramientas e iteración guiada por datos en lugar de mapas one-shot.',
+            body: 'Fortnite Creative se ha convertido en una verdadera plataforma UGC: Epic reparte el 40% de los ingresos de la Item Shop entre los creadores, en proporción al tiempo de juego generado. Para existir en este mercado no basta con un mapa bonito: hacen falta retención, sistemas de juego sólidos y un ritmo de publicación constante.\n\nFundé Safia Creative en 2024 para atacar este mercado en serio, con enfoque de estudio: pipeline de producción, herramientas e iteración guiada por datos en lugar de mapas one-shot.',
           },
           {
             heading: 'Mi rol',
@@ -247,11 +247,11 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'La tecnología',
-            body: 'Todo el gameplay está programado en Verse, el lenguaje de Epic para UEFN. Los sistemas recurrentes — progresión persistente, tiendas en juego, eventos temporizados, UI custom — se construyen como módulos reutilizables entre mapas, lo que permite publicar rápido sin empezar de cero.\n\nCada experiencia está instrumentada: seguimos plays, tiempo de sesión y retención para decidir qué iterar. Ese bucle build → medir → iterar llevó al estudio de cero a millones de plays.',
+            body: 'Todo el gameplay está programado en Verse, el lenguaje de Epic para UEFN. Los sistemas recurrentes (progresión persistente, tiendas en juego, eventos temporizados, UI custom) se construyen como módulos reutilizables entre mapas, lo que permite publicar rápido sin empezar de cero.\n\nCada experiencia está instrumentada: seguimos plays, tiempo de sesión y retención para decidir qué iterar. Ese bucle build → medir → iterar llevó al estudio de cero a millones de plays.',
           },
           {
             heading: 'Los resultados',
-            body: 'Más de 3 millones de plays totales y una decena de experiencias publicadas desde 2024. El estudio sigue publicando e iterando — la actividad en vivo se ve en la sección Now de este sitio.',
+            body: 'Más de 3 millones de plays totales y una decena de experiencias publicadas desde 2024. El estudio sigue publicando e iterando. La actividad en vivo se ve en la sección Now de este sitio.',
           },
         ],
       },
@@ -291,7 +291,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
     ],
     content: {
       fr: {
-        metaTitle: 'StakePlayerCount — analytics temps réel des jeux Stake Engine',
+        metaTitle: 'StakePlayerCount · analytics temps réel des jeux Stake Engine',
         metaDescription:
           'Étude de cas : StakePlayerCount, le tracker de Simon GAY (simnJS) qui suit en temps réel les joueurs, le turnover et les heures de pointe des jeux Stake Engine.',
         tag: 'Stake Engine · Analytics',
@@ -300,11 +300,11 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'Le contexte',
-            body: 'Quand Stake Engine a ouvert, les studios publiaient à l\'aveugle : aucune donnée publique sur l\'audience des jeux. Impossible de savoir combien de joueurs sont en ligne sur ton propre jeu — encore moins sur ceux des autres. Pour un écosystème où chaque jeu représente des mois de production, c\'était un angle mort énorme.\n\nStakePlayerCount est né de notre propre besoin chez Play & Chill : on voulait ces chiffres, ils n\'existaient nulle part. Alors on a construit l\'outil, puis on l\'a ouvert à tout le monde.',
+            body: 'Quand Stake Engine a ouvert, les studios publiaient à l\'aveugle : aucune donnée publique sur l\'audience des jeux. Impossible de savoir combien de joueurs sont en ligne sur ton propre jeu, encore moins sur ceux des autres. Pour un écosystème où chaque jeu représente des mois de production, c\'était un angle mort énorme.\n\nStakePlayerCount est né de notre propre besoin chez Play & Chill : on voulait ces chiffres, ils n\'existaient nulle part. Alors on a construit l\'outil, puis on l\'a ouvert à tout le monde.',
           },
           {
             heading: 'Le produit',
-            body: 'Player counts en temps réel sur les jeux Stake Engine, historique, heures de pointe, turnover : de quoi répondre aux questions qu\'un studio se pose vraiment. Quel créneau pour sortir un jeu ? Quels thèmes performent ? Comment se situe mon jeu par rapport au marché ?\n\nL\'outil est public : les studios de l\'écosystème peuvent suivre leurs jeux — et le marché — sans rien installer.',
+            body: 'Player counts en temps réel sur les jeux Stake Engine, historique, heures de pointe, turnover : de quoi répondre aux questions qu\'un studio se pose vraiment. Quel créneau pour sortir un jeu ? Quels thèmes performent ? Comment se situe mon jeu par rapport au marché ?\n\nL\'outil est public : les studios de l\'écosystème peuvent suivre leurs jeux et le marché dans son ensemble, sans rien installer.',
           },
           {
             heading: 'La tech',
@@ -317,7 +317,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         ],
       },
       en: {
-        metaTitle: 'StakePlayerCount — real-time analytics for Stake Engine games',
+        metaTitle: 'StakePlayerCount · real-time analytics for Stake Engine games',
         metaDescription:
           'Case study: StakePlayerCount, the tracker by Simon GAY (simnJS) following live player counts, turnover and peak hours for Stake Engine games.',
         tag: 'Stake Engine · Analytics',
@@ -326,11 +326,11 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'Context',
-            body: 'When Stake Engine opened, studios were shipping blind: no public data on game audiences. No way to know how many players are online on your own game — let alone anyone else\'s. For an ecosystem where each game represents months of production, that was a huge blind spot.\n\nStakePlayerCount was born from our own need at Play & Chill: we wanted those numbers and they existed nowhere. So we built the tool, then opened it to everyone.',
+            body: 'When Stake Engine opened, studios were shipping blind: no public data on game audiences. No way to know how many players are online on your own game, let alone anyone else\'s. For an ecosystem where each game represents months of production, that was a huge blind spot.\n\nStakePlayerCount was born from our own need at Play & Chill: we wanted those numbers and they existed nowhere. So we built the tool, then opened it to everyone.',
           },
           {
             heading: 'The product',
-            body: 'Real-time player counts for Stake Engine games, history, peak hours, turnover: answers to the questions a studio actually asks. When should we release? Which themes perform? How does my game compare to the market?\n\nThe tool is public: studios in the ecosystem can track their games — and the market — without installing anything.',
+            body: 'Real-time player counts for Stake Engine games, history, peak hours, turnover: answers to the questions a studio actually asks. When should we release? Which themes perform? How does my game compare to the market?\n\nThe tool is public: studios in the ecosystem can track their own games and the wider market without installing anything.',
           },
           {
             heading: 'The tech',
@@ -343,7 +343,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         ],
       },
       es: {
-        metaTitle: 'StakePlayerCount — analytics en tiempo real de juegos Stake Engine',
+        metaTitle: 'StakePlayerCount · analytics en tiempo real de juegos Stake Engine',
         metaDescription:
           'Caso de estudio: StakePlayerCount, el tracker de Simon GAY (simnJS) que sigue en tiempo real los jugadores, el turnover y las horas punta de los juegos Stake Engine.',
         tag: 'Stake Engine · Analytics',
@@ -352,11 +352,11 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'El contexto',
-            body: 'Cuando Stake Engine abrió, los estudios publicaban a ciegas: ningún dato público sobre la audiencia de los juegos. Imposible saber cuántos jugadores hay en tu propio juego — y menos en los de otros. Para un ecosistema donde cada juego representa meses de producción, era un punto ciego enorme.\n\nStakePlayerCount nació de nuestra propia necesidad en Play & Chill: queríamos esos números y no existían en ningún sitio. Así que construimos la herramienta y la abrimos a todos.',
+            body: 'Cuando Stake Engine abrió, los estudios publicaban a ciegas: ningún dato público sobre la audiencia de los juegos. Imposible saber cuántos jugadores hay en tu propio juego, y menos en los de otros. Para un ecosistema donde cada juego representa meses de producción, era un punto ciego enorme.\n\nStakePlayerCount nació de nuestra propia necesidad en Play & Chill: queríamos esos números y no existían en ningún sitio. Así que construimos la herramienta y la abrimos a todos.',
           },
           {
             heading: 'El producto',
-            body: 'Player counts en tiempo real de los juegos Stake Engine, histórico, horas punta, turnover: respuestas a las preguntas que un estudio realmente se hace. ¿Cuándo lanzar? ¿Qué temas funcionan? ¿Cómo se compara mi juego con el mercado?\n\nLa herramienta es pública: los estudios del ecosistema pueden seguir sus juegos — y el mercado — sin instalar nada.',
+            body: 'Player counts en tiempo real de los juegos Stake Engine, histórico, horas punta, turnover: respuestas a las preguntas que un estudio realmente se hace. ¿Cuándo lanzar? ¿Qué temas funcionan? ¿Cómo se compara mi juego con el mercado?\n\nLa herramienta es pública: los estudios del ecosistema pueden seguir sus propios juegos y el mercado en su conjunto sin instalar nada.',
           },
           {
             heading: 'La tecnología',
@@ -404,12 +404,12 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
     ],
     content: {
       fr: {
-        metaTitle: 'UEFN Store — marketplace d\'assets pour créateurs Fortnite',
+        metaTitle: 'UEFN Store · marketplace d\'assets pour créateurs Fortnite',
         metaDescription:
-          'Étude de cas : UEFN Store, la marketplace de Simon GAY (simnJS) — scripts Verse, 3D, UI et templates prêts à l\'emploi pour les créateurs Fortnite Creative.',
+          'Étude de cas : UEFN Store, la marketplace de Simon GAY (simnJS), avec scripts Verse, 3D, UI et templates prêts à l\'emploi pour les créateurs Fortnite Creative.',
         tag: 'UEFN · Marketplace',
         intro:
-          'UEFN Store, c\'est simple : une marketplace d\'assets prêts à l\'emploi pour les créateurs Fortnite — scripts Verse, modèles 3D, kits UI et templates, issus de la production réelle de Safia Creative.',
+          'UEFN Store, c\'est simple : une marketplace d\'assets prêts à l\'emploi pour les créateurs Fortnite, avec scripts Verse, modèles 3D, kits UI et templates, issus de la production réelle de Safia Creative.',
         sections: [
           {
             heading: 'Le contexte',
@@ -417,11 +417,11 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'Le produit',
-            body: 'Une marketplace d\'assets prêts à l\'emploi pour Fortnite Creative : scripts Verse, modèles 3D, kits UI, templates de maps complets. Chaque asset est documenté et pensé pour s\'intégrer en minutes, pas en jours.\n\nLa différence avec un asset store généraliste : tout vient de la production réelle d\'un studio — des systèmes déjà validés sur des maps qui totalisent plus de 3 millions de plays.',
+            body: 'Une marketplace d\'assets prêts à l\'emploi pour Fortnite Creative : scripts Verse, modèles 3D, kits UI, templates de maps complets. Chaque asset est documenté et pensé pour s\'intégrer en minutes, pas en jours.\n\nLa différence avec un asset store généraliste : tout vient de la production réelle d\'un studio. Ce sont des systèmes déjà validés sur des maps qui totalisent plus de 3 millions de plays.',
           },
           {
             heading: 'Mon rôle',
-            body: 'Je porte le produit de bout en bout : la plateforme web — catalogue, comptes, paiement, livraison des assets — comme le contenu. Les assets Verse sortent directement du pipeline Safia Creative, nettoyés, généralisés et documentés pour la revente.\n\nC\'est la suite logique du studio : la production alimente le store, le store finance la production.',
+            body: 'Je porte le produit de bout en bout : la plateforme web (catalogue, comptes, paiement, livraison des assets) comme le contenu. Les assets Verse sortent directement du pipeline Safia Creative, nettoyés, généralisés et documentés pour la revente.\n\nC\'est la suite logique du studio : la production alimente le store, le store finance la production.',
           },
           {
             heading: 'La suite',
@@ -430,12 +430,12 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         ],
       },
       en: {
-        metaTitle: 'UEFN Store — asset marketplace for Fortnite creators',
+        metaTitle: 'UEFN Store · asset marketplace for Fortnite creators',
         metaDescription:
-          'Case study: UEFN Store, the marketplace by Simon GAY (simnJS) — ready-to-use Verse scripts, 3D, UI and templates for Fortnite Creative creators.',
+          'Case study: UEFN Store, the marketplace by Simon GAY (simnJS), with ready-to-use Verse scripts, 3D, UI and templates for Fortnite Creative creators.',
         tag: 'UEFN · Marketplace',
         intro:
-          'UEFN Store is simple: a marketplace of ready-to-use assets for Fortnite creators — Verse scripts, 3D models, UI kits and templates, straight from Safia Creative\'s real production.',
+          'UEFN Store is simple: a marketplace of ready-to-use assets for Fortnite creators, with Verse scripts, 3D models, UI kits and templates, straight from Safia Creative\'s real production.',
         sections: [
           {
             heading: 'Context',
@@ -443,11 +443,11 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'The product',
-            body: 'A marketplace of ready-to-use assets for Fortnite Creative: Verse scripts, 3D models, UI kits, full map templates. Every asset is documented and designed to integrate in minutes, not days.\n\nThe difference with a generic asset store: everything comes from a studio\'s real production — systems already validated on maps totalling over 3 million plays.',
+            body: 'A marketplace of ready-to-use assets for Fortnite Creative: Verse scripts, 3D models, UI kits, full map templates. Every asset is documented and designed to integrate in minutes, not days.\n\nThe difference with a generic asset store: everything comes from a studio\'s real production. These are systems already validated on maps totalling over 3 million plays.',
           },
           {
             heading: 'My role',
-            body: 'I own the product end to end: the web platform — catalogue, accounts, payment, asset delivery — and the content. Verse assets come straight out of the Safia Creative pipeline, cleaned up, generalised and documented for resale.\n\nIt\'s the studio\'s logical next step: production feeds the store, the store funds production.',
+            body: 'I own the product end to end: the web platform (catalogue, accounts, payment, asset delivery) and the content. Verse assets come straight out of the Safia Creative pipeline, cleaned up, generalised and documented for resale.\n\nIt\'s the studio\'s logical next step: production feeds the store, the store funds production.',
           },
           {
             heading: 'What\'s next',
@@ -456,12 +456,12 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         ],
       },
       es: {
-        metaTitle: 'UEFN Store — marketplace de assets para creadores de Fortnite',
+        metaTitle: 'UEFN Store · marketplace de assets para creadores de Fortnite',
         metaDescription:
-          'Caso de estudio: UEFN Store, la marketplace de Simon GAY (simnJS) — scripts Verse, 3D, UI y templates listos para usar para creadores de Fortnite Creative.',
+          'Caso de estudio: UEFN Store, la marketplace de Simon GAY (simnJS), con scripts Verse, 3D, UI y templates listos para usar para creadores de Fortnite Creative.',
         tag: 'UEFN · Marketplace',
         intro:
-          'UEFN Store es simple: una marketplace de assets listos para usar para creadores de Fortnite — scripts Verse, modelos 3D, kits de UI y templates, salidos de la producción real de Safia Creative.',
+          'UEFN Store es simple: una marketplace de assets listos para usar para creadores de Fortnite, con scripts Verse, modelos 3D, kits de UI y templates, salidos de la producción real de Safia Creative.',
         sections: [
           {
             heading: 'El contexto',
@@ -469,11 +469,11 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'El producto',
-            body: 'Una marketplace de assets listos para usar para Fortnite Creative: scripts Verse, modelos 3D, kits de UI, templates de mapas completos. Cada asset está documentado y pensado para integrarse en minutos, no en días.\n\nLa diferencia con un asset store genérico: todo viene de la producción real de un estudio — sistemas ya validados en mapas que suman más de 3 millones de plays.',
+            body: 'Una marketplace de assets listos para usar para Fortnite Creative: scripts Verse, modelos 3D, kits de UI, templates de mapas completos. Cada asset está documentado y pensado para integrarse en minutos, no en días.\n\nLa diferencia con un asset store genérico: todo viene de la producción real de un estudio. Son sistemas ya validados en mapas que suman más de 3 millones de plays.',
           },
           {
             heading: 'Mi rol',
-            body: 'Llevo el producto de punta a punta: la plataforma web — catálogo, cuentas, pago, entrega de assets — y el contenido. Los assets Verse salen directamente del pipeline de Safia Creative, limpiados, generalizados y documentados para la venta.\n\nEs el paso lógico del estudio: la producción alimenta la store, la store financia la producción.',
+            body: 'Llevo el producto de punta a punta: la plataforma web (catálogo, cuentas, pago, entrega de assets) y el contenido. Los assets Verse salen directamente del pipeline de Safia Creative, limpiados, generalizados y documentados para la venta.\n\nEs el paso lógico del estudio: la producción alimenta la store, la store financia la producción.',
           },
           {
             heading: 'Lo que viene',
@@ -517,9 +517,9 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
     ],
     content: {
       fr: {
-        metaTitle: 'Tacline — la plateforme qui connecte joueurs et organisateurs d\'airsoft',
+        metaTitle: 'Tacline · la plateforme qui connecte joueurs et organisateurs d\'airsoft',
         metaDescription:
-          'Étude de cas : Tacline, la plateforme airsoft sur laquelle Simon GAY (simnJS) est développeur — recherche de parties, carte des terrains, inscriptions et paiement en ligne.',
+          'Étude de cas : Tacline, la plateforme airsoft sur laquelle Simon GAY (simnJS) est développeur, avec recherche de parties, carte des terrains, inscriptions et paiement en ligne.',
         tag: 'Airsoft · SaaS',
         intro:
           'Le monde de l\'airsoft est compliqué, surtout pour les nouveaux joueurs. Tacline le simplifie : une plateforme pour trouver des parties, explorer les terrains et s\'inscrire en ligne. J\'y contribue comme développeur.',
@@ -534,7 +534,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'Mon rôle',
-            body: 'Je suis développeur sur le projet — Tacline n\'est pas mon produit, c\'est celui de son fondateur. Je construis la plateforme au quotidien : fonctionnalités, fiabilité, itérations en bêta.\n\nC\'est un projet différent de mes studios : un vrai SaaS en équipe, avec un product owner, des utilisateurs réels et un rythme de livraison soutenu. Exactement le genre de contexte où j\'aime coder.',
+            body: 'Je suis développeur sur le projet. Tacline n\'est pas mon produit, c\'est celui de son fondateur. Je construis la plateforme au quotidien : fonctionnalités, fiabilité, itérations en bêta.\n\nC\'est un projet différent de mes studios : un vrai SaaS en équipe, avec un product owner, des utilisateurs réels et un rythme de livraison soutenu. Exactement le genre de contexte où j\'aime coder.',
           },
           {
             heading: 'La suite',
@@ -543,9 +543,9 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         ],
       },
       en: {
-        metaTitle: 'Tacline — the platform connecting airsoft players and organizers',
+        metaTitle: 'Tacline · the platform connecting airsoft players and organizers',
         metaDescription:
-          'Case study: Tacline, the airsoft platform where Simon GAY (simnJS) works as a developer — game discovery, field map, sign-ups and online payment.',
+          'Case study: Tacline, the airsoft platform where Simon GAY (simnJS) works as a developer, with game discovery, field map, sign-ups and online payment.',
         tag: 'Airsoft · SaaS',
         intro:
           'The airsoft world is complicated, especially for new players. Tacline simplifies it: a platform to find games, explore fields and register online. I contribute as a developer.',
@@ -560,7 +560,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'My role',
-            body: 'I\'m a developer on the project — Tacline isn\'t my product, it\'s its founder\'s. I build the platform day to day: features, reliability, beta iterations.\n\nIt\'s a different kind of project from my studios: a real team SaaS, with a product owner, real users and a steady shipping pace. Exactly the kind of context I love coding in.',
+            body: 'I\'m a developer on the project. Tacline isn\'t my product, it\'s its founder\'s. I build the platform day to day: features, reliability, beta iterations.\n\nIt\'s a different kind of project from my studios: a real team SaaS, with a product owner, real users and a steady shipping pace. Exactly the kind of context I love coding in.',
           },
           {
             heading: 'What\'s next',
@@ -569,9 +569,9 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         ],
       },
       es: {
-        metaTitle: 'Tacline — la plataforma que conecta jugadores y organizadores de airsoft',
+        metaTitle: 'Tacline · la plataforma que conecta jugadores y organizadores de airsoft',
         metaDescription:
-          'Caso de estudio: Tacline, la plataforma de airsoft donde Simon GAY (simnJS) trabaja como desarrollador — búsqueda de partidas, mapa de campos, inscripciones y pago online.',
+          'Caso de estudio: Tacline, la plataforma de airsoft donde Simon GAY (simnJS) trabaja como desarrollador, con búsqueda de partidas, mapa de campos, inscripciones y pago online.',
         tag: 'Airsoft · SaaS',
         intro:
           'El mundo del airsoft es complicado, sobre todo para los nuevos jugadores. Tacline lo simplifica: una plataforma para encontrar partidas, explorar campos e inscribirse online. Contribuyo como desarrollador.',
@@ -586,7 +586,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'Mi rol',
-            body: 'Soy desarrollador en el proyecto — Tacline no es mi producto, es el de su fundador. Construyo la plataforma en el día a día: funcionalidades, fiabilidad, iteraciones en beta.\n\nEs un proyecto distinto a mis estudios: un SaaS real en equipo, con product owner, usuarios reales y un ritmo de entrega constante. Exactamente el tipo de contexto en el que me gusta programar.',
+            body: 'Soy desarrollador en el proyecto. Tacline no es mi producto, es el de su fundador. Construyo la plataforma en el día a día: funcionalidades, fiabilidad, iteraciones en beta.\n\nEs un proyecto distinto a mis estudios: un SaaS real en equipo, con product owner, usuarios reales y un ritmo de entrega constante. Exactamente el tipo de contexto en el que me gusta programar.',
           },
           {
             heading: 'Lo que viene',
@@ -627,24 +627,24 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
     ],
     content: {
       fr: {
-        metaTitle: "Play'n Chill — studio Roblox de Simon GAY (simnJS)",
+        metaTitle: "Play'n Chill · studio Roblox de Simon GAY (simnJS)",
         metaDescription:
-          "Étude de cas : Play'n Chill, le studio Roblox fondé par Simon GAY (simnJS). Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — stats des jeux en direct.",
+          "Étude de cas : Play'n Chill, le studio Roblox fondé par Simon GAY (simnJS). Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers, stats des jeux en direct.",
         tag: 'Roblox · Studio',
         intro:
-          "Play'n Chill est mon studio Roblox : trois jeux publiés en quelques mois — Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — pour attaquer la plus grosse plateforme UGC du monde.",
+          "Play'n Chill est mon studio Roblox : trois jeux publiés en quelques mois (Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers) pour attaquer la plus grosse plateforme UGC du monde.",
         sections: [
           {
             heading: 'Le contexte',
-            body: 'Roblox est la plus grosse plateforme UGC du monde — des dizaines de millions de joueurs quotidiens et un modèle qui rémunère directement les studios. Après Fortnite Creative avec Safia et Stake Engine avec Play & Chill, c\'était la suite logique : appliquer la même recette — production rapide, itération guidée par les données — au plus gros marché.\n\nJ\'ai fondé Play\'n Chill début 2026 avec une ambition affichée dans la description du groupe : « Creating the next generation of Roblox games ».',
+            body: 'Roblox est la plus grosse plateforme UGC du monde : des dizaines de millions de joueurs quotidiens et un modèle qui rémunère directement les studios. Après Fortnite Creative avec Safia et Stake Engine avec Play & Chill, c\'était la suite logique : appliquer la même recette (production rapide, itération guidée par les données) au plus gros marché.\n\nJ\'ai fondé Play\'n Chill début 2026 avec une ambition affichée dans la description du groupe : « Creating the next generation of Roblox games ».',
           },
           {
             heading: 'Les jeux',
-            body: 'Trois jeux publiés en cinq mois : 100 Players Enter Youtubers en février, Weapons RNG en mai, Planet Tycoon en juin — un rythme d\'un jeu toutes les six à huit semaines.\n\nChaque sortie teste un genre porteur de la plateforme (arène multijoueur, RNG, tycoon) pour identifier ce qui accroche avant d\'investir plus lourd. Planet Tycoon, le dernier né, est aussi le plus prometteur : plus de 2 000 favoris dès ses premières semaines.',
+            body: 'Trois jeux publiés en cinq mois : 100 Players Enter Youtubers en février, Weapons RNG en mai, Planet Tycoon en juin, soit un rythme d\'un jeu toutes les six à huit semaines.\n\nChaque sortie teste un genre porteur de la plateforme (arène multijoueur, RNG, tycoon) pour identifier ce qui accroche avant d\'investir plus lourd. Planet Tycoon, le dernier né, est aussi le plus prometteur : plus de 2 000 favoris dès ses premières semaines.',
           },
           {
             heading: 'La tech',
-            body: 'Les jeux sont développés en TypeScript via roblox-ts, compilé en Luau — le typage fort et l\'outillage TS appliqués au moteur Roblox. Les briques communes (UI kit, systèmes de progression, monétisation) sont partagées entre les jeux pour tenir la cadence de sortie.\n\nEt comme pour mes autres studios, tout est mesuré : les chiffres de cette page sont branchés en direct sur l\'API Roblox — joueurs en ligne, visites et membres du groupe se mettent à jour en temps réel.',
+            body: 'Les jeux sont développés en TypeScript via roblox-ts, compilé en Luau, ce qui applique le typage fort et l\'outillage TS au moteur Roblox. Les briques communes (UI kit, systèmes de progression, monétisation) sont partagées entre les jeux pour tenir la cadence de sortie.\n\nEt comme pour mes autres studios, tout est mesuré : les chiffres de cette page sont branchés en direct sur l\'API Roblox. Joueurs en ligne, visites et membres du groupe se mettent à jour en temps réel.',
           },
           {
             heading: 'La suite',
@@ -653,24 +653,24 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         ],
       },
       en: {
-        metaTitle: "Play'n Chill — Roblox studio by Simon GAY (simnJS)",
+        metaTitle: "Play'n Chill · Roblox studio by Simon GAY (simnJS)",
         metaDescription:
-          "Case study: Play'n Chill, the Roblox studio founded by Simon GAY (simnJS). Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — with live game stats.",
+          "Case study: Play'n Chill, the Roblox studio founded by Simon GAY (simnJS). Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers, with live game stats.",
         tag: 'Roblox · Studio',
         intro:
-          "Play'n Chill is my Roblox studio: three games shipped in a few months — Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — to attack the biggest UGC platform in the world.",
+          "Play'n Chill is my Roblox studio: three games shipped in a few months (Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers) to attack the biggest UGC platform in the world.",
         sections: [
           {
             heading: 'Context',
-            body: 'Roblox is the biggest UGC platform in the world — tens of millions of daily players and a model that pays studios directly. After Fortnite Creative with Safia and Stake Engine with Play & Chill, it was the logical next step: apply the same recipe — fast production, data-driven iteration — to the biggest market.\n\nI founded Play\'n Chill in early 2026 with the ambition stated in the group description: "Creating the next generation of Roblox games".',
+            body: 'Roblox is the biggest UGC platform in the world: tens of millions of daily players and a model that pays studios directly. After Fortnite Creative with Safia and Stake Engine with Play & Chill, it was the logical next step: apply the same recipe (fast production, data-driven iteration) to the biggest market.\n\nI founded Play\'n Chill in early 2026 with the ambition stated in the group description: "Creating the next generation of Roblox games".',
           },
           {
             heading: 'The games',
-            body: 'Three games shipped in five months: 100 Players Enter Youtubers in February, Weapons RNG in May, Planet Tycoon in June — a game every six to eight weeks.\n\nEach release tests one of the platform\'s proven genres (multiplayer arena, RNG, tycoon) to find what sticks before investing heavier. Planet Tycoon, the latest, is also the most promising: over 2,000 favourites within its first weeks.',
+            body: 'Three games shipped in five months: 100 Players Enter Youtubers in February, Weapons RNG in May, Planet Tycoon in June, a game every six to eight weeks.\n\nEach release tests one of the platform\'s proven genres (multiplayer arena, RNG, tycoon) to find what sticks before investing heavier. Planet Tycoon, the latest, is also the most promising: over 2,000 favourites within its first weeks.',
           },
           {
             heading: 'The tech',
-            body: 'The games are built in TypeScript via roblox-ts, compiled to Luau — strong typing and the TS toolchain applied to the Roblox engine. Shared building blocks (UI kit, progression systems, monetisation) are reused across games to hold the release cadence.\n\nAnd like my other studios, everything is measured: the numbers on this page are wired straight into the Roblox API — live players, visits and group members update in real time.',
+            body: 'The games are built in TypeScript via roblox-ts, compiled to Luau, which brings strong typing and the TS toolchain to the Roblox engine. Shared building blocks (UI kit, progression systems, monetisation) are reused across games to hold the release cadence.\n\nAnd like my other studios, everything is measured: the numbers on this page are wired straight into the Roblox API. Live players, visits and group members update in real time.',
           },
           {
             heading: "What's next",
@@ -679,24 +679,24 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         ],
       },
       es: {
-        metaTitle: "Play'n Chill — estudio Roblox de Simon GAY (simnJS)",
+        metaTitle: "Play'n Chill · estudio Roblox de Simon GAY (simnJS)",
         metaDescription:
-          "Caso de estudio: Play'n Chill, el estudio Roblox fundado por Simon GAY (simnJS). Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — con stats en directo.",
+          "Caso de estudio: Play'n Chill, el estudio Roblox fundado por Simon GAY (simnJS). Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers, con stats en directo.",
         tag: 'Roblox · Studio',
         intro:
-          "Play'n Chill es mi estudio Roblox: tres juegos publicados en pocos meses — Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — para atacar la plataforma UGC más grande del mundo.",
+          "Play'n Chill es mi estudio Roblox: tres juegos publicados en pocos meses (Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers) para atacar la plataforma UGC más grande del mundo.",
         sections: [
           {
             heading: 'El contexto',
-            body: 'Roblox es la plataforma UGC más grande del mundo — decenas de millones de jugadores diarios y un modelo que paga directamente a los estudios. Después de Fortnite Creative con Safia y Stake Engine con Play & Chill, era el paso lógico: aplicar la misma receta — producción rápida, iteración guiada por datos — al mercado más grande.\n\nFundé Play\'n Chill a principios de 2026 con la ambición escrita en la descripción del grupo: «Creating the next generation of Roblox games».',
+            body: 'Roblox es la plataforma UGC más grande del mundo: decenas de millones de jugadores diarios y un modelo que paga directamente a los estudios. Después de Fortnite Creative con Safia y Stake Engine con Play & Chill, era el paso lógico: aplicar la misma receta (producción rápida, iteración guiada por datos) al mercado más grande.\n\nFundé Play\'n Chill a principios de 2026 con la ambición escrita en la descripción del grupo: «Creating the next generation of Roblox games».',
           },
           {
             heading: 'Los juegos',
-            body: 'Tres juegos publicados en cinco meses: 100 Players Enter Youtubers en febrero, Weapons RNG en mayo, Planet Tycoon en junio — un juego cada seis a ocho semanas.\n\nCada lanzamiento prueba un género probado de la plataforma (arena multijugador, RNG, tycoon) para identificar qué funciona antes de invertir más fuerte. Planet Tycoon, el último, es también el más prometedor: más de 2.000 favoritos en sus primeras semanas.',
+            body: 'Tres juegos publicados en cinco meses: 100 Players Enter Youtubers en febrero, Weapons RNG en mayo, Planet Tycoon en junio, un juego cada seis a ocho semanas.\n\nCada lanzamiento prueba un género probado de la plataforma (arena multijugador, RNG, tycoon) para identificar qué funciona antes de invertir más fuerte. Planet Tycoon, el último, es también el más prometedor: más de 2.000 favoritos en sus primeras semanas.',
           },
           {
             heading: 'La tecnología',
-            body: 'Los juegos se desarrollan en TypeScript vía roblox-ts, compilado a Luau — tipado fuerte y el toolchain de TS aplicados al motor de Roblox. Las piezas comunes (UI kit, sistemas de progresión, monetización) se comparten entre juegos para mantener la cadencia.\n\nY como en mis otros estudios, todo se mide: los números de esta página están conectados en directo a la API de Roblox — jugadores en línea, visitas y miembros del grupo se actualizan en tiempo real.',
+            body: 'Los juegos se desarrollan en TypeScript vía roblox-ts, compilado a Luau, lo que aplica el tipado fuerte y el toolchain de TS al motor de Roblox. Las piezas comunes (UI kit, sistemas de progresión, monetización) se comparten entre juegos para mantener la cadencia.\n\nY como en mis otros estudios, todo se mide: los números de esta página están conectados en directo a la API de Roblox. Jugadores en línea, visitas y miembros del grupo se actualizan en tiempo real.',
           },
           {
             heading: 'Lo que viene',

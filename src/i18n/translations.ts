@@ -228,7 +228,7 @@ export const translations: Record<Locale, Dict> = {
       },
       playnchill: {
         tag: 'Roblox · Studio',
-        desc: 'Mon studio Roblox. Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — un jeu publié toutes les six à huit semaines.',
+        desc: 'Mon studio Roblox. Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers, un jeu publié toutes les six à huit semaines.',
       },
     },
     caseStudy: {
@@ -363,7 +363,7 @@ export const translations: Record<Locale, Dict> = {
       },
       playnchill: {
         tag: 'Roblox · Studio',
-        desc: "My Roblox studio. Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — a game shipped every six to eight weeks.",
+        desc: "My Roblox studio. Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers, a game shipped every six to eight weeks.",
       },
     },
     caseStudy: {
@@ -498,7 +498,7 @@ export const translations: Record<Locale, Dict> = {
       },
       playnchill: {
         tag: 'Roblox · Studio',
-        desc: 'Mi estudio Roblox. Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers — un juego publicado cada seis a ocho semanas.',
+        desc: 'Mi estudio Roblox. Planet Tycoon, Weapons RNG, 100 Players Enter Youtubers, un juego publicado cada seis a ocho semanas.',
       },
     },
     caseStudy: {
