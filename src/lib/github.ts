@@ -148,7 +148,13 @@ function shape(raw: RawEvent[]): ShapedEvent[] {
         // size === null/undefined just means GitHub didn't include the count.
         if (size === 0 && commitCount === 0) break
         const branch = (e.payload.ref ?? '').replace(/^refs\/heads\//, '')
-        const firstMsg = e.payload.commits?.[0]?.message?.split('\n')[0] ?? ''
+        // payload.commits est ordonné du plus ancien au plus récent :
+        // on affiche le dernier commit, pas le premier.
+        const payloadCommits = e.payload.commits
+        const newestMsg =
+          payloadCommits?.[payloadCommits.length - 1]?.message?.split(
+            '\n',
+          )[0] ?? ''
         // distinct_size = commits actually new to the repo (excludes commits
         // re-pushed by merges/force-pushes); fall back to size, then to the
         // (capped at 20) commits array.
@@ -160,8 +166,8 @@ function shape(raw: RawEvent[]): ShapedEvent[] {
               ? size
               : commitCount
         let message: string
-        if (firstMsg) {
-          message = firstMsg
+        if (newestMsg) {
+          message = newestMsg
         } else if (n > 0) {
           message = `${n} commit${n > 1 ? 's' : ''} → ${branch}`
         } else {
@@ -178,9 +184,9 @@ function shape(raw: RawEvent[]): ShapedEvent[] {
           count: Math.max(n, 1),
         }
         // Slim payload (authenticated endpoint): recover the real commit
-        // count/message later via the compare API. Skip branch creations
+        // count/message later via the API. Skip branch creations
         // (before is all zeros — nothing to compare against).
-        if (!firstMsg && e.payload.before && e.payload.head) {
+        if (!newestMsg && e.payload.before && e.payload.head) {
           if (!/^0+$/.test(e.payload.before)) {
             evt._push = { repo, before: e.payload.before, head: e.payload.head }
           }
@@ -324,36 +330,50 @@ function shape(raw: RawEvent[]): ShapedEvent[] {
   return out
 }
 
-// ─── Push enrichment (compare API, parallel) ────────────────────────────────
+// ─── Push enrichment (parallel) ─────────────────────────────────────────────
 
-// Recover the real commit count (and first message for public rows) of each
-// push group by comparing oldest `before` → newest `head`. Needed because the
-// authenticated events endpoint strips commits/size from push payloads.
+// Recover the real commit count and message of each push group. Needed
+// because the authenticated events endpoint strips commits/size from push
+// payloads. Count: compare oldest `before` → newest `head`. Message: the
+// `head` commit itself — the group's NEWEST commit (skipped for private rows,
+// whose message is masked anyway).
 async function enrichPushes(events: ShapedEvent[]): Promise<ShapedEvent[]> {
   const headers = ghHeaders()
   return Promise.all(
     events.map(async (e) => {
       const p = e._push
       if (!p) return e
-      try {
-        const res = await fetch(
+      const [cmp, head] = await Promise.all([
+        fetch(
           `https://api.github.com/repos/${p.repo}/compare/${p.before}...${p.head}?per_page=1`,
           { headers },
         )
-        if (!res.ok) return e
-        const j = (await res.json()) as {
-          total_commits?: number
-          commits?: Array<{ commit?: { message?: string } }>
-        }
-        if (typeof j.total_commits === 'number' && j.total_commits > 0) {
-          e.count = j.total_commits
-        }
-        const firstMsg = j.commits?.[0]?.commit?.message?.split('\n')[0]
-        if (firstMsg && !e.private) e.message = firstMsg
-        return e
-      } catch {
-        return e
+          .then((r) =>
+            r.ok ? (r.json() as Promise<{ total_commits?: number }>) : null,
+          )
+          .catch(() => null),
+        e.private
+          ? Promise.resolve(null)
+          : fetch(`https://api.github.com/repos/${p.repo}/commits/${p.head}`, {
+              headers,
+            })
+              .then((r) =>
+                r.ok
+                  ? (r.json() as Promise<{ commit?: { message?: string } }>)
+                  : null,
+              )
+              .catch(() => null),
+      ])
+      if (
+        cmp &&
+        typeof cmp.total_commits === 'number' &&
+        cmp.total_commits > 0
+      ) {
+        e.count = cmp.total_commits
       }
+      const newestMsg = head?.commit?.message?.split('\n')[0]
+      if (newestMsg) e.message = newestMsg
+      return e
     }),
   )
 }
