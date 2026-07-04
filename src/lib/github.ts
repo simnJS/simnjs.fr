@@ -83,7 +83,9 @@ let eventsCache: {
   at: number
   data: { events: GhEvent[]; fetchedAt: string }
 } | null = null
-let profileCache: { at: number; data: GhProfile } | null = null
+// ttl par entrée : court quand le sweep de commits a échoué/timeout, pour
+// que le poll suivant retente vite au lieu d'afficher 5 min un chiffre bas.
+let profileCache: { at: number; ttl: number; data: GhProfile } | null = null
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -555,7 +557,7 @@ const EMPTY_PROFILE: GhProfile = {
 
 export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
   async (): Promise<GhProfile> => {
-    if (profileCache && Date.now() - profileCache.at < PROFILE_TTL_MS) {
+    if (profileCache && Date.now() - profileCache.at < profileCache.ttl) {
       return profileCache.data
     }
     const token = process.env.GITHUB_TOKEN?.trim()
@@ -646,12 +648,16 @@ export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
 
       // Real commit count across all accessible repos (private included) —
       // totalCommitContributions only covers public ones. Fall back to it if
-      // the sweep fails.
+      // the sweep fails, and cap its duration so a cold start never blocks
+      // the whole profile response (the next poll gets the full number).
       let totalCommits = c.totalCommitContributions
       const since = new Date(Date.now() - 365 * 86_400_000).toISOString()
-      const counted = await countCommitsSince(authorIds, since).catch(
-        () => null,
-      )
+      const counted = await Promise.race([
+        countCommitsSince(authorIds, since),
+        new Promise<null>((resolve) => {
+          setTimeout(() => resolve(null), 6_500)
+        }),
+      ]).catch(() => null)
       if (counted != null) totalCommits = Math.max(totalCommits, counted)
 
       const data: GhProfile = {
@@ -665,7 +671,11 @@ export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
         weeks,
         fetchedAt: new Date().toISOString(),
       }
-      profileCache = { at: Date.now(), data }
+      profileCache = {
+        at: Date.now(),
+        ttl: counted != null ? PROFILE_TTL_MS : TTL_MS,
+        data,
+      }
       return data
     } catch (err) {
       console.log('[github] getGithubProfile threw:', err instanceof Error ? err.message : String(err))

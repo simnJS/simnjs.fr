@@ -93,33 +93,50 @@ export function LiveActivity({ t }: { t: Dictionary }) {
   const seenIds = useRef<Set<string>>(new Set())
   const mounted = useRef(true)
 
-  const load = useCallback(async (manual = false) => {
+  // Les deux appels sont indépendants : un échec (ou timeout à froid) du
+  // profil ne doit pas jeter le feed, et inversement.
+  // Retourne true dès que le feed a des événements.
+  const load = useCallback(async (manual = false): Promise<boolean> => {
     if (manual) setRefreshing(true)
-    try {
-      const [a, p] = await Promise.all([
-        getGithubActivity(),
-        getGithubProfile(),
-      ])
-      if (!mounted.current) return
-      setEvents(a.events)
-      setProfile(p)
-    } catch {
-      // silent — keep previous data
-    } finally {
-      if (mounted.current) {
-        setLoading(false)
-        setRefreshing(false)
-      }
+    const [a, p] = await Promise.allSettled([
+      getGithubActivity(),
+      getGithubProfile(),
+    ])
+    if (!mounted.current) return false
+    let gotEvents = false
+    if (a.status === 'fulfilled') {
+      setEvents(a.value.events)
+      gotEvents = a.value.events.length > 0
     }
+    if (p.status === 'fulfilled' && p.value) setProfile(p.value)
+    if (gotEvents || manual) setLoading(false)
+    if (manual) setRefreshing(false)
+    return gotEvents
   }, [])
 
   useEffect(() => {
     mounted.current = true
-    load()
+    // Premier chargement : le serveur peut être à froid (cache vide, API GitHub
+    // lente) — on réessaie vite en gardant le skeleton, au lieu d'afficher
+    // "pas d'activité" jusqu'au prochain tick de 60s.
+    let retryTimer: ReturnType<typeof setTimeout> | undefined
+    let attempt = 0
+    const initialLoad = async () => {
+      const ok = await load()
+      if (!mounted.current) return
+      if (!ok && attempt < 3) {
+        attempt += 1
+        retryTimer = setTimeout(initialLoad, 3000 * attempt)
+      } else {
+        setLoading(false)
+      }
+    }
+    initialLoad()
     const id = setInterval(() => load(), REFRESH_MS)
     const ticker = setInterval(() => setTick((n) => n + 1), 30_000)
     return () => {
       mounted.current = false
+      if (retryTimer) clearTimeout(retryTimer)
       clearInterval(id)
       clearInterval(ticker)
     }
