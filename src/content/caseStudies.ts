@@ -28,7 +28,9 @@ export type CaseStudy = {
   ogImage: string
   liveUrl: string
   stack: string[]
-  metrics: Array<{ n: string; label: Record<Locale, string> }>
+  // `n` est la valeur affichée ; `live` la remplace par une stat en temps réel
+  // (le bloc `live` doit alors être renseigné, ex : 'roblox').
+  metrics: Array<{ n: string; label: Record<Locale, string>; live?: 'totalVisits' }>
   content: Record<Locale, CaseStudyContent>
   // Bloc de stats en temps réel affiché sur la page (ex : CCU Roblox).
   live?: 'roblox'
@@ -618,6 +620,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
       },
       {
         n: '50K+',
+        live: 'totalVisits',
         label: {
           fr: 'Visites cumulées',
           en: 'Total visits',

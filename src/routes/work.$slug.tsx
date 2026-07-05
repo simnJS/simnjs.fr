@@ -54,6 +54,7 @@ function CaseStudyPage() {
   const cs = CASE_STUDIES[slug]
   const c = cs.content[locale] ?? cs.content.fr
   const url = `${SITE_URL}/work/${cs.slug}`
+  const stats = useRobloxStats(cs.live === 'roblox')
 
   const jsonld = JSON.stringify({
     '@context': 'https://schema.org',
@@ -147,7 +148,9 @@ function CaseStudyPage() {
                 key={i}
                 className="border-2 border-ink bg-bg p-4 shadow-[4px_4px_0_0_var(--color-ink)]"
               >
-                <div className="font-display text-3xl">{m.n}</div>
+                <div className="font-display text-3xl">
+                  {m.live && stats ? stats[m.live].toLocaleString() : m.n}
+                </div>
                 <div className="mt-1 font-mono text-xs uppercase tracking-wider text-ink/70">
                   {m.label[locale] ?? m.label.fr}
                 </div>
@@ -155,7 +158,7 @@ function CaseStudyPage() {
             ))}
           </div>
 
-          {cs.live === 'roblox' && <RobloxLive t={t} />}
+          {cs.live === 'roblox' && stats && <RobloxLive t={t} stats={stats} />}
         </div>
       </section>
 
@@ -258,10 +261,13 @@ function CaseStudyPage() {
 
 // ─── Stats Roblox en direct ─────────────────────────────────────────────────
 
-function RobloxLive({ t }: { t: Dictionary }) {
+// Récupère les stats du groupe et les rafraîchit toutes les 60 s. Partagé entre
+// les cartes de métriques (visites cumulées) et le bloc live détaillé.
+function useRobloxStats(enabled: boolean): RbxStats | null {
   const [stats, setStats] = useState<RbxStats | null>(null)
 
   useEffect(() => {
+    if (!enabled) return
     let mounted = true
     const load = () => {
       getRobloxStats()
@@ -278,10 +284,12 @@ function RobloxLive({ t }: { t: Dictionary }) {
       mounted = false
       clearInterval(id)
     }
-  }, [])
+  }, [enabled])
 
-  if (!stats) return null
+  return stats
+}
 
+function RobloxLive({ t, stats }: { t: Dictionary; stats: RbxStats }) {
   return (
     <div className="mt-8 border-2 border-ink bg-bg shadow-[6px_6px_0_0_var(--color-ink)]">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-ink px-4 py-3">
