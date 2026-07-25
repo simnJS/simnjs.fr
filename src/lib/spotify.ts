@@ -158,8 +158,20 @@ function revalidate(): Promise<SpotifyTrack | null> {
   if (!inflight) {
     inflight = fetchTrack()
       .then((data) => {
-        cache = { at: Date.now(), data }
-        return data
+        // Un échec transitoire (token indisponible, 429, cold start) ne doit
+        // pas empoisonner le cache : mettre ce null en cache faisait
+        // disparaître le bloc pendant toute la fenêtre de TTL. On conserve
+        // la dernière valeur connue et on retentera au tick suivant.
+        if (data) {
+          cache = { at: Date.now(), data }
+          return data
+        }
+        if (cache?.data) {
+          cache = { at: Date.now(), data: cache.data }
+          return cache.data
+        }
+        cache = { at: Date.now(), data: null }
+        return null
       })
       .finally(() => {
         inflight = null

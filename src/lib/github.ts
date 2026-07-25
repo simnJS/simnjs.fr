@@ -603,6 +603,43 @@ async function listReposPushedSince(sinceIso: string): Promise<RepoRef[]> {
   return out
 }
 
+// On parcourt TOUTES les branches, pas seulement la branche par défaut : le
+// travail poussé sur une branche encore non mergée (une `v2` par exemple)
+// n'apparaissait nulle part dans le total annuel alors qu'il remplissait le
+// feed — d'où un compteur incohérent avec ce qu'on voyait juste en dessous.
+//
+// Un commit mergé étant présent dans l'historique de plusieurs branches, on
+// collecte les SHA plutôt que d'additionner des totaux : additionner
+// compterait chaque commit autant de fois qu'il y a de branches le contenant.
+const MAX_BRANCHES = 10
+// Chaque champ ramène jusqu'à MAX_BRANCHES × 100 nœuds : on réduit la taille
+// des lots par rapport à une simple somme de totaux.
+const REFS_CHUNK = 8
+const PAGES_PER_BRANCH = 5
+
+type HistoryPage = {
+  pageInfo?: { hasNextPage?: boolean; endCursor?: string | null }
+  nodes?: Array<{ oid?: string } | null> | null
+}
+type RefNode = {
+  name?: string
+  target?: { history?: HistoryPage } | null
+} | null
+type RepoRefs = { refs?: { nodes?: RefNode[] | null } | null } | null
+
+// (repo, branche, auteur) dont l'historique dépasse une page.
+type Pending = {
+  repo: RepoRef
+  branch: string
+  authorId: string
+  cursor: string
+}
+
+function historyField(authorId: string, after?: string): string {
+  const afterArg = after ? `, after: ${JSON.stringify(after)}` : ''
+  return `history(author: {id: ${JSON.stringify(authorId)}}, since: $since, first: 100${afterArg}) { pageInfo { hasNextPage endCursor } nodes { oid } }`
+}
+
 async function countCommitsSince(
   authorIds: string[],
   sinceIso: string,
@@ -612,22 +649,11 @@ async function countCommitsSince(
   if (repos.length === 0) return 0
   const headers = { ...ghHeaders(), 'Content-Type': 'application/json' }
 
-  const fields: string[] = []
-  repos.forEach((r, ri) => {
-    authorIds.forEach((id, ai) => {
-      fields.push(
-        `r${ri}_a${ai}: repository(owner: ${JSON.stringify(r.owner)}, name: ${JSON.stringify(r.name)}) { defaultBranchRef { target { ... on Commit { history(author: {id: ${JSON.stringify(id)}}, since: $since) { totalCount } } } } }`,
-      )
-    })
-  })
+  const seen = new Set<string>()
+  let failed = false
+  const pending: Pending[] = []
 
-  const CHUNK = 40
-  const chunks: string[][] = []
-  for (let i = 0; i < fields.length; i += CHUNK) {
-    chunks.push(fields.slice(i, i + CHUNK))
-  }
-  const runChunk = async (chunk: string[]): Promise<number | null> => {
-    const query = `query Commits($since: GitTimestamp!) {\n${chunk.join('\n')}\n}`
+  const gql = async <T>(query: string): Promise<T | null> => {
     try {
       const res = await fetch('https://api.github.com/graphql', {
         method: 'POST',
@@ -635,43 +661,109 @@ async function countCommitsSince(
         body: JSON.stringify({ query, variables: { since: sinceIso } }),
       })
       if (!res.ok) return null
-      const j = (await res.json()) as {
-        data?: Record<
-          string,
-          {
-            defaultBranchRef?: {
-              target?: { history?: { totalCount?: number } }
-            } | null
-          } | null
-        > | null
-      }
-      if (!j.data) return null
-      let sum = 0
-      for (const key of Object.keys(j.data)) {
-        sum += j.data[key]?.defaultBranchRef?.target?.history?.totalCount ?? 0
-      }
-      return sum
+      const j = (await res.json()) as { data?: T | null }
+      return j.data ?? null
     } catch {
       return null
     }
   }
 
-  const sums = await Promise.all(chunks.map(runChunk))
-  // GitHub applique des limites secondaires sur GraphQL : sur une dizaine de
-  // requêtes concurrentes, il suffisait qu'une seule rate pour annuler tout
-  // le comptage et retomber sur le total public. Une seconde tentative sur
-  // les seules requêtes en échec suffit dans la grande majorité des cas.
-  const failed = sums.flatMap((s, i) => (s == null ? [i] : []))
-  if (failed.length > 0) {
-    const retried = await Promise.all(failed.map((i) => runChunk(chunks[i])))
-    failed.forEach((i, k) => {
-      sums[i] = retried[k]
-    })
+  const collect = (page: HistoryPage | undefined): void => {
+    for (const n of page?.nodes ?? []) {
+      if (n?.oid) seen.add(n.oid)
+    }
   }
-  // Un échec persistant donnerait un total sous-estimé : on préfère le
-  // signaler au appelant plutôt que d'afficher un chiffre silencieusement faux.
-  if (sums.some((s) => s == null)) return null
-  return sums.reduce<number>((a, b) => a + (b ?? 0), 0)
+
+  // ── Passe 1 : première page d'historique de chaque branche ────────────────
+  // L'alias `r{ri}_a{ai}` encode les index de repo et d'auteur : il suffit de
+  // le relire pour retrouver à quoi se rattache chaque réponse.
+  const fields: string[] = []
+  repos.forEach((r, ri) => {
+    authorIds.forEach((id, ai) => {
+      fields.push(
+        `r${ri}_a${ai}: repository(owner: ${JSON.stringify(r.owner)}, name: ${JSON.stringify(r.name)}) { refs(refPrefix: "refs/heads/", first: ${MAX_BRANCHES}, orderBy: {field: TAG_COMMIT_DATE, direction: DESC}) { nodes { name target { ... on Commit { ${historyField(id)} } } } } }`,
+      )
+    })
+  })
+
+  const chunks: string[][] = []
+  for (let i = 0; i < fields.length; i += REFS_CHUNK) {
+    chunks.push(fields.slice(i, i + REFS_CHUNK))
+  }
+
+  const runChunk = async (chunk: string[]): Promise<boolean> => {
+    const data = await gql<Record<string, RepoRefs>>(
+      `query Commits($since: GitTimestamp!) {\n${chunk.join('\n')}\n}`,
+    )
+    if (!data) return false
+    for (const key of Object.keys(data)) {
+      const m = key.slice(1).match(/^(\d+)_a(\d+)$/)
+      if (!m) continue
+      const repo = repos[Number(m[1])]
+      const authorId = authorIds[Number(m[2])]
+      if (!repo || !authorId) continue
+      for (const ref of data[key]?.refs?.nodes ?? []) {
+        const page = ref?.target?.history
+        collect(page)
+        if (
+          ref?.name &&
+          page?.pageInfo?.hasNextPage &&
+          page.pageInfo.endCursor
+        ) {
+          pending.push({
+            repo,
+            branch: ref.name,
+            authorId,
+            cursor: page.pageInfo.endCursor,
+          })
+        }
+      }
+    }
+    return true
+  }
+
+  const okFirst = await Promise.all(chunks.map(runChunk))
+  // GitHub applique des limites secondaires sur GraphQL : une seule requête
+  // en échec annulait tout le comptage et faisait retomber sur le total
+  // public. On retente les lots ratés avant d'abandonner.
+  const retryIdx = okFirst.flatMap((ok, i) => (ok ? [] : [i]))
+  if (retryIdx.length > 0) {
+    const again = await Promise.all(retryIdx.map((i) => runChunk(chunks[i])))
+    if (again.some((ok) => !ok)) failed = true
+  }
+  if (failed) return null
+
+  // ── Passe 2 : branches dont l'historique dépasse 100 commits ──────────────
+  // Rare, mais c'est exactement le cas des grosses branches de travail (v2),
+  // celles qui creusaient le plus l'écart avec le feed.
+  for (let page = 0; page < PAGES_PER_BRANCH && pending.length > 0; page++) {
+    const batch = pending.splice(0, pending.length)
+    const results = await Promise.all(
+      batch.map(async (p) => {
+        const data = await gql<{
+          repository?: { ref?: { target?: { history?: HistoryPage } } | null }
+        }>(
+          `query Commits($since: GitTimestamp!) { repository(owner: ${JSON.stringify(p.repo.owner)}, name: ${JSON.stringify(p.repo.name)}) { ref(qualifiedName: ${JSON.stringify(`refs/heads/${p.branch}`)}) { target { ... on Commit { ${historyField(p.authorId, p.cursor)} } } } } }`,
+        )
+        if (!data) return null
+        const hist = data.repository?.ref?.target?.history
+        collect(hist)
+        return hist?.pageInfo?.hasNextPage && hist.pageInfo.endCursor
+          ? { ...p, cursor: hist.pageInfo.endCursor }
+          : undefined
+      }),
+    )
+    // Un échec en pagination ne fausse que la marge au-delà de 100 commits
+    // sur une branche : on garde ce qu'on a plutôt que de tout jeter.
+    for (const r of results) if (r) pending.push(r)
+  }
+
+  // Garde-fou : un total nul alors que des repos ont été poussés dans la
+  // fenêtre trahit une requête mal formée bien plus probablement qu'une année
+  // sans le moindre commit. On rend la main au total public plutôt que
+  // d'afficher un 0 manifestement faux.
+  if (seen.size === 0) return null
+  return seen.size
 }
 
 const EMPTY_PROFILE: GhProfile = {

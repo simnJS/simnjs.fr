@@ -20,8 +20,12 @@ export function NowPlaying({ t }: { t: Dictionary }) {
       try {
         const data = await getSpotifyTrack()
         if (!mounted.current) return
+        // Un rafraîchissement qui échoue ne doit jamais effacer ce qui est
+        // déjà affiché, sinon le bloc disparaît puis réapparaît au moindre
+        // hoquet réseau. On garde la dernière valeur connue.
+        if (!data) return
         setTrack(data)
-        if (data?.progressMs != null) {
+        if (data.progressMs != null) {
           base.current = { at: Date.now(), ms: data.progressMs }
           setProgress(data.progressMs)
         } else {

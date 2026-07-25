@@ -108,13 +108,16 @@ export function LiveActivity({ t }: { t: Dictionary }) {
     if (!mounted.current) return false
     let gotEvents = false
     let gotProfile = false
+    // Non-régression : une donnée déjà à l'écran ne doit jamais être
+    // remplacée par une réponse vide ou dégradée. Un échec de rafraîchissement
+    // faisait sinon clignoter la section, feed comme statistiques.
     if (a.status === 'fulfilled') {
-      setEvents(a.value.events)
       gotEvents = a.value.events.length > 0
+      if (gotEvents) setEvents(a.value.events)
     }
     if (p.status === 'fulfilled' && p.value) {
-      setProfile(p.value)
       gotProfile = p.value.weeks.length > 0
+      if (gotProfile) setProfile(p.value)
     }
     // Le skeleton ne dépend que du feed : dès qu'il est là on affiche, et les
     // retries restants ne servent qu'à compléter le profil.
