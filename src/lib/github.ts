@@ -611,11 +611,14 @@ async function listReposPushedSince(sinceIso: string): Promise<RepoRef[]> {
 // Un commit mergé étant présent dans l'historique de plusieurs branches, on
 // collecte les SHA plutôt que d'additionner des totaux : additionner
 // compterait chaque commit autant de fois qu'il y a de branches le contenant.
-const MAX_BRANCHES = 10
-// Chaque champ ramène jusqu'à MAX_BRANCHES × 100 nœuds : on réduit la taille
-// des lots par rapport à une simple somme de totaux.
-const REFS_CHUNK = 8
-const PAGES_PER_BRANCH = 5
+// Chaque champ ramène jusqu'à MAX_BRANCHES × 100 nœuds. Une première version
+// à 10 branches et 8 repos par requête dépassait le budget de GitHub (timeout
+// GraphQL à 10 s) : la requête échouait, le comptage rendait null et le total
+// retombait silencieusement sur le chiffre public. On reste donc modeste, et
+// surtout on dégrade vers le comptage branche par défaut plutôt que vers rien.
+const MAX_BRANCHES = 5
+const REFS_CHUNK = 3
+const PAGES_PER_BRANCH = 3
 
 type HistoryPage = {
   pageInfo?: { hasNextPage?: boolean; endCursor?: string | null }
@@ -640,6 +643,71 @@ function historyField(authorId: string, after?: string): string {
   return `history(author: {id: ${JSON.stringify(authorId)}}, since: $since, first: 100${afterArg}) { pageInfo { hasNextPage endCursor } nodes { oid } }`
 }
 
+// Comptage de repli : uniquement la branche par défaut, une somme de totaux.
+// Une requête par lot, aucun nœud d'historique ramené — c'est léger et ça ne
+// tombe pratiquement jamais. Sous-estime le travail resté sur des branches non
+// mergées, mais vaut infiniment mieux que de rendre la main au chiffre public.
+async function countDefaultBranch(
+  repos: RepoRef[],
+  authorIds: string[],
+  sinceIso: string,
+): Promise<number | null> {
+  const headers = { ...ghHeaders(), 'Content-Type': 'application/json' }
+  const fields: string[] = []
+  repos.forEach((r, ri) => {
+    authorIds.forEach((id, ai) => {
+      fields.push(
+        `r${ri}_a${ai}: repository(owner: ${JSON.stringify(r.owner)}, name: ${JSON.stringify(r.name)}) { defaultBranchRef { target { ... on Commit { history(author: {id: ${JSON.stringify(id)}}, since: $since) { totalCount } } } } }`,
+      )
+    })
+  })
+  const chunks: string[][] = []
+  for (let i = 0; i < fields.length; i += 40) chunks.push(fields.slice(i, i + 40))
+
+  const run = async (chunk: string[]): Promise<number | null> => {
+    try {
+      const res = await fetch('https://api.github.com/graphql', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          query: `query Commits($since: GitTimestamp!) {\n${chunk.join('\n')}\n}`,
+          variables: { since: sinceIso },
+        }),
+      })
+      if (!res.ok) return null
+      const j = (await res.json()) as {
+        data?: Record<
+          string,
+          {
+            defaultBranchRef?: {
+              target?: { history?: { totalCount?: number } }
+            } | null
+          } | null
+        > | null
+      }
+      if (!j.data) return null
+      let sum = 0
+      for (const k of Object.keys(j.data)) {
+        sum += j.data[k]?.defaultBranchRef?.target?.history?.totalCount ?? 0
+      }
+      return sum
+    } catch {
+      return null
+    }
+  }
+
+  const sums = await Promise.all(chunks.map(run))
+  const failed = sums.flatMap((s, i) => (s == null ? [i] : []))
+  if (failed.length > 0) {
+    const retried = await Promise.all(failed.map((i) => run(chunks[i])))
+    failed.forEach((i, k) => {
+      sums[i] = retried[k]
+    })
+  }
+  if (sums.some((s) => s == null)) return null
+  return sums.reduce<number>((a, b) => a + (b ?? 0), 0)
+}
+
 async function countCommitsSince(
   authorIds: string[],
   sinceIso: string,
@@ -647,6 +715,19 @@ async function countCommitsSince(
   if (authorIds.length === 0) return null
   const repos = await listReposPushedSince(sinceIso)
   if (repos.length === 0) return 0
+  const all = await countAllBranches(repos, authorIds, sinceIso)
+  if (all != null) return all
+  // Le parcours multi-branches n'a pas abouti : on ne rend pas la main au
+  // total public pour autant, la branche par défaut reste bien plus proche
+  // de la réalité.
+  return countDefaultBranch(repos, authorIds, sinceIso)
+}
+
+async function countAllBranches(
+  repos: RepoRef[],
+  authorIds: string[],
+  sinceIso: string,
+): Promise<number | null> {
   const headers = { ...ghHeaders(), 'Content-Type': 'application/json' }
 
   const seen = new Set<string>()
