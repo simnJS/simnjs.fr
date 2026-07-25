@@ -19,6 +19,7 @@ import {
   type GhEventType,
   type GhProfile,
 } from '../lib/github'
+import { NowPlaying } from './NowPlaying'
 import type { Dictionary } from '../i18n/translations'
 
 const REFRESH_MS = 60_000
@@ -95,7 +96,9 @@ export function LiveActivity({ t }: { t: Dictionary }) {
 
   // Les deux appels sont indépendants : un échec (ou timeout à froid) du
   // profil ne doit pas jeter le feed, et inversement.
-  // Retourne true dès que le feed a des événements.
+  // Retourne true quand les DEUX ont abouti — ne juger que sur le feed
+  // laissait les stats et la heatmap vides jusqu'au tick suivant, sans
+  // qu'aucun retry ne se déclenche.
   const load = useCallback(async (manual = false): Promise<boolean> => {
     if (manual) setRefreshing(true)
     const [a, p] = await Promise.allSettled([
@@ -104,14 +107,20 @@ export function LiveActivity({ t }: { t: Dictionary }) {
     ])
     if (!mounted.current) return false
     let gotEvents = false
+    let gotProfile = false
     if (a.status === 'fulfilled') {
       setEvents(a.value.events)
       gotEvents = a.value.events.length > 0
     }
-    if (p.status === 'fulfilled' && p.value) setProfile(p.value)
+    if (p.status === 'fulfilled' && p.value) {
+      setProfile(p.value)
+      gotProfile = p.value.weeks.length > 0
+    }
+    // Le skeleton ne dépend que du feed : dès qu'il est là on affiche, et les
+    // retries restants ne servent qu'à compléter le profil.
     if (gotEvents || manual) setLoading(false)
     if (manual) setRefreshing(false)
-    return gotEvents
+    return gotEvents && gotProfile
   }, [])
 
   useEffect(() => {
@@ -172,6 +181,9 @@ export function LiveActivity({ t }: { t: Dictionary }) {
             </button>
           </div>
         </div>
+
+        {/* Now playing — se retire tout seul si Spotify n'est pas configuré */}
+        <NowPlaying t={t} />
 
         {/* Stats */}
         <Stats profile={profile} t={t} />

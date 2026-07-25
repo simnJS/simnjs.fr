@@ -1,4 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
+import { setResponseHeader } from '@tanstack/react-start/server'
 
 // ─── Play'n Chill (Roblox) — stats live du groupe ────────────────────────────
 
@@ -44,6 +45,16 @@ async function rbxFetch<T>(path: string): Promise<T | null> {
 
 export const getRobloxStats = createServerFn({ method: 'GET' }).handler(
   async (): Promise<RbxStats | null> => {
+    // Cache mutualisé au edge : le cache mémoire ne survit pas aux cold
+    // starts sur Vercel, chaque visiteur repayait la chaîne d'appels Roblox.
+    try {
+      setResponseHeader(
+        'cache-control',
+        'public, max-age=0, s-maxage=60, stale-while-revalidate=600',
+      )
+    } catch {
+      // hors contexte de requête — sans effet
+    }
     if (cache && Date.now() - cache.at < TTL_MS) return cache.data
 
     const group = await rbxFetch<{ memberCount?: number }>(

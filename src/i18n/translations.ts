@@ -76,6 +76,11 @@ type Dict = {
       more: string
     }
   }
+  spotify: {
+    playing: string
+    lastPlayed: string
+    via: string
+  }
   workFilters: {
     all: string
     fortnite: string
@@ -196,6 +201,11 @@ export const translations: Record<Locale, Dict> = {
         less: 'moins',
         more: 'plus',
       },
+    },
+    spotify: {
+      playing: 'En écoute',
+      lastPlayed: 'Dernier son',
+      via: 'via Spotify',
     },
     workFilters: {
       all: 'Tout',
@@ -332,6 +342,11 @@ export const translations: Record<Locale, Dict> = {
         more: 'more',
       },
     },
+    spotify: {
+      playing: 'Now playing',
+      lastPlayed: 'Last played',
+      via: 'via Spotify',
+    },
     workFilters: {
       all: 'All',
       fortnite: 'Fortnite',
@@ -466,6 +481,11 @@ export const translations: Record<Locale, Dict> = {
         less: 'menos',
         more: 'más',
       },
+    },
+    spotify: {
+      playing: 'Escuchando',
+      lastPlayed: 'Última escucha',
+      via: 'via Spotify',
     },
     workFilters: {
       all: 'Todo',
