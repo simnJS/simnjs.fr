@@ -82,15 +82,18 @@ const TTL_MS = 60_000
 const PROFILE_TTL_MS = 300_000
 // Budget d'attente du sweep de commits dans le chemin de réponse.
 //
-// Il était à 2,5 puis 5 s, ce qui ne laissait jamais le temps au comptage
-// d'aboutir : la réponse partait avec le total public et le « rattrapage en
-// arrière-plan » n'arrivait jamais, l'instance serverless étant gelée dès la
-// réponse envoyée. Le résultat était systématiquement le chiffre dégradé.
+// Court, et ce n'est pas négociable : le composant relance un appel toutes
+// les 3 s au chargement. Une réponse plus lente que ce rythme se fait annuler
+// par la suivante (ERR_ABORTED en boucle) et le profil n'arrive jamais — les
+// statistiques restent alors bloquées sur « — », ce qui est pire qu'un
+// chiffre imparfait. Un essai à 20 s l'a démontré en production.
 //
-// Un budget large ne coûte pourtant rien ici : le stale-while-revalidate du
-// CDN sert l'ancienne valeur instantanément pendant la revalidation, donc
-// personne n'attend — sauf le tout premier appel après un déploiement.
-const SWEEP_BUDGET_MS = 20_000
+// Corollaire : le comptage complet ne peut PAS vivre dans le chemin d'une
+// requête web. Il demande une dizaine de secondes, et le « rattrapage en
+// arrière-plan » est inopérant sur Vercel, l'instance étant gelée dès la
+// réponse envoyée. Il faut le sortir de la requête (cron ou build) — voir
+// la note d'architecture dans le README.
+const SWEEP_BUDGET_MS = 3_000
 
 // Caches mémoire en stale-while-revalidate : on sert toujours ce qu'on a,
 // même périmé, et on revalide en fond. Bloquer sur le fetch ne servait qu'à
