@@ -79,14 +79,29 @@ const server = createServer(async (req, res) => {
     res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' })
     res.end(page('Échec', `<h2>Échec</h2><p>${msg}</p>`))
     console.error(`\n  ✗ ${msg}\n`)
-    server.close()
-    process.exit(1)
+    // close() en callback : forcer process.exit() pendant que les handles se
+    // ferment fait planter libuv sur Windows (assertion UV_HANDLE_CLOSING).
+    server.close(() => process.exit(1))
   }
 
   const error = url.searchParams.get('error')
   if (error) return fail(`Spotify a renvoyé : ${error}`)
   if (url.searchParams.get('state') !== state) {
-    return fail('State invalide — relance le script.')
+    // Lien d'un lancement précédent. On le signale sans fermer le serveur :
+    // tuer la session obligerait à tout relancer alors que le bon lien est
+    // toujours valable.
+    res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' })
+    res.end(
+      page(
+        'Lien périmé',
+        '<h2>Lien périmé</h2><p>Ce lien vient d\'un lancement précédent du script. Reprends celui affiché dans le terminal — le serveur attend toujours.</p>',
+      ),
+    )
+    console.error(
+      '\n  ✗ Lien périmé (state d\'un lancement précédent).\n' +
+        '    Utilise l\'URL affichée ci-dessus — le serveur attend toujours.\n',
+    )
+    return
   }
   const code = url.searchParams.get('code')
   if (!code) return fail('Pas de code dans la réponse.')
@@ -127,8 +142,7 @@ const server = createServer(async (req, res) => {
         '  Pense à ajouter les trois variables SPOTIFY_* dans Vercel\n' +
         '  (Project Settings → Environment Variables) pour la prod.\n',
     )
-    server.close()
-    process.exit(0)
+    server.close(() => process.exit(0))
   } catch (err) {
     return fail(`Erreur réseau : ${err.message}`)
   }
@@ -144,14 +158,19 @@ server.listen(PORT, '127.0.0.1', () => {
   )
 })
 
-// Filet de sécurité : ne pas laisser un serveur ouvert indéfiniment.
+// Filet de sécurité : ne pas laisser un serveur ouvert indéfiniment. Large
+// assez pour laisser le temps de déclarer le Redirect URI dans le dashboard
+// si on découvre en route qu'il manque.
+const TIMEOUT_MIN = 15
 setTimeout(
   () => {
     if (!done) {
-      console.error('\n  ✗ Rien reçu au bout de 5 minutes — script arrêté.\n')
+      console.error(
+        `\n  ✗ Rien reçu au bout de ${TIMEOUT_MIN} minutes — script arrêté.\n`,
+      )
       server.close()
       process.exit(1)
     }
   },
-  5 * 60 * 1000,
+  TIMEOUT_MIN * 60 * 1000,
 ).unref()
