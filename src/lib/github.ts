@@ -82,7 +82,9 @@ const TTL_MS = 60_000
 const PROFILE_TTL_MS = 300_000
 // Budget d'attente du sweep de commits dans le chemin de réponse. Au-delà on
 // répond sans lui — il continue en fond et rejoint le cache (voir plus bas).
-const SWEEP_BUDGET_MS = 2_500
+// Confortable : grâce au stale-while-revalidate, seul le tout premier appel
+// après un cold start peut réellement attendre.
+const SWEEP_BUDGET_MS = 5_000
 
 // Caches mémoire en stale-while-revalidate : on sert toujours ce qu'on a,
 // même périmé, et on revalide en fond. Bloquer sur le fetch ne servait qu'à
@@ -377,10 +379,27 @@ function shape(raw: RawEvent[]): ShapedEvent[] {
 
 // Recover the real commit count and message of each push group. Needed
 // because the authenticated events endpoint strips commits/size from push
-// payloads. Count: compare oldest `before` → newest `head`. Message: the
-// `head` commit itself — the group's NEWEST commit (skipped for private rows,
-// whose message is masked anyway).
+// payloads.
+//
+// `compare.total_commits` compte TOUS les auteurs de l'intervalle — merges et
+// commits des autres contributeurs compris. Sur un repo d'orga actif, un push
+// après merge affichait des ×90 pour deux commits à soi. On récupère donc la
+// liste et on ne garde que les siens. L'API plafonne `commits` à 250 : au-delà
+// on sous-estime, ce qui vaut mieux que de s'attribuer le travail des autres.
 type Patch = [id: string, fields: Partial<GhEvent>]
+
+type CmpCommit = {
+  author?: { login?: string } | null
+  commit?: { message?: string }
+}
+
+function isMine(c: CmpCommit): boolean {
+  const login = c.author?.login
+  return (
+    typeof login === 'string' &&
+    AUTHOR_LOGINS.some((l) => l.toLowerCase() === login.toLowerCase())
+  )
+}
 
 async function enrichPushes(events: ShapedEvent[]): Promise<Patch[]> {
   const headers = ghHeaders()
@@ -388,37 +407,50 @@ async function enrichPushes(events: ShapedEvent[]): Promise<Patch[]> {
     events.map(async (e): Promise<Patch | null> => {
       const p = e._push
       if (!p) return null
-      const [cmp, head] = await Promise.all([
-        fetch(
-          `https://api.github.com/repos/${p.repo}/compare/${p.before}...${p.head}?per_page=1`,
+      const cmp = await fetch(
+        `https://api.github.com/repos/${p.repo}/compare/${p.before}...${p.head}?per_page=100`,
+        { headers },
+      )
+        .then((r) =>
+          r.ok
+            ? (r.json() as Promise<{
+                total_commits?: number
+                commits?: CmpCommit[]
+              }>)
+            : null,
+        )
+        .catch(() => null)
+
+      const fields: Partial<GhEvent> = {}
+      const mine = (cmp?.commits ?? []).filter(isMine)
+      if (mine.length > 0) {
+        fields.count = mine.length
+        // compare renvoie du plus ancien au plus récent : on affiche son
+        // propre dernier commit, pas le merge de quelqu'un d'autre.
+        if (!e.private) {
+          const msg = mine[mine.length - 1].commit?.message?.split('\n')[0]
+          if (msg) fields.message = msg
+        }
+      }
+
+      // Filet : compare indisponible, ou aucun commit reconnu comme sien
+      // (e-mail de signature non rattaché au compte). On reprend le commit
+      // de tête plutôt que de laisser la ligne sans message.
+      if (fields.message === undefined && !e.private) {
+        const head = await fetch(
+          `https://api.github.com/repos/${p.repo}/commits/${p.head}`,
           { headers },
         )
           .then((r) =>
-            r.ok ? (r.json() as Promise<{ total_commits?: number }>) : null,
+            r.ok
+              ? (r.json() as Promise<{ commit?: { message?: string } }>)
+              : null,
           )
-          .catch(() => null),
-        e.private
-          ? Promise.resolve(null)
-          : fetch(`https://api.github.com/repos/${p.repo}/commits/${p.head}`, {
-              headers,
-            })
-              .then((r) =>
-                r.ok
-                  ? (r.json() as Promise<{ commit?: { message?: string } }>)
-                  : null,
-              )
-              .catch(() => null),
-      ])
-      const fields: Partial<GhEvent> = {}
-      if (
-        cmp &&
-        typeof cmp.total_commits === 'number' &&
-        cmp.total_commits > 0
-      ) {
-        fields.count = cmp.total_commits
+          .catch(() => null)
+        const msg = head?.commit?.message?.split('\n')[0]
+        if (msg) fields.message = msg
       }
-      const newestMsg = head?.commit?.message?.split('\n')[0]
-      if (newestMsg) fields.message = newestMsg
+
       return Object.keys(fields).length > 0 ? [e.id, fields] : null
     }),
   )
@@ -594,9 +626,9 @@ async function countCommitsSince(
   for (let i = 0; i < fields.length; i += CHUNK) {
     chunks.push(fields.slice(i, i + CHUNK))
   }
-  const sums = await Promise.all(
-    chunks.map(async (chunk) => {
-      const query = `query Commits($since: GitTimestamp!) {\n${chunk.join('\n')}\n}`
+  const runChunk = async (chunk: string[]): Promise<number | null> => {
+    const query = `query Commits($since: GitTimestamp!) {\n${chunk.join('\n')}\n}`
+    try {
       const res = await fetch('https://api.github.com/graphql', {
         method: 'POST',
         headers,
@@ -619,10 +651,25 @@ async function countCommitsSince(
         sum += j.data[key]?.defaultBranchRef?.target?.history?.totalCount ?? 0
       }
       return sum
-    }),
-  )
-  // One failed chunk means an incomplete (understated) total — bail out and
-  // let the caller fall back instead of showing a silently wrong number.
+    } catch {
+      return null
+    }
+  }
+
+  const sums = await Promise.all(chunks.map(runChunk))
+  // GitHub applique des limites secondaires sur GraphQL : sur une dizaine de
+  // requêtes concurrentes, il suffisait qu'une seule rate pour annuler tout
+  // le comptage et retomber sur le total public. Une seconde tentative sur
+  // les seules requêtes en échec suffit dans la grande majorité des cas.
+  const failed = sums.flatMap((s, i) => (s == null ? [i] : []))
+  if (failed.length > 0) {
+    const retried = await Promise.all(failed.map((i) => runChunk(chunks[i])))
+    failed.forEach((i, k) => {
+      sums[i] = retried[k]
+    })
+  }
+  // Un échec persistant donnerait un total sous-estimé : on préfère le
+  // signaler au appelant plutôt que d'afficher un chiffre silencieusement faux.
   if (sums.some((s) => s == null)) return null
   return sums.reduce<number>((a, b) => a + (b ?? 0), 0)
 }
@@ -792,13 +839,21 @@ function revalidateProfile(): Promise<GhProfile | null> {
 
 export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
   async (): Promise<GhProfile> => {
-    // Le profil bouge beaucoup moins que le feed : fenêtre plus large.
-    edgeCache(300, 3600)
-    if (isFresh(profileCache)) return profileCache!.data
+    // La durée de cache CDN dépend de la complétude de la réponse : un profil
+    // dont le sweep de commits privés n'a pas abouti affiche un total
+    // sous-estimé. Le figer 5 min au edge le rendait visible bien plus
+    // longtemps que le calcul qu'on cherchait à éviter — on le garde donc
+    // juste assez pour amortir une rafale, et le rattrapage suit vite.
+    const respond = (p: GhProfile | null): GhProfile => {
+      const complete = profileCache?.ttl === PROFILE_TTL_MS
+      edgeCache(complete ? 300 : 15, complete ? 3600 : 60)
+      return p ?? EMPTY_PROFILE
+    }
+    if (isFresh(profileCache)) return respond(profileCache!.data)
     const refresh = revalidateProfile()
     // Même logique que le feed : le périmé part tout de suite, la
     // revalidation suit en fond.
-    if (profileCache) return profileCache.data
-    return (await refresh) ?? EMPTY_PROFILE
+    if (profileCache) return respond(profileCache.data)
+    return respond(await refresh)
   },
 )
