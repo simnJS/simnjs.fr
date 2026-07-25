@@ -80,11 +80,17 @@ const TTL_MS = 60_000
 // The profile sweep (repo listing + per-repo commit counts) is heavier,
 // refresh it less often.
 const PROFILE_TTL_MS = 300_000
-// Budget d'attente du sweep de commits dans le chemin de réponse. Au-delà on
-// répond sans lui — il continue en fond et rejoint le cache (voir plus bas).
-// Confortable : grâce au stale-while-revalidate, seul le tout premier appel
-// après un cold start peut réellement attendre.
-const SWEEP_BUDGET_MS = 5_000
+// Budget d'attente du sweep de commits dans le chemin de réponse.
+//
+// Il était à 2,5 puis 5 s, ce qui ne laissait jamais le temps au comptage
+// d'aboutir : la réponse partait avec le total public et le « rattrapage en
+// arrière-plan » n'arrivait jamais, l'instance serverless étant gelée dès la
+// réponse envoyée. Le résultat était systématiquement le chiffre dégradé.
+//
+// Un budget large ne coûte pourtant rien ici : le stale-while-revalidate du
+// CDN sert l'ancienne valeur instantanément pendant la revalidation, donc
+// personne n'attend — sauf le tout premier appel après un déploiement.
+const SWEEP_BUDGET_MS = 20_000
 
 // Caches mémoire en stale-while-revalidate : on sert toujours ce qu'on a,
 // même périmé, et on revalide en fond. Bloquer sur le fetch ne servait qu'à
