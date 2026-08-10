@@ -14,6 +14,7 @@ import { useI18n } from '../i18n/I18nProvider'
 import { LanguageSelector } from '../i18n/LanguageSelector'
 import type { Dictionary } from '../i18n/translations'
 import { LiveActivity } from '../components/LiveActivity'
+import { Clients } from '../components/Clients'
 import { CASE_STUDY_SLUG_BY_PROJECT } from '../content/caseStudies'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
@@ -245,6 +246,20 @@ function Home() {
         })
       })
 
+      // ── Client cards reveal ──
+      const clientGrid = document.querySelector('[data-anim="client-grid"]')
+      if (clientGrid) {
+        gsap.from('[data-anim="client-card"]', {
+          y: 24,
+          opacity: 0,
+          stagger: 0.06,
+          duration: 0.5,
+          ease: 'back.out(1.4)',
+          clearProps: 'transform,opacity',
+          scrollTrigger: trig(clientGrid),
+        })
+      }
+
       // ── Stack chips pop ──
       gsap.from('[data-anim="stack-chip"]', {
         scale: 0,
@@ -290,6 +305,7 @@ function Home() {
       <Nav t={t} />
       <Hero t={t} />
       <Work t={t} />
+      <Clients t={t} index="02" />
       <Stack t={t} />
       <LiveActivity t={t} />
       <About t={t} />
@@ -363,6 +379,7 @@ function Nav({ t }: { t: Dictionary }) {
         </NavLink>
         <nav className="hidden gap-6 font-mono text-sm md:flex">
           <NavLink id="work" className="hover:text-coral">{t.nav.work}</NavLink>
+          <NavLink id="clients" className="hover:text-coral">{t.nav.clients}</NavLink>
           <NavLink id="stack" className="hover:text-coral">{t.nav.stack}</NavLink>
           <NavLink id="now" className="hover:text-coral">{t.nav.now}</NavLink>
           <NavLink id="about" className="hover:text-coral">{t.nav.about}</NavLink>
@@ -625,7 +642,7 @@ function Stack({ t }: { t: Dictionary }) {
   return (
     <section id="stack" className="border-b-2 border-ink bg-ink text-bg">
       <div className="mx-auto max-w-6xl px-6 py-20">
-        <SectionTitle index="02" title={t.sections.stack} inverted />
+        <SectionTitle index="03" title={t.sections.stack} inverted />
         <div data-anim="stack-grid" className="mt-12 flex flex-wrap gap-3">
           {STACK.map((s, i) => {
             const colors = ['bg-yellow', 'bg-coral', 'bg-cyan', 'bg-violet']
@@ -651,7 +668,7 @@ function About({ t }: { t: Dictionary }) {
     <section id="about" className="border-b-2 border-ink">
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-5">
         <div className="md:col-span-2">
-          <SectionTitle index="03" title={t.sections.about} />
+          <SectionTitle index="05" title={t.sections.about} />
         </div>
         <div className="md:col-span-3">
           <p className="font-display text-3xl leading-tight md:text-4xl">

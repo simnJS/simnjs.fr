@@ -10,7 +10,14 @@ export const LOCALE_META: Record<Locale, { label: string; flag: string }> = {
 }
 
 type Dict = {
-  nav: { work: string; stack: string; about: string; contact: string; now: string }
+  nav: {
+    work: string
+    clients: string
+    stack: string
+    about: string
+    contact: string
+    now: string
+  }
   hero: {
     tagline: [string, string, string]
     roles: { ugc: string; obsessed: string; tech: string }
@@ -23,9 +30,14 @@ type Dict = {
   }
   sections: {
     work: string
+    clients: string
     stack: string
     about: string
     now: string
+  }
+  clients: {
+    subtitle: string
+    cta: string
   }
   github: {
     live: string
@@ -132,7 +144,14 @@ type Dict = {
 
 export const translations: Record<Locale, Dict> = {
   fr: {
-    nav: { work: '/work', stack: '/stack', about: '/about', contact: 'CONTACT', now: '/now' },
+    nav: {
+      work: '/work',
+      clients: '/clients',
+      stack: '/stack',
+      about: '/about',
+      contact: 'CONTACT',
+      now: '/now',
+    },
     hero: {
       tagline: ['Je construis', 'des mondes', 'jouables.'],
       roles: {
@@ -149,9 +168,14 @@ export const translations: Record<Locale, Dict> = {
     },
     sections: {
       work: 'Selected Work',
+      clients: 'Ils m\'ont fait confiance',
       stack: 'Stack & Toys',
       about: 'About',
       now: 'Now',
+    },
+    clients: {
+      subtitle: 'Studios, créateurs et marques avec qui j\'ai bossé.',
+      cta: 'Ton logo ici ?',
     },
     github: {
       live: 'LIVE',
@@ -272,7 +296,14 @@ export const translations: Record<Locale, Dict> = {
     selector: { label: 'Langue' },
   },
   en: {
-    nav: { work: '/work', stack: '/stack', about: '/about', contact: 'CONTACT', now: '/now' },
+    nav: {
+      work: '/work',
+      clients: '/clients',
+      stack: '/stack',
+      about: '/about',
+      contact: 'CONTACT',
+      now: '/now',
+    },
     hero: {
       tagline: ['I build', 'playable', 'worlds.'],
       roles: {
@@ -289,9 +320,14 @@ export const translations: Record<Locale, Dict> = {
     },
     sections: {
       work: 'Selected Work',
+      clients: 'Trusted by',
       stack: 'Stack & Toys',
       about: 'About',
       now: 'Now',
+    },
+    clients: {
+      subtitle: 'Studios, creators and brands I have worked with.',
+      cta: 'Your logo here?',
     },
     github: {
       live: 'LIVE',
@@ -412,7 +448,14 @@ export const translations: Record<Locale, Dict> = {
     selector: { label: 'Language' },
   },
   es: {
-    nav: { work: '/work', stack: '/stack', about: '/about', contact: 'CONTACTO', now: '/now' },
+    nav: {
+      work: '/work',
+      clients: '/clients',
+      stack: '/stack',
+      about: '/about',
+      contact: 'CONTACTO',
+      now: '/now',
+    },
     hero: {
       tagline: ['Construyo', 'mundos', 'jugables.'],
       roles: {
@@ -429,9 +472,14 @@ export const translations: Record<Locale, Dict> = {
     },
     sections: {
       work: 'Trabajos seleccionados',
+      clients: 'Confían en mí',
       stack: 'Stack & Juguetes',
       about: 'Sobre mí',
       now: 'Ahora',
+    },
+    clients: {
+      subtitle: 'Estudios, creadores y marcas con los que he trabajado.',
+      cta: '¿Tu logo aquí?',
     },
     github: {
       live: 'EN VIVO',

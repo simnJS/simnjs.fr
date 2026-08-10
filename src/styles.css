@@ -58,6 +58,23 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Grille discrète — fond de la section Clients, pour la détacher des sections
+   crème voisines sans introduire de couleur supplémentaire. */
+.bg-grid-ink {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-ink) 7%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-ink) 7%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 28px 28px;
+}
+
 @keyframes row-in {
   from {
     opacity: 0;
