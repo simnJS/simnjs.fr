@@ -1019,8 +1019,51 @@ function revalidateProfile(): Promise<GhProfile | null> {
   return profileInflight
 }
 
+// ─── Service de stats (VPS) ────────────────────────────────────────────────
+// Le service gh-stats précalcule le profil complet toutes les 10 min, sans
+// budget de temps. Quand STATS_URL est défini, on le lit en priorité ; s'il
+// ne répond pas vite ou renvoie autre chose qu'un profil, on retombe sur le
+// calcul local ci-dessous.
+
+const STATS_TIMEOUT_MS = 2_000
+
+async function fetchStatsService(): Promise<GhProfile | null> {
+  const url = process.env.STATS_URL?.trim()
+  if (!url) return null
+  try {
+    const res = await fetch(url, {
+      headers: { accept: 'application/json' },
+      signal: AbortSignal.timeout(STATS_TIMEOUT_MS),
+    })
+    if (!res.ok) return null
+    const p = (await res.json()) as Partial<GhProfile> | null
+    const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null)
+    const totalCommits = num(p?.totalCommits)
+    if (!p || totalCommits === null || !Array.isArray(p.weeks) || !p.weeks.length) return null
+    return {
+      totalContributions: num(p.totalContributions) ?? 0,
+      totalCommits,
+      totalPRs: num(p.totalPRs) ?? 0,
+      totalIssues: num(p.totalIssues) ?? 0,
+      totalActiveRepos: num(p.totalActiveRepos) ?? 0,
+      longestStreak: num(p.longestStreak) ?? 0,
+      currentStreak: num(p.currentStreak) ?? 0,
+      weeks: p.weeks,
+      fetchedAt: typeof p.fetchedAt === 'string' ? p.fetchedAt : new Date().toISOString(),
+    }
+  } catch (err) {
+    console.log('[github] stats service unreachable:', err instanceof Error ? err.message : String(err))
+    return null
+  }
+}
+
 export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
   async (): Promise<GhProfile> => {
+    const remote = await fetchStatsService()
+    if (remote) {
+      edgeCache(60, 600)
+      return remote
+    }
     // La durée de cache CDN dépend de la complétude de la réponse : un profil
     // dont le sweep de commits privés n'a pas abouti affiche un total
     // sous-estimé. Le figer 5 min au edge le rendait visible bien plus
