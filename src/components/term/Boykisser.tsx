@@ -57,7 +57,16 @@ function buildTargets(): Float32Array {
 const TARGETS = buildTargets()
 export const BOYKISSER_DOTS = TARGETS.length / 2
 
-export function Boykisser({ delay = 0, className = '' }: { delay?: number; className?: string }) {
+export function Boykisser({
+  delay = 0,
+  max = WIDTH,
+  className = '',
+}: {
+  delay?: number
+  // Largeur maximale en pixels : au-delà de la taille native, le dessin grossit.
+  max?: number
+  className?: string
+}) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -98,7 +107,7 @@ export function Boykisser({ delay = 0, className = '' }: { delay?: number; class
     let scale = 1
     let dpr = 1
     function resize() {
-      const w = Math.min(wrap.clientWidth, WIDTH)
+      const w = Math.min(wrap.clientWidth, max)
       scale = w / WIDTH
       dpr = Math.min(window.devicePixelRatio || 1, 2)
       canvas.width = Math.round(w * dpr)
@@ -231,10 +240,10 @@ export function Boykisser({ delay = 0, className = '' }: { delay?: number; class
       canvas.removeEventListener('pointerleave', onLeave)
       window.removeEventListener(BOYKISSER_EVENT, onAction)
     }
-  }, [delay])
+  }, [delay, max])
 
   return (
-    <div ref={wrapRef} className={`w-full ${className}`} style={{ maxWidth: WIDTH }}>
+    <div ref={wrapRef} className={`w-full ${className}`} style={{ maxWidth: max }}>
       <canvas
         ref={canvasRef}
         width={Math.round(WIDTH)}

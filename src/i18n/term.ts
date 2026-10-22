@@ -5,6 +5,23 @@ import type { Locale } from './translations'
 // restent en anglais dans toutes les langues : c'est un shell.
 
 export type TermDict = {
+  hero: {
+    tagline: string
+    projects: string
+    contact: string
+    poke: string
+    listening: string
+  }
+  titles: {
+    projects: string
+    oss: string
+    clients: string
+    stack: string
+    activity: string
+    about: string
+    contact: string
+  }
+  quake: { open: string; close: string; hint: string }
   ff: {
     os: string
     host: string
@@ -122,6 +139,28 @@ const DESC_ES: Record<string, string> = {
 
 export const TERM: Record<Locale, TermDict> = {
   en: {
+    hero: {
+      tagline:
+        "I make games and the tools around them. I run Play'n Chill, a studio shipping slot games on Stake Engine and Roblox games, and I build Verse tools for Fortnite creators.",
+      projects: 'See the projects',
+      contact: 'Get in touch',
+      poke: 'poke him :3',
+      listening: 'listening to',
+    },
+    titles: {
+      projects: 'Projects',
+      oss: 'Open source',
+      clients: 'Worked with',
+      stack: 'Stack',
+      activity: 'GitHub activity',
+      about: 'About',
+      contact: 'Contact',
+    },
+    quake: {
+      open: 'terminal',
+      close: 'close the terminal',
+      hint: 'press ` anywhere to open the terminal, then type help',
+    },
     ff: {
       os: 'Simon GAY, software engineer',
       host: 'Lyon, France',
@@ -208,6 +247,28 @@ export const TERM: Record<Locale, TermDict> = {
     back: 'back to the terminal',
   },
   fr: {
+    hero: {
+      tagline:
+        "Je fais des jeux et les outils qui vont avec. Je dirige Play'n Chill, un studio qui sort des slots sur Stake Engine et des jeux Roblox, et je code des outils Verse pour les créateurs Fortnite.",
+      projects: 'Voir les projets',
+      contact: 'Me contacter',
+      poke: 'touche-le :3',
+      listening: 'en écoute',
+    },
+    titles: {
+      projects: 'Projets',
+      oss: 'Open source',
+      clients: 'Ils m’ont fait confiance',
+      stack: 'Stack',
+      activity: 'Activité GitHub',
+      about: 'À propos',
+      contact: 'Contact',
+    },
+    quake: {
+      open: 'terminal',
+      close: 'fermer le terminal',
+      hint: 'appuie sur ` n’importe où pour ouvrir le terminal, puis tape help',
+    },
     ff: {
       os: 'Simon GAY, ingénieur logiciel',
       host: 'Lyon, France',
@@ -294,6 +355,28 @@ export const TERM: Record<Locale, TermDict> = {
     back: 'retour au terminal',
   },
   es: {
+    hero: {
+      tagline:
+        "Hago juegos y las herramientas que los rodean. Dirijo Play'n Chill, un estudio que publica slots en Stake Engine y juegos de Roblox, y programo herramientas Verse para creadores de Fortnite.",
+      projects: 'Ver los proyectos',
+      contact: 'Contactarme',
+      poke: 'tócalo :3',
+      listening: 'escuchando',
+    },
+    titles: {
+      projects: 'Proyectos',
+      oss: 'Open source',
+      clients: 'Han confiado en mí',
+      stack: 'Stack',
+      activity: 'Actividad en GitHub',
+      about: 'Sobre mí',
+      contact: 'Contacto',
+    },
+    quake: {
+      open: 'terminal',
+      close: 'cerrar la terminal',
+      hint: 'pulsa ` en cualquier parte para abrir la terminal, y escribe help',
+    },
     ff: {
       os: 'Simon GAY, ingeniero de software',
       host: 'Lyon, Francia',

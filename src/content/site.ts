@@ -27,6 +27,11 @@ export type Project = {
   year: number
   href: string
   image?: string
+  // Logo carré : affiché en entier sur sa couleur de fond plutôt que rogné.
+  imageBg?: string
+  // Sans capture d'écran, la carte montre un extrait de code ou un graphique.
+  code?: string
+  visual?: 'chart'
   repo?: string
   // Slug de l'étude de cas (src/content/caseStudies.ts), si elle existe.
   caseStudy?: string
@@ -41,6 +46,7 @@ export const PROJECTS: Project[] = [
     year: 2025,
     href: 'https://playandchill.bet/',
     image: '/projects/playandchill.png',
+    imageBg: '#113eff',
     caseStudy: 'play-and-chill',
     tags: ['stake'],
     stack: ['Stake Engine', 'TypeScript', 'React', 'Pixi.js'],
@@ -50,7 +56,7 @@ export const PROJECTS: Project[] = [
     title: "Play'n Chill",
     year: 2026,
     href: 'https://www.roblox.com/communities/35788348/Playn-Chill',
-    image: '/projects/playnchill-roblox.png',
+    image: '/projects/planet-tycoon.png',
     caseStudy: 'playn-chill',
     tags: ['roblox'],
     stack: ['Roblox', 'roblox-ts', 'Luau'],
@@ -60,7 +66,7 @@ export const PROJECTS: Project[] = [
     title: 'Engine Players',
     year: 2025,
     href: 'https://engineplayers.com/',
-    image: '/projects/stakeplayer.jpg',
+    visual: 'chart',
     caseStudy: 'stakeplayercount',
     tags: ['stake', 'saas'],
     stack: ['TypeScript', 'Node.js', 'Stake Engine'],
@@ -70,6 +76,14 @@ export const PROJECTS: Project[] = [
     title: 'simnJS Store',
     year: 2026,
     href: 'https://store.simnjs.fr/',
+    code: `using { /Fortnite.com/Devices }
+
+shop_device := class(creative_device):
+    @editable Offers : []offer = array{}
+
+    OnBegin<override>()<suspends> : void =
+        for (Offer : Offers):
+            Offer.Publish()`,
     tags: ['uefn', 'saas'],
     stack: ['TanStack Start', 'Convex', 'Stripe', 'Verse'],
   },
@@ -88,6 +102,11 @@ export const PROJECTS: Project[] = [
     title: 'Stake Dev Tool',
     year: 2025,
     href: 'https://stakedevtool.com/',
+    code: `let game = Game::load("./math")?;
+let report = game.simulate(10_000_000);
+
+// check the RTP before shipping
+assert!((report.rtp() - 0.965).abs() < 1e-3);`,
     repo: 'Stake-Dev-Tool/stake-dev-tool',
     tags: ['stake', 'oss'],
     stack: ['Rust', 'Svelte', 'Tauri'],
@@ -97,6 +116,11 @@ export const PROJECTS: Project[] = [
     title: 'Hangar.AI',
     year: 2026,
     href: 'https://github.com/simnJS/hangar-ai',
+    code: `$ hangar new --agents claude,codex
+
+  claude   refactor auth      running
+  codex    write the tests    done
+  claude   fix the CI         queued`,
     repo: 'simnJS/hangar-ai',
     tags: ['oss'],
     stack: ['Tauri', 'React', 'Rust', 'MCP'],
@@ -106,6 +130,12 @@ export const PROJECTS: Project[] = [
     title: 'prism-verse',
     year: 2026,
     href: 'https://github.com/simnJS/prism-verse',
+    code: `# save.prism
+player_save {
+  coins: int = 0
+  skins: [string]
+  rank:  int = 1  @since("0.2")
+}`,
     repo: 'simnJS/prism-verse',
     tags: ['uefn', 'oss'],
     stack: ['TypeScript', 'Verse'],
@@ -115,6 +145,12 @@ export const PROJECTS: Project[] = [
     title: 'Verse on GitHub',
     year: 2026,
     href: 'https://github.com/github-linguist/linguist/pull/7440',
+    code: `# hello.verse
+Greet(Name : string) : string =
+    "Hello, {Name}!"
+
+OnBegin<override>()<suspends> : void =
+    Print(Greet("boykisser"))`,
     repo: 'simnJS/highlightjs-verse',
     tags: ['uefn', 'oss'],
     stack: ['TextMate', 'highlight.js'],

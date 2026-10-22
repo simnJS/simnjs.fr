@@ -77,6 +77,12 @@ export function RunLink({
 
 export const RUN_EVENT = 'simnjs:run'
 
+export const QUAKE_EVENT = 'simnjs:quake'
+
+export function toggleQuake() {
+  window.dispatchEvent(new Event(QUAKE_EVENT))
+}
+
 export function runCommand(cmd: string) {
   window.dispatchEvent(new CustomEvent(RUN_EVENT, { detail: cmd }))
 }

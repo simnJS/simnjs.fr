@@ -1,190 +1,317 @@
-import { useEffect, useRef, useState, type HTMLAttributes, type KeyboardEvent, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
-import { ME, PROJECTS, PROJECT_TAGS, type Project, type ProjectTag } from '../../content/site'
+import { FileText, Github, Linkedin, Mail } from 'lucide-react'
+import { CLIENTS } from '../../content/clients'
+import { ME, PROJECTS, STACK, type Project } from '../../content/site'
 import { useTerm } from '../../i18n/term'
-import { aboutLines, clientLines, contactLines, eventLine, stackLines, type Line } from '../../term/shell'
-import { CommandHeading, PromptHeader, PromptLine } from './Prompt'
-import { ExtLink, Spinner } from './bits'
+import { eventLine } from '../../term/shell'
+import { ExtLink } from './bits'
 import { useGithubActivity, useGithubProfile } from './live'
 
-// Les sections de la page : des commandes déjà exécutées, dont la sortie
-// est la même que celle du shell quand c'est un fichier (cat ~/stack.toml…).
+// Les sections de la page d'accueil : visuelles d'abord, avec le terminal
+// en filigrane (titres en ❯, fenêtres, code coloré).
 
-export function Lines({ lines, className = '' }: { lines: Line[]; className?: string }) {
+function SectionTitle({ id, children, aside }: { id?: string; children: ReactNode; aside?: ReactNode }) {
   return (
-    <div className={className}>
-      {lines.map((l, i) => (
-        <div key={i} className="term-line">
-          {l.node ?? l.text}
-        </div>
-      ))}
+    <div className="mb-8 mt-28 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+      <h2 id={id} className="text-[clamp(1.75rem,4vw,2.5rem)] font-extrabold tracking-[-0.03em]">
+        <span className="text-pink">❯ </span>
+        {children}
+      </h2>
+      {aside && <div className="text-[13px] text-muted">{aside}</div>}
     </div>
   )
 }
 
-// ─── ~/projects : un gestionnaire de fichiers à deux volets ────────────────
+// ─── Projets ────────────────────────────────────────────────────────────────
 
-function ProjectLink({ p, className, children, ...rest }: {
-  p: Project
-  className?: string
-  children: ReactNode
-} & HTMLAttributes<HTMLAnchorElement>) {
+const KEYWORDS = /^(using|class|for|let|in|return|override|suspends|void|int|string|array|editable|assert|player_save)$/
+
+/** Coloration minimale, juste assez pour qu'un extrait se lise comme du code. */
+function CodeArt({ code }: { code: string }) {
+  return (
+    <pre className="h-full overflow-hidden bg-bg p-5 text-[12.5px] leading-[1.7] text-fg">
+      {code.split('\n').map((line, i) => (
+        <div key={i}>
+          {line.split(/("[^"]*"|#.*$|\/\/.*$|\$|\b\d[\d_.]*\b|\b[A-Za-z_]+\b)/).map((tok, j) => {
+            if (!tok) return null
+            let cls = ''
+            if (tok.startsWith('"')) cls = 'text-green'
+            else if (tok.startsWith('#') || tok.startsWith('//')) cls = 'text-muted'
+            else if (tok === '$') cls = 'text-pink'
+            else if (/^\d/.test(tok)) cls = 'text-yellow'
+            else if (KEYWORDS.test(tok)) cls = 'text-pink'
+            else if (/^[A-Z]/.test(tok)) cls = 'text-blue'
+            return (
+              <span key={j} className={cls}>
+                {tok}
+              </span>
+            )
+          })}
+          {line === '' && ' '}
+        </div>
+      ))}
+    </pre>
+  )
+}
+
+// Courbe d'audience d'une journée type : creux le matin, pic en soirée.
+const HOURS = Array.from({ length: 24 }, (_, h) => 0.18 + 0.82 * Math.max(0, Math.sin(((h - 7) / 24) * Math.PI * 2 - 0.4)) ** 1.6)
+
+/** Illustration d'Engine Players : l'audience heure par heure. */
+function ChartArt() {
+  return (
+    <div className="flex h-full flex-col bg-bg p-5">
+      <div className="text-[12px] text-muted">players online, last 24h</div>
+      <div className="mt-3 flex flex-1 items-end gap-[3px]">
+        {HOURS.map((v, h) => (
+          <span
+            key={h}
+            className={`flex-1 rounded-t-[2px] ${v > 0.85 ? 'bg-pink' : 'bg-pink/35'}`}
+            style={{ height: `${Math.round(v * 100)}%` }}
+          />
+        ))}
+      </div>
+      <div className="mt-2 flex justify-between text-[11px] text-muted">
+        <span>00h</span>
+        <span>06h</span>
+        <span>12h</span>
+        <span>18h</span>
+        <span>24h</span>
+      </div>
+    </div>
+  )
+}
+
+function ProjectCard({ p, wide = false, compact = false }: { p: Project; wide?: boolean; compact?: boolean }) {
+  const t = useTerm()
+  const className =
+    'group flex h-full flex-col overflow-hidden rounded-lg border border-line bg-panel transition-colors hover:border-pink/60 focus-visible:border-pink'
+  const inner = (
+    <>
+      <div className="flex h-9 items-center justify-between border-b border-line bg-chrome px-3 text-[12px] text-dim">
+        <span className="flex items-center gap-2">
+          <FileText size={13} className="text-pink" aria-hidden />
+          {p.slug}.md
+        </span>
+        <span>{p.year}</span>
+      </div>
+      <div
+        className={`relative overflow-hidden ${wide ? 'aspect-[16/9] md:aspect-[24/9]' : compact ? 'aspect-[16/7]' : 'aspect-[16/9]'}`}
+        style={{ background: p.imageBg }}
+      >
+        {p.image ? (
+          <img
+            src={p.image}
+            alt=""
+            loading="lazy"
+            className={`absolute inset-0 h-full w-full transition-transform duration-500 group-hover:scale-[1.03] ${
+              p.imageBg ? 'object-contain p-4' : 'object-cover'
+            }`}
+            // Logo carré : ses bords se fondent dans la couleur de fond, sans cadre visible.
+            style={p.imageBg ? { maskImage: 'radial-gradient(closest-side, #000 80%, transparent 100%)' } : undefined}
+          />
+        ) : p.visual === 'chart' ? (
+          <ChartArt />
+        ) : (
+          p.code && <CodeArt code={p.code} />
+        )}
+      </div>
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="text-xl font-bold tracking-tight">{p.title}</h3>
+        <p className="mt-2 flex-1 text-dim">{t.projects.desc[p.slug]}</p>
+        <p className="mt-4 flex flex-wrap gap-x-3 text-[13px] text-mauve">
+          {p.tags.map((tag) => (
+            <span key={tag}>#{tag}</span>
+          ))}
+        </p>
+      </div>
+    </>
+  )
   if (p.caseStudy)
     return (
-      <Link to="/work/$slug" params={{ slug: p.caseStudy }} className={className} {...rest}>
-        {children}
+      <Link to="/work/$slug" params={{ slug: p.caseStudy }} className={className}>
+        {inner}
       </Link>
     )
   return (
-    <a href={p.href} target="_blank" rel="noreferrer" className={className} {...rest}>
-      {children}
+    <a href={p.href} target="_blank" rel="noreferrer" className={className}>
+      {inner}
     </a>
-  )
-}
-
-function Preview({ p }: { p: Project }) {
-  const t = useTerm()
-  return (
-    <div className="overflow-hidden rounded-md border border-line">
-      <div className="flex items-center justify-between border-b border-line bg-panel px-[1ch] text-[13px] leading-8 text-dim">
-        <span>
-          {t.projects.preview}: <span className="text-fg">{p.slug}.md</span>
-        </span>
-        <span className="text-mauve">{p.tags.map((x) => `#${x}`).join(' ')}</span>
-      </div>
-      {p.image ? (
-        <img
-          key={p.image}
-          src={p.image}
-          alt={p.title}
-          className="aspect-[16/10] w-full border-b border-line object-cover"
-        />
-      ) : (
-        <div className="grid aspect-[16/10] w-full place-items-center border-b border-line bg-[radial-gradient(circle,var(--color-line)_1px,transparent_1px)] [background-size:12px_12px]">
-          <span className="bg-bg px-[1ch] text-2xl font-bold text-pink">{p.title}</span>
-        </div>
-      )}
-      <div className="space-y-3 p-[2ch]">
-        <p className="term-line">
-          <span className="font-bold text-pink"># {p.title}</span> <span className="text-muted">{p.year}</span>
-        </p>
-        <p className="text-dim">{t.projects.desc[p.slug]}</p>
-        <p className="term-line">
-          <span className="text-blue">stack</span> = [
-          {p.stack.map((s, i) => (
-            <span key={s}>
-              {i > 0 && ', '}
-              <span className="text-green">"{s}"</span>
-            </span>
-          ))}
-          ]
-        </p>
-        <p className="flex flex-wrap gap-x-[3ch]">
-          {p.caseStudy && (
-            <Link to="/work/$slug" params={{ slug: p.caseStudy }} className="text-blue underline decoration-transparent underline-offset-4 hover:decoration-current">
-              {t.projects.caseStudy}
-            </Link>
-          )}
-          <ExtLink href={p.href}>{t.projects.visit}</ExtLink>
-          {p.repo && <ExtLink href={`https://github.com/${p.repo}`}>{t.projects.source}</ExtLink>}
-        </p>
-      </div>
-    </div>
   )
 }
 
 export function Projects() {
   const t = useTerm()
-  const [tag, setTag] = useState<ProjectTag | null>(null)
-  const [selected, setSelected] = useState(PROJECTS[0].slug)
-  const listRef = useRef<HTMLUListElement>(null)
-  const list = tag ? PROJECTS.filter((p) => p.tags.includes(tag)) : PROJECTS
-  const current = list.find((p) => p.slug === selected) ?? list[0]
-
-  function onKeyDown(e: KeyboardEvent<HTMLUListElement>) {
-    const keys: Record<string, number> = { ArrowDown: 1, j: 1, ArrowUp: -1, k: -1 }
-    const d = keys[e.key]
-    if (!d) return
-    e.preventDefault()
-    const links = [...(listRef.current?.querySelectorAll<HTMLAnchorElement>('a') ?? [])]
-    const i = links.indexOf(document.activeElement as HTMLAnchorElement)
-    links[(i + d + links.length) % links.length]?.focus()
-  }
-
+  const products = PROJECTS.filter((p) => !p.tags.includes('oss'))
+  const oss = PROJECTS.filter((p) => p.tags.includes('oss'))
   return (
     <section>
-      <CommandHeading id="projects">
-        ls -la ~/projects{tag ? ` --tag=${tag}` : ''}
-      </CommandHeading>
-      <div className="term-line mb-3 flex flex-wrap gap-x-[2ch]" role="group" aria-label="filter">
-        {[null, ...PROJECT_TAGS].map((x) => (
-          <button
-            key={x ?? 'all'}
-            type="button"
-            onClick={() => setTag(x)}
-            aria-pressed={tag === x}
-            className={tag === x ? 'text-pink' : 'text-muted transition-colors hover:text-fg'}
-          >
-            {x ? `--tag=${x}` : t.projects.all}
-          </button>
+      <SectionTitle id="projects">{t.titles.projects}</SectionTitle>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {products.map((p, i) => (
+          <div key={p.slug} className={i === 0 ? 'md:col-span-2' : ''}>
+            <ProjectCard p={p} wide={i === 0} />
+          </div>
         ))}
       </div>
-      <div className="grid gap-[3ch] md:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
-        <ul ref={listRef} onKeyDown={onKeyDown} data-keynav className="min-w-0">
-          {list.map((p) => {
-            const on = current?.slug === p.slug
-            return (
-              <li key={p.slug}>
-                <ProjectLink
-                  p={p}
-                  onMouseEnter={() => setSelected(p.slug)}
-                  onFocus={() => setSelected(p.slug)}
-                  className={`block px-[1ch] py-1 outline-none transition-colors md:py-0 ${on ? 'bg-select' : 'hover:bg-panel'} focus-visible:outline-pink`}
-                >
-                  <span className="term-line flex gap-x-[1ch]">
-                    <span className={on ? 'text-pink' : 'text-transparent'} aria-hidden>❯</span>
-                    <span className="hidden text-muted lg:inline">-rw-r--r--</span>
-                    <span className="text-dim">{p.year}</span>
-                    <span className={`truncate ${p.caseStudy ? 'font-bold text-blue' : 'text-fg'}`}>{p.slug}.md</span>
-                  </span>
-                  <span className="block pl-[2ch] text-[13px] text-dim md:hidden">{t.projects.desc[p.slug]}</span>
-                </ProjectLink>
-              </li>
-            )
-          })}
-          <li className="term-line px-[1ch] text-muted">
-            {list.length} {list.length > 1 ? 'files' : 'file'}
-          </li>
-        </ul>
-        <div className="hidden md:block">{current && <Preview p={current} />}</div>
+      <h3 className="mb-6 mt-16 text-xl font-bold">
+        <span className="text-pink">❯ </span>
+        {t.titles.oss}
+      </h3>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {oss.map((p) => (
+          <ProjectCard key={p.slug} p={p} compact />
+        ))}
       </div>
     </section>
   )
 }
 
-// ─── gh contributions ──────────────────────────────────────────────────────
+// ─── Clients ──────────────────────────────────────────────────────────────
+
+export function Clients() {
+  const t = useTerm()
+  return (
+    <section>
+      <SectionTitle>{t.titles.clients}</SectionTitle>
+      <ul className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        {CLIENTS.map((c) => {
+          const logo = c.logo && (
+            <img
+              src={c.logo}
+              alt=""
+              className={
+                c.shape === 'tile'
+                  ? 'size-12 rounded-md object-cover'
+                  : `max-h-10 max-w-[70%] object-contain opacity-80 transition-opacity group-hover:opacity-100 ${
+                      c.logo.endsWith('.svg') ? 'grayscale invert' : 'brightness-0 invert'
+                    }`
+              }
+            />
+          )
+          const body = (
+            <>
+              <span className="flex h-14 w-full items-center justify-center">{logo}</span>
+              <span className="text-[13px] text-dim">{c.name}</span>
+            </>
+          )
+          const cls =
+            'group flex h-32 flex-col items-center justify-center gap-3 rounded-lg border border-line bg-panel transition-colors hover:border-pink/60'
+          return (
+            <li key={c.name}>
+              {c.url ? (
+                <a href={c.url} target="_blank" rel="noreferrer" className={cls}>
+                  {body}
+                </a>
+              ) : (
+                <div className={cls}>{body}</div>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
+}
+
+// ─── Stack ──────────────────────────────────────────────────────────────────
+
+// Slugs simple-icons ; null = pas de logo officiel, on affiche un monogramme.
+const ICONS: Record<string, string | null> = {
+  UEFN: 'unrealengine',
+  Roblox: 'roblox',
+  'Stake Engine': null,
+  's&box': null,
+  Verse: 'epicgames',
+  Luau: 'luau',
+  'roblox-ts': null,
+  TypeScript: 'typescript',
+  React: 'react',
+  'TanStack Start': 'tanstack',
+  Svelte: 'svelte',
+  Tailwind: 'tailwindcss',
+  'Node.js': 'nodedotjs',
+  Convex: 'convex',
+  Stripe: 'stripe',
+  Vercel: 'vercel',
+  Rust: 'rust',
+  Python: 'python',
+  Tauri: 'tauri',
+  'discord.js': 'discorddotjs',
+  'Claude Code': 'claude',
+  MCP: 'modelcontextprotocol',
+  Remotion: null,
+}
+
+function TechIcon({ name }: { name: string }) {
+  const slug = ICONS[name]
+  const [failed, setFailed] = useState(false)
+  if (!slug || failed)
+    return (
+      <span className="grid size-6 place-items-center rounded bg-pink/15 text-[11px] font-bold text-pink" aria-hidden>
+        {name.replace(/[^A-Za-z]/g, '').slice(0, 2)}
+      </span>
+    )
+  return (
+    <img
+      src={`https://cdn.simpleicons.org/${slug}/f5a3c7`}
+      alt=""
+      width={24}
+      height={24}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className="size-6"
+    />
+  )
+}
+
+export function Stack() {
+  const t = useTerm()
+  return (
+    <section>
+      <SectionTitle id="stack">{t.titles.stack}</SectionTitle>
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        {STACK.map(({ table, entries }) => (
+          <div key={table}>
+            <h3 className="mb-3 text-[13px] text-muted">[{table}]</h3>
+            <ul className="flex flex-wrap gap-2">
+              {entries
+                .flatMap(([, values]) => values)
+                .map((name) => (
+                  <li key={name} className="flex items-center gap-2.5 rounded-lg border border-line bg-panel px-3 py-2">
+                    <TechIcon name={name} />
+                    <span>{name}</span>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+// ─── Activité GitHub ──────────────────────────────────────────────────────
 
 const HEAT = ['#1c1c24', '#4b3342', '#7c4f68', '#b7789b', '#f5a3c7']
 
-export function Contributions() {
+export function Activity() {
   const t = useTerm()
   const profile = useGithubProfile()
+  const events = useGithubActivity(60_000)
   return (
     <section>
-      <CommandHeading id="activity">gh contributions --last 12mo</CommandHeading>
-      {profile.status === 'loading' && (
-        <div className="term-line text-dim">
-          <Spinner /> {t.ff.loading}
-        </div>
-      )}
-      {profile.status === 'error' && (
-        <div className="term-line text-dim">
-          {t.heat.unavailable} <ExtLink href={ME.github}>github.com/simnJS</ExtLink>
-        </div>
-      )}
+      <SectionTitle
+        id="activity"
+        aside={<ExtLink href={ME.github} className="text-muted">github.com/simnJS</ExtLink>}
+      >
+        {t.titles.activity}
+      </SectionTitle>
+
       {profile.status === 'ok' && (
-        <>
-          <div className="overflow-x-auto pb-2">
+        <div className="mb-8 rounded-lg border border-line bg-panel p-5">
+          <div className="overflow-x-auto pb-1">
             <div className="flex w-max gap-[3px]" role="img" aria-label={t.contributions(profile.data.totalContributions)}>
               {profile.data.weeks.map((w, i) => (
                 <div key={i} className="flex flex-col gap-[3px]">
@@ -200,78 +327,35 @@ export function Contributions() {
               ))}
             </div>
           </div>
-          <div className="term-line mt-1 flex flex-wrap items-center justify-between gap-x-[3ch] text-dim">
-            <span>{t.contributions(profile.data.totalContributions)}</span>
-            <span className="flex items-center gap-[0.5ch] text-muted" aria-hidden>
-              {t.heat.less}
-              {HEAT.map((c) => (
-                <span key={c} className="inline-block size-[11px] rounded-[2px]" style={{ background: c }} />
-              ))}
-              {t.heat.more}
-            </span>
-          </div>
-          <div className="term-line mt-2 flex flex-wrap gap-x-[3ch]">
+          <div className="mt-4 flex flex-wrap gap-x-8 gap-y-2">
             {(
               [
-                ['commits', profile.data.totalCommits],
-                ['prs', profile.data.totalPRs],
-                ['repos', profile.data.totalActiveRepos],
-                ['streak', `${profile.data.currentStreak}d`],
-                ['best', `${profile.data.longestStreak}d`],
-              ] as Array<[string, number | string]>
-            ).map(([k, v]) => (
+                [profile.data.totalContributions, 'contributions'],
+                [profile.data.totalCommits, 'commits'],
+                [profile.data.totalPRs, 'pull requests'],
+                [`${profile.data.currentStreak}d`, 'streak'],
+              ] as Array<[number | string, string]>
+            ).map(([v, k]) => (
               <span key={k}>
-                <span className="text-pink">{k}</span> <span>{typeof v === 'number' ? v.toLocaleString('en') : v}</span>
+                <span className="text-lg font-bold text-pink">{typeof v === 'number' ? v.toLocaleString('en') : v}</span>{' '}
+                <span className="text-dim">{k}</span>
               </span>
             ))}
           </div>
-        </>
-      )}
-    </section>
-  )
-}
-
-// ─── tail -f ~/activity.log ─────────────────────────────────────────────────
-
-export function ActivityLog() {
-  const t = useTerm()
-  const state = useGithubActivity(60_000)
-  const seen = useRef<Set<string> | null>(null)
-  const [fresh, setFresh] = useState<Set<string>>(new Set())
-
-  // Les événements arrivés depuis le premier chargement s'allument en rose.
-  useEffect(() => {
-    if (state.status !== 'ok') return
-    const ids = state.data.map((e) => e.id)
-    if (seen.current) {
-      const added = ids.filter((id) => !seen.current!.has(id))
-      if (added.length) {
-        setFresh(new Set(added))
-        setTimeout(() => setFresh(new Set()), 4000)
-      }
-    }
-    seen.current = new Set(ids)
-  }, [state])
-
-  return (
-    <section>
-      <CommandHeading>tail -f ~/activity.log</CommandHeading>
-      {state.status === 'loading' && (
-        <div className="term-line text-dim">
-          <Spinner /> {t.activity.loading}
         </div>
       )}
-      {state.status === 'error' && <div className="term-line text-red">{t.errors.network}</div>}
-      {state.status === 'ok' && (
-        <div>
-          {state.data.length === 0 && <div className="term-line text-dim">{t.activity.empty}</div>}
-          {state.data.slice(0, 12).map((e) => (
-            <div key={e.id} className={`term-line transition-colors duration-1000 ${fresh.has(e.id) ? 'bg-pink/10' : ''}`}>
-              {eventLine(e, t).node}
-            </div>
-          ))}
-          <div className="term-line text-muted">
-            {t.activity.following} <span className="caret inline-block h-[1.15em] w-[2px] translate-y-[0.2em] bg-muted" aria-hidden />
+
+      {events.status === 'ok' && events.data.length > 0 && (
+        <div className="rounded-lg border border-line bg-panel">
+          <div className="flex h-9 items-center border-b border-line bg-chrome px-3 text-[12px] text-dim">
+            tail -f ~/activity.log
+          </div>
+          <div className="p-4">
+            {events.data.slice(0, 6).map((e) => (
+              <div key={e.id} className="term-line">
+                {eventLine(e, t).node}
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -279,34 +363,18 @@ export function ActivityLog() {
   )
 }
 
-// ─── Fichiers ──────────────────────────────────────────────────────────────
-
-export function Clients() {
-  const t = useTerm()
-  return (
-    <section>
-      <CommandHeading>cat ~/clients.txt</CommandHeading>
-      <Lines lines={clientLines(t)} />
-    </section>
-  )
-}
-
-export function Stack() {
-  const t = useTerm()
-  return (
-    <section>
-      <CommandHeading id="stack">cat ~/stack.toml</CommandHeading>
-      <Lines lines={stackLines(t)} />
-    </section>
-  )
-}
+// ─── À propos, contact, fin ─────────────────────────────────────────────────
 
 export function About() {
   const t = useTerm()
   return (
     <section>
-      <CommandHeading>cat ~/about.md</CommandHeading>
-      <Lines lines={aboutLines(t)} className="max-w-[72ch]" />
+      <SectionTitle>{t.titles.about}</SectionTitle>
+      <div className="max-w-[62ch] space-y-5 text-[1.05rem] leading-relaxed">
+        {t.bio.map((p) => (
+          <p key={p}>{p}</p>
+        ))}
+      </div>
     </section>
   )
 }
@@ -314,29 +382,36 @@ export function About() {
 export function Contact() {
   const t = useTerm()
   const [copied, setCopied] = useState(false)
+  const button =
+    'inline-flex items-center gap-2 rounded-md border border-line px-4 py-2.5 transition-colors hover:border-pink hover:text-pink'
   return (
     <section>
-      <CommandHeading id="contact">contact</CommandHeading>
-      <p className="mb-5 mt-2 text-[clamp(1.5rem,4vw,2.25rem)] font-bold leading-tight text-pink">{t.contact.title}</p>
-      <Lines lines={contactLines()} />
-      <div className="mt-5 flex flex-wrap gap-[2ch]">
-        <a
-          href={`mailto:${ME.email}`}
-          className="rounded border border-pink px-[1.5ch] py-1.5 text-pink transition-colors hover:bg-pink hover:text-bg"
-        >
-          [ {t.contact.mail} ]
+      <SectionTitle id="contact">{t.titles.contact}</SectionTitle>
+      <p className="text-lg text-dim">{t.contact.title}</p>
+      <a
+        href={`mailto:${ME.email}`}
+        className="mt-3 inline-block break-all text-[clamp(1.75rem,6vw,4rem)] font-extrabold tracking-[-0.03em] text-pink underline decoration-transparent decoration-2 underline-offset-8 transition-colors hover:decoration-pink"
+      >
+        {ME.email}
+      </a>
+      <div className="mt-8 flex flex-wrap gap-3">
+        <a href={ME.github} target="_blank" rel="noreferrer" className={button}>
+          <Github size={16} aria-hidden /> GitHub
+        </a>
+        <a href={ME.linkedin} target="_blank" rel="noreferrer" className={button}>
+          <Linkedin size={16} aria-hidden /> LinkedIn
         </a>
         <button
           type="button"
+          className={button}
           onClick={() =>
             navigator.clipboard?.writeText(ME.discord).then(() => {
               setCopied(true)
               setTimeout(() => setCopied(false), 1800)
             })
           }
-          className="rounded border border-line px-[1.5ch] py-1.5 text-fg transition-colors hover:border-mauve hover:text-mauve"
         >
-          [ {copied ? t.copied : t.contact.discord} ]
+          <Mail size={16} aria-hidden /> {copied ? t.copied : `Discord: ${ME.discord}`}
         </button>
       </div>
     </section>
@@ -345,15 +420,11 @@ export function Contact() {
 
 export function Exit() {
   return (
-    <footer className="mt-14">
-      <PromptHeader />
-      <PromptLine>
-        <span className="text-yellow">exit</span>
-      </PromptLine>
-      <div className="term-line mt-3 text-muted">[process exited with code 0 (0x00000000)]</div>
-      <div className="term-line text-muted">
+    <footer className="mt-28 border-t border-line pt-6 text-[13px] text-muted">
+      <p>[process exited with code 0 (0x00000000)]</p>
+      <p>
         © {new Date().getFullYear()} {ME.fullName} ({ME.handle})
-      </div>
+      </p>
     </footer>
   )
 }

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { useI18n } from '../../i18n/I18nProvider'
 import { LOCALES } from '../../i18n/translations'
+import { toggleQuake } from './bits'
 
 // La fenêtre Windows Terminal. Ses onglets servent de navigation et suivent
 // le défilement ; le sélecteur de langue tient dans la barre.
@@ -24,19 +25,33 @@ export const TABS: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'contact', label: 'contact', icon: Mail },
 ]
 
+// L'onglet actif est la dernière section dont le titre a passé le tiers haut
+// de l'écran ; tout en bas de page, c'est la dernière.
 function useActiveTab(): string {
   const [active, setActive] = useState('top')
   useEffect(() => {
-    const sections = TABS.map((t) => document.getElementById(t.id)).filter(Boolean) as HTMLElement[]
-    const io = new IntersectionObserver(
-      (entries) => {
-        const seen = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
-        if (seen[0]) setActive(seen[0].target.id)
-      },
-      { rootMargin: '-30% 0px -60% 0px' },
-    )
-    sections.forEach((s) => io.observe(s))
-    return () => io.disconnect()
+    let raf = 0
+    const update = () => {
+      raf = 0
+      let current = TABS[0].id
+      for (const { id } of TABS) {
+        const el = document.getElementById(id)
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.35) current = id
+      }
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) current = TABS[TABS.length - 1].id
+      setActive(current)
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
   }, [])
   return active
 }
@@ -87,6 +102,15 @@ export function Window({
               )
             })}
           </nav>
+          <button
+            type="button"
+            onClick={toggleQuake}
+            className="mb-1.5 flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-line px-2 text-[12px] text-dim transition-colors hover:border-pink hover:text-pink"
+          >
+            <SquareTerminal size={13} aria-hidden />
+            terminal
+            <kbd className="hidden font-mono text-muted sm:inline">`</kbd>
+          </button>
           <div className="flex h-9 items-center gap-1 pl-2 text-[13px]" role="group" aria-label="language">
             {LOCALES.map((l) => (
               <button
@@ -109,7 +133,7 @@ export function Window({
             <X size={15} strokeWidth={1.5} />
           </div>
         </header>
-        <div className="px-[2ch] pb-10 pt-4 sm:px-[3ch]">{children}</div>
+        <div className="px-5 pb-10 pt-2 sm:px-10">{children}</div>
       </div>
     </div>
   )

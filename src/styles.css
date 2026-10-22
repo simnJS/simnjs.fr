@@ -101,24 +101,8 @@
   animation: caret-blink 1.1s infinite;
 }
 
-/* Le texte de commande se tape au chargement, puis la sortie s'imprime ligne
-   par ligne : pas de fondu, comme un vrai terminal. Pur CSS, donc visible dès
-   le HTML rendu côté serveur. */
-@keyframes type-in {
-  from {
-    width: 0;
-  }
-}
-
-.typed {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: bottom;
-  white-space: nowrap;
-  width: calc(var(--chars, 9) * 1ch);
-  animation: type-in var(--type-ms, 600ms) steps(var(--chars, 9), end) var(--type-delay, 250ms) both;
-}
-
+/* La sortie de fastfetch s'imprime ligne par ligne : pas de fondu, comme un
+   vrai terminal. */
 @keyframes print-in {
   from {
     visibility: hidden;
@@ -131,7 +115,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .caret,
-  .typed,
   .printed {
     animation: none;
   }

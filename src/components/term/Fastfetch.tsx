@@ -140,12 +140,6 @@ export function Fastfetch({
     <div className="grid gap-x-[3ch] gap-y-4 py-[1.6em] md:grid-cols-[auto_1fr]">
       <div className="pl-[2ch]">
         <Boykisser delay={print ? delay : 0} className="mt-[0.4em]" />
-        <p
-          className={`term-line mt-3 italic text-pink ${print ? 'printed' : ''}`}
-          style={{ '--i': 18, '--print-delay': `${delay}ms` } as CSSProperties}
-        >
-          {'  '}you like kissing boys, don't you? :3
-        </p>
       </div>
       <div className="min-w-0">{lines}</div>
     </div>

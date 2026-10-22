@@ -1,15 +1,12 @@
-import type { CSSProperties } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { Window } from '../components/term/Window'
-import { PromptHeader, PromptLine } from '../components/term/Prompt'
-import { Fastfetch } from '../components/term/Fastfetch'
-import { Shell } from '../components/term/Shell'
+import { Hero } from '../components/term/Hero'
+import { QuakeTerminal } from '../components/term/Quake'
 import {
   About,
-  ActivityLog,
+  Activity,
   Clients,
   Contact,
-  Contributions,
   Exit,
   Projects,
   Stack,
@@ -22,31 +19,24 @@ export const Route = createFileRoute('/')({
   }),
 })
 
-// Toute la page est une session de terminal : le fastfetch d'ouverture, le
-// shell interactif, puis les commandes déjà exécutées qui font les sections.
+// Une page visuelle dans une fenêtre Windows Terminal ; le vrai shell attend
+// dans le tiroir « quake mode » (touche ` ou bouton terminal).
 function Home() {
   return (
-    <Window>
-      <main>
-        <section id="top">
-          <PromptHeader />
-          <PromptLine>
-            <span className="typed text-yellow" style={{ '--chars': 9 } as CSSProperties}>
-              fastfetch
-            </span>
-          </PromptLine>
-          <Fastfetch heading />
-          <Shell />
-        </section>
-        <Projects />
-        <Clients />
-        <Stack />
-        <Contributions />
-        <ActivityLog />
-        <About />
-        <Contact />
-        <Exit />
-      </main>
-    </Window>
+    <>
+      <Window>
+        <main>
+          <Hero />
+          <Projects />
+          <Clients />
+          <Stack />
+          <Activity />
+          <About />
+          <Contact />
+          <Exit />
+        </main>
+      </Window>
+      <QuakeTerminal />
+    </>
   )
 }

@@ -16,17 +16,16 @@ Site live : [simnjs.fr](https://simnjs.fr)
 
 ## La page
 
-Toute la page est une session de terminal :
+Une page visuelle dans une fenêtre Windows Terminal :
 
-- `fastfetch` : le logo boykisser en particules (canvas, ressorts, réaction au
-  curseur) et des infos live (uptime, commits GitHub, morceau Spotify)
-- un shell interactif : complétion Tab, historique ↑↓, prédictions grisées,
-  pipes (`projects | grep stake`), système de fichiers virtuel (`ls`, `cd`,
+- un hero avec le logo boykisser en particules (canvas, ressorts, réaction au
+  curseur)
+- les projets en cartes (captures, extraits de code ou graphique), les
+  clients, la stack avec logos, l'activité GitHub en direct, le contact
+- un terminal en « quake mode » (touche ` ou ², ou le bouton terminal) :
+  fastfetch, puis un shell avec complétion Tab, historique, prédictions
+  grisées, pipes (`projects | grep stake`), fichiers virtuels (`ls`, `cd`,
   `cat ~/projects/*.md`) et commandes live (`activity`, `spotify`, `roblox`)
-- `ls -la ~/projects` : gestionnaire de fichiers à deux volets, navigable au
-  clavier (↑↓ / j k)
-- `cat ~/clients.txt`, `cat ~/stack.toml`, `gh contributions`,
-  `tail -f ~/activity.log`, `cat ~/about.md`, `contact`
 - les études de cas s'ouvrent dans `less` (`q` pour revenir)
 
 Le contenu se modifie dans `src/content/site.ts` (projets, stack, contact),

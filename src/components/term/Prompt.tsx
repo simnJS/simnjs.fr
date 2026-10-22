@@ -34,18 +34,3 @@ export function PromptLine({ children }: { children?: ReactNode }) {
     </div>
   )
 }
-
-/** En-tête de section : une commande déjà exécutée. */
-export function CommandHeading({ id, children }: { id?: string; children: ReactNode }) {
-  return (
-    <div className="mt-14">
-      <PromptHeader />
-      <h2 id={id} className="term-line font-normal">
-        <span className="text-pink" aria-hidden>
-          ❯{' '}
-        </span>
-        <span className="text-yellow">{children}</span>
-      </h2>
-    </div>
-  )
-}

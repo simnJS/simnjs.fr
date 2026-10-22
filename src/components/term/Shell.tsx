@@ -128,30 +128,6 @@ export function Shell() {
     if (entries.length) promptRef.current?.scrollIntoView({ block: 'nearest' })
   }, [entries])
 
-  // Taper n'importe où écrit dans le shell ; « / » y amène le focus.
-  useEffect(() => {
-    const onKey = (e: globalThis.KeyboardEvent) => {
-      const el = document.activeElement
-      if (e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1 || e.key === ' ') return
-      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || (el as HTMLElement).isContentEditable)) return
-      if (el && el !== document.body && el.closest('[data-keynav]')) return
-      if (e.key === '/') e.preventDefault()
-      inputRef.current?.focus({ preventScroll: true })
-      promptRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
-
-  // Premier affichage : le prompt prend le focus une fois le fastfetch imprimé.
-  useEffect(() => {
-    if (!window.matchMedia('(pointer: fine)').matches) return
-    const id = setTimeout(() => {
-      if (document.activeElement === document.body) inputRef.current?.focus({ preventScroll: true })
-    }, 1700)
-    return () => clearTimeout(id)
-  }, [])
-
   const ghost = caret === input.length && !menu ? predict(input, history) : ''
 
   function set(value: string, at = value.length) {
@@ -189,6 +165,8 @@ export function Shell() {
       return
     }
     if (e.key === 'Escape') {
+      // Ligne vide : Échap remonte jusqu'au tiroir, qui se ferme.
+      if (!menu && !input) return
       e.preventDefault()
       if (menu) setMenu(null)
       else set('')

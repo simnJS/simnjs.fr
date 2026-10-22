@@ -474,11 +474,7 @@ export const COMMANDS: Record<string, Command> = {
   boykisser: {
     run: () => {
       window.dispatchEvent(new CustomEvent(BOYKISSER_EVENT, { detail: 'kiss' }))
-      return [
-        ...BOYKISSER.map((l) => colored(l, 'text-pink leading-[1.15]')),
-        blank,
-        line("you like kissing boys, don't you? :3", <span className="italic text-pink">you like kissing boys, don't you? :3</span>),
-      ]
+      return [...BOYKISSER.map((l) => colored(l, 'text-pink leading-[1.15]')), blank, colored(':3', 'text-pink')]
     },
   },
 
@@ -511,7 +507,7 @@ export const COMMANDS: Record<string, Command> = {
   // ─── Surprises ───
   sudo: { hidden: true, run: (_a, { t }) => [err(t.sudo)] },
   rm: { hidden: true, run: () => [colored('rm: nice try :3', 'text-pink')] },
-  exit: { hidden: true, run: () => [colored("there is no exit. you like it here, don't you? :3", 'text-pink italic')] },
+  exit: { hidden: true, run: () => [colored('exit: nice try, you are staying :3', 'text-pink')] },
   vim: { hidden: true, run: () => [colored('vim: you would never get out anyway. try cat instead.', 'text-dim')] },
 }
 
