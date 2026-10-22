@@ -7,25 +7,46 @@ import { getSpotifyTrack, type SpotifyTrack } from '../../lib/spotify'
 
 export type Remote<T> = { status: 'loading' } | { status: 'ok'; data: T } | { status: 'error' }
 
-let profilePromise: Promise<GhProfile | null> | null = null
+// Profil GitHub : le serveur répond d'abord avec les seuls commits publics,
+// puis le comptage complet (repos privés et orgas) arrive en différé. On
+// relance donc vite au début, puis chaque minute, sans jamais faire baisser
+// le total déjà affiché.
+let profile: Remote<GhProfile> = { status: 'loading' }
+const listeners = new Set<() => void>()
+let polling = false
 
-export function loadProfile(): Promise<GhProfile | null> {
-  profilePromise ??= getGithubProfile()
-    .then((p) => (p.weeks.length ? p : null))
-    .catch(() => {
-      profilePromise = null
-      return null
-    })
-  return profilePromise
+function setProfile(next: Remote<GhProfile>) {
+  profile = next
+  listeners.forEach((l) => l())
+}
+
+async function pollProfile(attempt: number) {
+  const p = await getGithubProfile().catch(() => null)
+  if (p && p.weeks.length) {
+    const prev = profile.status === 'ok' ? profile.data : null
+    setProfile({ status: 'ok', data: prev ? { ...p, totalCommits: Math.max(p.totalCommits, prev.totalCommits) } : p })
+  } else if (profile.status !== 'ok' && attempt >= 3) {
+    setProfile({ status: 'error' })
+  }
+  const delay = attempt < 4 ? 5_000 * (attempt + 1) : 60_000
+  setTimeout(() => {
+    if (document.visibilityState === 'visible') pollProfile(attempt + 1)
+    else setTimeout(() => pollProfile(attempt + 1), 60_000)
+  }, delay)
 }
 
 export function useGithubProfile(): Remote<GhProfile> {
-  const [state, setState] = useState<Remote<GhProfile>>({ status: 'loading' })
+  const [state, setState] = useState(profile)
   useEffect(() => {
-    let alive = true
-    loadProfile().then((p) => alive && setState(p ? { status: 'ok', data: p } : { status: 'error' }))
+    const update = () => setState(profile)
+    listeners.add(update)
+    update()
+    if (!polling) {
+      polling = true
+      pollProfile(0)
+    }
     return () => {
-      alive = false
+      listeners.delete(update)
     }
   }, [])
   return state

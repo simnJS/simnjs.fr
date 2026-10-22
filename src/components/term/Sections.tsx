@@ -331,7 +331,7 @@ export function Activity() {
             {(
               [
                 [profile.data.totalContributions, 'contributions'],
-                [profile.data.totalCommits, 'commits'],
+                [profile.data.totalCommits, 'commits, 12 months'],
                 [profile.data.totalPRs, 'pull requests'],
                 [`${profile.data.currentStreak}d`, 'streak'],
               ] as Array<[number | string, string]>
