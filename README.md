@@ -1,6 +1,8 @@
 # Portfolio — simnJS
 
-Portfolio Neo-Brutalism construit avec TanStack Start, React 19 et Tailwind v4.
+Portfolio en forme de terminal, construit avec TanStack Start, React 19 et Tailwind v4.
+Le thème reprend le Windows Terminal « Boykisser Dark » de simnJS : JetBrains Mono,
+prompt Oh My Posh, fastfetch et son logo braille.
 
 Site live : [simnjs.fr](https://simnjs.fr)
 
@@ -9,18 +11,26 @@ Site live : [simnjs.fr](https://simnjs.fr)
 - **TanStack Start** (file-based routing + server functions)
 - **React 19** + **TypeScript**
 - **Tailwind CSS v4**
-- **GSAP** + ScrollTrigger pour les animations
 - **lucide-react** pour les icônes
 - i18n maison (FR / EN / ES)
 
-## Sections
+## La page
 
-- `Hero` — intro animée
-- `Work` — 4 projets (Safia Creative, Play & Chill, StakePlayerCount, UEFN Store)
-- `Stack` — technos
-- `Now` — feed live de l'activité GitHub (events + heatmap + stats annuelles)
-  et le morceau en cours d'écoute sur Spotify
-- `About` / `Contact`
+Toute la page est une session de terminal :
+
+- `fastfetch` : le logo boykisser en particules (canvas, ressorts, réaction au
+  curseur) et des infos live (uptime, commits GitHub, morceau Spotify)
+- un shell interactif : complétion Tab, historique ↑↓, prédictions grisées,
+  pipes (`projects | grep stake`), système de fichiers virtuel (`ls`, `cd`,
+  `cat ~/projects/*.md`) et commandes live (`activity`, `spotify`, `roblox`)
+- `ls -la ~/projects` : gestionnaire de fichiers à deux volets, navigable au
+  clavier (↑↓ / j k)
+- `cat ~/clients.txt`, `cat ~/stack.toml`, `gh contributions`,
+  `tail -f ~/activity.log`, `cat ~/about.md`, `contact`
+- les études de cas s'ouvrent dans `less` (`q` pour revenir)
+
+Le contenu se modifie dans `src/content/site.ts` (projets, stack, contact),
+`src/content/caseStudies.ts` et `src/i18n/term.ts` (textes).
 
 ## Développement
 

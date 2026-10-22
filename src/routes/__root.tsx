@@ -5,11 +5,12 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import appCss from '../styles.css?url'
 import { I18nProvider } from '../i18n/I18nProvider'
+import { NotFoundPage } from '../components/term/NotFound'
 
 const SITE_URL = 'https://simnjs.fr'
-const SITE_TITLE = 'simnJS (Simon GAY) · UGC Creator & Studio Founder · Lyon'
+const SITE_TITLE = 'simnJS (Simon GAY), software engineer in Lyon'
 const SITE_DESC =
-  'Portfolio de Simon GAY, alias simnJS, software engineer à Lyon. Founder de Safia Creative (UEFN, 3M+ plays sur Fortnite) et Play & Chill (slots & casino pour Stake Engine).'
+  "Portfolio de Simon GAY, alias simnJS, software engineer à Lyon. Il dirige Play'n Chill (slots pour Stake Engine, jeux Roblox) et construit des outils Verse pour les créateurs Fortnite."
 const OG_IMAGE = `${SITE_URL}/og.png`
 
 const JSONLD = JSON.stringify({
@@ -24,15 +25,10 @@ const JSONLD = JSON.stringify({
       alternateName: 'simnJS',
       url: SITE_URL,
       mainEntityOfPage: `${SITE_URL}/`,
-      email: 'mailto:contact@simnjs.fr',
+      email: 'mailto:pro@simnjs.fr',
       image: `${SITE_URL}/logo512.png`,
-      jobTitle: 'UGC Creator & Studio Founder',
+      jobTitle: 'Software engineer, studio founder',
       worksFor: [
-        {
-          '@type': 'Organization',
-          name: 'Safia Creative',
-          url: 'https://fortnite.gg/creator/safia',
-        },
         {
           '@type': 'Organization',
           name: 'Play & Chill',
@@ -47,10 +43,10 @@ const JSONLD = JSON.stringify({
       sameAs: [
         'https://github.com/simnJS',
         'https://www.linkedin.com/in/simon-gay-806103388/',
-        'https://fortnite.gg/creator/safia',
         'https://playandchill.bet/',
-        'https://stakeplayercount.com/',
-        'https://www.uefnstore.com/',
+        'https://engineplayers.com/',
+        'https://store.simnjs.fr/',
+        'https://stakedevtool.com/',
         'https://www.roblox.com/communities/35788348/Playn-Chill',
       ],
       knowsAbout: [
@@ -79,27 +75,7 @@ const JSONLD = JSON.stringify({
 })
 
 function NotFound() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-      <p className="font-mono text-sm uppercase tracking-widest text-ink/60">
-        // 404
-      </p>
-      <h1 className="mt-4 font-display leading-none tracking-tighter text-[clamp(5rem,22vw,14rem)]">
-        <span>4</span>
-        <span className="text-coral">0</span>
-        <span>4</span>
-      </h1>
-      <p className="mt-6 max-w-sm font-mono text-sm text-ink/70">
-        Cette page n&apos;existe pas (ou pas encore).
-      </p>
-      <a
-        href="/"
-        className="mt-10 inline-flex items-center gap-2 border-2 border-ink bg-yellow px-6 py-3 font-display shadow-[6px_6px_0_0_var(--color-ink)] transition-all hover:translate-x-1.5 hover:translate-y-1.5 hover:shadow-none"
-      >
-        ← Retour à l&apos;accueil
-      </a>
-    </main>
-  )
+  return <NotFoundPage />
 }
 
 export const Route = createRootRoute({
@@ -114,10 +90,10 @@ export const Route = createRootRoute({
       {
         name: 'keywords',
         content:
-          'simnJS, Simon GAY, UEFN, Fortnite Creative, Roblox, Stake Engine, UGC creator, slot games, Verse, Luau, s&box, Discord bot, Lyon, freelance, Safia Creative, Play & Chill',
+          "simnJS, Simon GAY, UEFN, Fortnite Creative, Roblox, Stake Engine, slot games, Verse, Luau, s&box, Rust, TypeScript, Lyon, freelance, Play'n Chill",
       },
-      { name: 'theme-color', content: '#0A0A0A' },
-      { name: 'color-scheme', content: 'light' },
+      { name: 'theme-color', content: '#101016' },
+      { name: 'color-scheme', content: 'dark' },
       { name: 'robots', content: 'index, follow, max-image-preview:large' },
 
       // Open Graph
@@ -129,7 +105,7 @@ export const Route = createRootRoute({
       { property: 'og:image', content: OG_IMAGE },
       { property: 'og:image:width', content: '1200' },
       { property: 'og:image:height', content: '630' },
-      { property: 'og:image:alt', content: 'simnJS · portfolio Neo-Brutalism' },
+      { property: 'og:image:alt', content: 'simnJS portfolio' },
       { property: 'og:locale', content: 'fr_FR' },
       { property: 'og:locale:alternate', content: 'en_US' },
       { property: 'og:locale:alternate', content: 'es_ES' },
@@ -156,14 +132,7 @@ export const Route = createRootRoute({
       { rel: 'me', href: 'https://www.linkedin.com/in/simon-gay-806103388/' },
       {
         rel: 'preload',
-        href: '/fonts/archivo-black.woff2',
-        as: 'font',
-        type: 'font/woff2',
-        crossOrigin: 'anonymous',
-      },
-      {
-        rel: 'preload',
-        href: '/fonts/space-grotesk.woff2',
+        href: '/fonts/jetbrains-mono.woff2',
         as: 'font',
         type: 'font/woff2',
         crossOrigin: 'anonymous',

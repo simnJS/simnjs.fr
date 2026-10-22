@@ -80,7 +80,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'Le contexte',
-            body: 'En 2025, Stake, un des plus gros casinos en ligne au monde, a ouvert son catalogue aux studios tiers avec Stake Engine : des équipes indépendantes peuvent y publier leurs propres jeux et toucher une part des revenus, sans monter un opérateur, gérer des licences ni acquérir des joueurs. Historiquement, le développement de jeux casino était verrouillé par une poignée de studios B2B établis. Cette porte-là ne s\'ouvre pas souvent.\n\nJ\'ai fondé Play & Chill pour prendre cette vague tôt, avec la même logique que Safia Creative sur Fortnite : arriver sur une plateforme UGC naissante avec une vraie capacité de production.',
+            body: 'En 2025, Stake, un des plus gros casinos en ligne au monde, a ouvert son catalogue aux studios tiers avec Stake Engine : des équipes indépendantes peuvent y publier leurs propres jeux et toucher une part des revenus, sans monter un opérateur, gérer des licences ni acquérir des joueurs. Historiquement, le développement de jeux casino était verrouillé par une poignée de studios B2B établis. Cette porte-là ne s\'ouvre pas souvent.\n\nJ\'ai fondé Play & Chill pour prendre cette vague tôt, avec une conviction simple : arriver tôt sur une plateforme UGC naissante, avec une vraie capacité de production.',
           },
           {
             heading: 'Mon rôle',
@@ -88,11 +88,11 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'La tech',
-            body: 'Les jeux tournent sur le RGS de Stake Engine : chaque résultat est calculé côté serveur, le front ne fait que le mettre en scène. Le front est en TypeScript/React, construit au-dessus du web SDK de Stake Engine que nous avons adapté à nos besoins.\n\nPour enchaîner les jeux sans repartir de zéro, tout est industrialisé : templates de jeu réutilisables, simulateurs pour valider les modèles mathématiques, et de l\'outillage maison autour de l\'écosystème, dont stake-dev-tool, publié en open source, et StakePlayerCount, notre tracker d\'audience des jeux Stake Engine.',
+            body: 'Les jeux tournent sur le RGS de Stake Engine : chaque résultat est calculé côté serveur, le front ne fait que le mettre en scène. Le front est en TypeScript/React, construit au-dessus du web SDK de Stake Engine que nous avons adapté à nos besoins.\n\nPour enchaîner les jeux sans repartir de zéro, tout est industrialisé : templates de jeu réutilisables, simulateurs pour valider les modèles mathématiques, et de l\'outillage maison autour de l\'écosystème, dont stake-dev-tool, publié en open source, et Engine Players, notre tracker d\'audience des jeux Stake Engine.',
           },
           {
             heading: 'La suite',
-            body: 'Le studio produit en continu et le pipeline s\'affine à chaque jeu. L\'objectif : faire de Play & Chill un studio reconnu de l\'écosystème Stake Engine, comme Safia Creative l\'est devenu sur Fortnite Creative. Les sorties s\'annoncent sur playandchill.bet.',
+            body: 'Le studio produit en continu et le pipeline s\'affine à chaque jeu. L\'objectif : faire de Play & Chill un studio reconnu de l\'écosystème Stake Engine. Les sorties s\'annoncent sur playandchill.bet.',
           },
         ],
       },
@@ -106,7 +106,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'Context',
-            body: 'In 2025, Stake, one of the biggest online casinos in the world, opened its catalogue to third-party studios with Stake Engine: independent teams can publish their own games and earn a revenue share, without becoming an operator, handling licences or acquiring players. Historically, casino game development was locked up by a handful of established B2B studios. That door doesn\'t open often.\n\nI founded Play & Chill to catch that wave early, with the same logic as Safia Creative on Fortnite: show up on a nascent UGC platform with real production capacity.',
+            body: 'In 2025, Stake, one of the biggest online casinos in the world, opened its catalogue to third-party studios with Stake Engine: independent teams can publish their own games and earn a revenue share, without becoming an operator, handling licences or acquiring players. Historically, casino game development was locked up by a handful of established B2B studios. That door doesn\'t open often.\n\nI founded Play & Chill to catch that wave early, with a simple conviction: show up early on a nascent UGC platform, with real production capacity.',
           },
           {
             heading: 'My role',
@@ -114,11 +114,11 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'The tech',
-            body: 'Games run on Stake Engine\'s RGS: every outcome is computed server-side, the front-end only stages it. The front-end is TypeScript/React, built on top of Stake Engine\'s web SDK, which we adapted to our needs.\n\nTo ship game after game without starting over, everything is industrialised: reusable game templates, simulators to validate math models, and in-house tooling around the ecosystem, including stake-dev-tool, released open source, and StakePlayerCount, our audience tracker for Stake Engine games.',
+            body: 'Games run on Stake Engine\'s RGS: every outcome is computed server-side, the front-end only stages it. The front-end is TypeScript/React, built on top of Stake Engine\'s web SDK, which we adapted to our needs.\n\nTo ship game after game without starting over, everything is industrialised: reusable game templates, simulators to validate math models, and in-house tooling around the ecosystem, including stake-dev-tool, released open source, and Engine Players, our audience tracker for Stake Engine games.',
           },
           {
             heading: 'What\'s next',
-            body: 'The studio ships continuously and the pipeline sharpens with every game. The goal: make Play & Chill a recognised studio in the Stake Engine ecosystem, the way Safia Creative became one on Fortnite Creative. Releases are announced on playandchill.bet.',
+            body: 'The studio ships continuously and the pipeline sharpens with every game. The goal: make Play & Chill a recognised studio in the Stake Engine ecosystem. Releases are announced on playandchill.bet.',
           },
         ],
       },
@@ -132,7 +132,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'El contexto',
-            body: 'En 2025, Stake, uno de los casinos online más grandes del mundo, abrió su catálogo a estudios terceros con Stake Engine: equipos independientes pueden publicar sus propios juegos y cobrar una parte de los ingresos, sin montar un operador, gestionar licencias ni captar jugadores. Históricamente, el desarrollo de juegos de casino estaba cerrado a un puñado de estudios B2B establecidos. Esa puerta no se abre a menudo.\n\nFundé Play & Chill para tomar esa ola temprano, con la misma lógica que Safia Creative en Fortnite: llegar a una plataforma UGC naciente con capacidad real de producción.',
+            body: 'En 2025, Stake, uno de los casinos online más grandes del mundo, abrió su catálogo a estudios terceros con Stake Engine: equipos independientes pueden publicar sus propios juegos y cobrar una parte de los ingresos, sin montar un operador, gestionar licencias ni captar jugadores. Históricamente, el desarrollo de juegos de casino estaba cerrado a un puñado de estudios B2B establecidos. Esa puerta no se abre a menudo.\n\nFundé Play & Chill para tomar esa ola temprano, con una convicción simple: llegar pronto a una plataforma UGC naciente, con capacidad real de producción.',
           },
           {
             heading: 'Mi rol',
@@ -140,120 +140,11 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'La tecnología',
-            body: 'Los juegos corren sobre el RGS de Stake Engine: cada resultado se calcula en el servidor, el front solo lo pone en escena. El front es TypeScript/React, construido sobre el web SDK de Stake Engine, adaptado a nuestras necesidades.\n\nPara encadenar juegos sin empezar de cero, todo está industrializado: templates reutilizables, simuladores para validar los modelos matemáticos y herramientas propias del ecosistema, incluyendo stake-dev-tool, publicado open source, y StakePlayerCount, nuestro tracker de audiencia de juegos Stake Engine.',
+            body: 'Los juegos corren sobre el RGS de Stake Engine: cada resultado se calcula en el servidor, el front solo lo pone en escena. El front es TypeScript/React, construido sobre el web SDK de Stake Engine, adaptado a nuestras necesidades.\n\nPara encadenar juegos sin empezar de cero, todo está industrializado: templates reutilizables, simuladores para validar los modelos matemáticos y herramientas propias del ecosistema, incluyendo stake-dev-tool, publicado open source, y Engine Players, nuestro tracker de audiencia de juegos Stake Engine.',
           },
           {
             heading: 'Lo que viene',
-            body: 'El estudio produce en continuo y el pipeline mejora con cada juego. El objetivo: hacer de Play & Chill un estudio reconocido del ecosistema Stake Engine, como Safia Creative lo es en Fortnite Creative. Los lanzamientos se anuncian en playandchill.bet.',
-          },
-        ],
-      },
-    },
-  },
-  'safia-creative': {
-    slug: 'safia-creative',
-    projectKey: 'safia',
-    title: 'Safia Creative',
-    year: '2024 →',
-    accent: 'bg-yellow',
-    image: '/projects/safia.jpg',
-    ogImage: '/og-safia-creative.png',
-    liveUrl: 'https://fortnite.gg/creator/safia',
-    stack: ['UEFN', 'Verse', 'Fortnite Creative', 'Analytics'],
-    metrics: [
-      {
-        n: '3M+',
-        label: { fr: 'Plays cumulés', en: 'Total plays', es: 'Plays totales' },
-      },
-      {
-        n: '10+',
-        label: {
-          fr: 'Expériences publiées',
-          en: 'Experiences shipped',
-          es: 'Experiencias publicadas',
-        },
-      },
-      {
-        n: '2024',
-        label: { fr: 'Studio fondé en', en: 'Studio founded', es: 'Estudio fundado' },
-      },
-    ],
-    content: {
-      fr: {
-        metaTitle: 'Safia Creative · studio UEFN de Simon GAY (simnJS)',
-        metaDescription:
-          'Étude de cas : Safia Creative, le studio UEFN fondé par Simon GAY (simnJS). Maps Fortnite Creative scriptées en Verse, 3M+ plays cumulés, 10+ expériences publiées.',
-        tag: 'UEFN · Studio',
-        intro:
-          'Safia Creative est le studio UEFN que j\'ai fondé et que je dirige : nous concevons, scriptons et publions des expériences Fortnite Creative qui totalisent plus de 3 millions de plays.',
-        sections: [
-          {
-            heading: 'Le contexte',
-            body: 'Fortnite Creative est devenu une vraie plateforme UGC : Epic reverse 40 % des revenus de l\'Item Shop aux créateurs, proportionnellement au temps de jeu généré. Pour exister sur ce marché, une belle map ne suffit pas : il faut de la rétention, des systèmes de jeu solides et un rythme de publication soutenu.\n\nJ\'ai fondé Safia Creative en 2024 pour attaquer ce marché sérieusement, avec une approche studio : pipeline de production, outillage, et itération guidée par les données plutôt que des maps one-shot.',
-          },
-          {
-            heading: 'Mon rôle',
-            body: 'Je dirige le studio et je porte la double casquette créative et technique : conception des expériences, scripting Verse de l\'ensemble des systèmes de jeu, publication et suivi analytics.\n\nConcrètement, ça va du game design des boucles de rétention jusqu\'au code de persistance des données joueurs, en passant par l\'optimisation des métriques de découverte (miniatures, titres, temps de session) qui décident de la visibilité d\'une map dans l\'écosystème Fortnite.',
-          },
-          {
-            heading: 'La tech',
-            body: 'Tout le gameplay est scripté en Verse, le langage d\'Epic pour UEFN. Les systèmes récurrents (progression persistante des joueurs, boutiques en jeu, événements timés, UI custom) sont construits comme des modules réutilisables d\'une map à l\'autre, ce qui permet de publier vite sans repartir de zéro.\n\nChaque expérience est instrumentée : on suit les plays, le temps de session et la rétention pour décider quoi itérer. Cette boucle build → mesure → itération a fait passer le studio de zéro à plusieurs millions de plays.',
-          },
-          {
-            heading: 'Les résultats',
-            body: 'Plus de 3 millions de plays cumulés et une dizaine d\'expériences publiées depuis 2024. Le studio continue de publier et d\'itérer. L\'activité en temps réel est visible sur la section Now de ce site.',
-          },
-        ],
-      },
-      en: {
-        metaTitle: 'Safia Creative · UEFN studio by Simon GAY (simnJS)',
-        metaDescription:
-          'Case study: Safia Creative, the UEFN studio founded by Simon GAY (simnJS). Fortnite Creative maps scripted in Verse, 3M+ total plays, 10+ shipped experiences.',
-        tag: 'UEFN · Studio',
-        intro:
-          'Safia Creative is the UEFN studio I founded and run: we design, script and ship Fortnite Creative experiences totalling over 3 million plays.',
-        sections: [
-          {
-            heading: 'Context',
-            body: 'Fortnite Creative has become a real UGC platform: Epic shares 40% of Item Shop revenue with creators, proportional to the playtime they generate. To exist in this market, a pretty map is not enough: you need retention, solid game systems and a steady release cadence.\n\nI founded Safia Creative in 2024 to attack this market seriously, with a studio approach: production pipeline, tooling, and data-driven iteration instead of one-shot maps.',
-          },
-          {
-            heading: 'My role',
-            body: 'I run the studio and wear both the creative and technical hats: designing the experiences, scripting every game system in Verse, publishing, and tracking analytics.\n\nIn practice that ranges from designing retention loops to writing the player-data persistence code, plus optimising the discovery metrics (thumbnails, titles, session time) that decide a map\'s visibility inside the Fortnite ecosystem.',
-          },
-          {
-            heading: 'The tech',
-            body: 'All gameplay is scripted in Verse, Epic\'s language for UEFN. Recurring systems (persistent player progression, in-game shops, timed events, custom UI) are built as modules reused across maps, which lets us ship fast without starting from scratch.\n\nEvery experience is instrumented: we track plays, session time and retention to decide what to iterate on. That build → measure → iterate loop took the studio from zero to millions of plays.',
-          },
-          {
-            heading: 'Results',
-            body: 'Over 3 million total plays and about ten experiences shipped since 2024. The studio keeps shipping and iterating. Live activity is visible in the Now section of this site.',
-          },
-        ],
-      },
-      es: {
-        metaTitle: 'Safia Creative · estudio UEFN de Simon GAY (simnJS)',
-        metaDescription:
-          'Caso de estudio: Safia Creative, el estudio UEFN fundado por Simon GAY (simnJS). Mapas de Fortnite Creative en Verse, 3M+ plays totales, 10+ experiencias publicadas.',
-        tag: 'UEFN · Studio',
-        intro:
-          'Safia Creative es el estudio UEFN que fundé y dirijo: diseñamos, programamos y publicamos experiencias de Fortnite Creative que suman más de 3 millones de plays.',
-        sections: [
-          {
-            heading: 'El contexto',
-            body: 'Fortnite Creative se ha convertido en una verdadera plataforma UGC: Epic reparte el 40% de los ingresos de la Item Shop entre los creadores, en proporción al tiempo de juego generado. Para existir en este mercado no basta con un mapa bonito: hacen falta retención, sistemas de juego sólidos y un ritmo de publicación constante.\n\nFundé Safia Creative en 2024 para atacar este mercado en serio, con enfoque de estudio: pipeline de producción, herramientas e iteración guiada por datos en lugar de mapas one-shot.',
-          },
-          {
-            heading: 'Mi rol',
-            body: 'Dirijo el estudio con doble rol creativo y técnico: diseño de las experiencias, programación en Verse de todos los sistemas de juego, publicación y seguimiento de analytics.\n\nEn la práctica va desde el diseño de los bucles de retención hasta el código de persistencia de datos de jugadores, pasando por la optimización de las métricas de descubrimiento (miniaturas, títulos, tiempo de sesión) que deciden la visibilidad de un mapa en el ecosistema Fortnite.',
-          },
-          {
-            heading: 'La tecnología',
-            body: 'Todo el gameplay está programado en Verse, el lenguaje de Epic para UEFN. Los sistemas recurrentes (progresión persistente, tiendas en juego, eventos temporizados, UI custom) se construyen como módulos reutilizables entre mapas, lo que permite publicar rápido sin empezar de cero.\n\nCada experiencia está instrumentada: seguimos plays, tiempo de sesión y retención para decidir qué iterar. Ese bucle build → medir → iterar llevó al estudio de cero a millones de plays.',
-          },
-          {
-            heading: 'Los resultados',
-            body: 'Más de 3 millones de plays totales y una decena de experiencias publicadas desde 2024. El estudio sigue publicando e iterando. La actividad en vivo se ve en la sección Now de este sitio.',
+            body: 'El estudio produce en continuo y el pipeline mejora con cada juego. El objetivo: hacer de Play & Chill un estudio reconocido del ecosistema Stake Engine. Los lanzamientos se anuncian en playandchill.bet.',
           },
         ],
       },
@@ -262,12 +153,12 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
   stakeplayercount: {
     slug: 'stakeplayercount',
     projectKey: 'stakeplayer',
-    title: 'StakePlayerCount',
+    title: 'Engine Players',
     year: '2025 →',
     accent: 'bg-cyan',
     image: '/projects/stakeplayer.jpg',
     ogImage: '/og-stakeplayercount.png',
-    liveUrl: 'https://stakeplayercount.com/',
+    liveUrl: 'https://engineplayers.com/',
     stack: ['TypeScript', 'Node.js', 'Analytics', 'Stake Engine'],
     metrics: [
       {
@@ -293,16 +184,16 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
     ],
     content: {
       fr: {
-        metaTitle: 'StakePlayerCount · analytics temps réel des jeux Stake Engine',
+        metaTitle: 'Engine Players · analytics temps réel des jeux Stake Engine',
         metaDescription:
-          'Étude de cas : StakePlayerCount, le tracker de Simon GAY (simnJS) qui suit en temps réel les joueurs, le turnover et les heures de pointe des jeux Stake Engine.',
+          'Étude de cas : Engine Players, le tracker de Simon GAY (simnJS) qui suit en temps réel les joueurs, le turnover et les heures de pointe des jeux Stake Engine.',
         tag: 'Stake Engine · Analytics',
         intro:
-          'Quand Stake Engine a ouvert, aucun outil ne permettait aux créateurs de suivre leur nombre de joueurs. StakePlayerCount comble ce vide : player counts en temps réel, historique et heures de pointe pour tous les jeux de la plateforme.',
+          'Quand Stake Engine a ouvert, aucun outil ne permettait aux créateurs de suivre leur nombre de joueurs. Engine Players comble ce vide : player counts en temps réel, historique et heures de pointe pour tous les jeux de la plateforme.',
         sections: [
           {
             heading: 'Le contexte',
-            body: 'Quand Stake Engine a ouvert, les studios publiaient à l\'aveugle : aucune donnée publique sur l\'audience des jeux. Impossible de savoir combien de joueurs sont en ligne sur ton propre jeu, encore moins sur ceux des autres. Pour un écosystème où chaque jeu représente des mois de production, c\'était un angle mort énorme.\n\nStakePlayerCount est né de notre propre besoin chez Play & Chill : on voulait ces chiffres, ils n\'existaient nulle part. Alors on a construit l\'outil, puis on l\'a ouvert à tout le monde.',
+            body: 'Quand Stake Engine a ouvert, les studios publiaient à l\'aveugle : aucune donnée publique sur l\'audience des jeux. Impossible de savoir combien de joueurs sont en ligne sur ton propre jeu, encore moins sur ceux des autres. Pour un écosystème où chaque jeu représente des mois de production, c\'était un angle mort énorme.\n\nEngine Players est né de notre propre besoin chez Play & Chill : on voulait ces chiffres, ils n\'existaient nulle part. Alors on a construit l\'outil, puis on l\'a ouvert à tout le monde.',
           },
           {
             heading: 'Le produit',
@@ -314,21 +205,21 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'La suite',
-            body: 'L\'outil évolue avec l\'écosystème : nouvelles métriques, nouvelles vues, à mesure que Stake Engine grandit. Les chiffres sont en ligne sur stakeplayercount.com.',
+            body: 'L\'outil évolue avec l\'écosystème : nouvelles métriques, nouvelles vues, à mesure que Stake Engine grandit. Les chiffres sont en ligne sur engineplayers.com.',
           },
         ],
       },
       en: {
-        metaTitle: 'StakePlayerCount · real-time analytics for Stake Engine games',
+        metaTitle: 'Engine Players · real-time analytics for Stake Engine games',
         metaDescription:
-          'Case study: StakePlayerCount, the tracker by Simon GAY (simnJS) following live player counts, turnover and peak hours for Stake Engine games.',
+          'Case study: Engine Players, the tracker by Simon GAY (simnJS) following live player counts, turnover and peak hours for Stake Engine games.',
         tag: 'Stake Engine · Analytics',
         intro:
-          'When Stake Engine opened, creators had no tool to track their player counts. StakePlayerCount fills that gap: real-time player counts, history and peak hours for every game on the platform.',
+          'When Stake Engine opened, creators had no tool to track their player counts. Engine Players fills that gap: real-time player counts, history and peak hours for every game on the platform.',
         sections: [
           {
             heading: 'Context',
-            body: 'When Stake Engine opened, studios were shipping blind: no public data on game audiences. No way to know how many players are online on your own game, let alone anyone else\'s. For an ecosystem where each game represents months of production, that was a huge blind spot.\n\nStakePlayerCount was born from our own need at Play & Chill: we wanted those numbers and they existed nowhere. So we built the tool, then opened it to everyone.',
+            body: 'When Stake Engine opened, studios were shipping blind: no public data on game audiences. No way to know how many players are online on your own game, let alone anyone else\'s. For an ecosystem where each game represents months of production, that was a huge blind spot.\n\nEngine Players was born from our own need at Play & Chill: we wanted those numbers and they existed nowhere. So we built the tool, then opened it to everyone.',
           },
           {
             heading: 'The product',
@@ -340,21 +231,21 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'What\'s next',
-            body: 'The tool grows with the ecosystem: new metrics and new views as Stake Engine expands. The numbers are live on stakeplayercount.com.',
+            body: 'The tool grows with the ecosystem: new metrics and new views as Stake Engine expands. The numbers are live on engineplayers.com.',
           },
         ],
       },
       es: {
-        metaTitle: 'StakePlayerCount · analytics en tiempo real de juegos Stake Engine',
+        metaTitle: 'Engine Players · analytics en tiempo real de juegos Stake Engine',
         metaDescription:
-          'Caso de estudio: StakePlayerCount, el tracker de Simon GAY (simnJS) que sigue en tiempo real los jugadores, el turnover y las horas punta de los juegos Stake Engine.',
+          'Caso de estudio: Engine Players, el tracker de Simon GAY (simnJS) que sigue en tiempo real los jugadores, el turnover y las horas punta de los juegos Stake Engine.',
         tag: 'Stake Engine · Analytics',
         intro:
-          'Cuando Stake Engine abrió, los creadores no tenían ninguna herramienta para seguir su número de jugadores. StakePlayerCount llena ese vacío: player counts en tiempo real, histórico y horas punta para todos los juegos de la plataforma.',
+          'Cuando Stake Engine abrió, los creadores no tenían ninguna herramienta para seguir su número de jugadores. Engine Players llena ese vacío: player counts en tiempo real, histórico y horas punta para todos los juegos de la plataforma.',
         sections: [
           {
             heading: 'El contexto',
-            body: 'Cuando Stake Engine abrió, los estudios publicaban a ciegas: ningún dato público sobre la audiencia de los juegos. Imposible saber cuántos jugadores hay en tu propio juego, y menos en los de otros. Para un ecosistema donde cada juego representa meses de producción, era un punto ciego enorme.\n\nStakePlayerCount nació de nuestra propia necesidad en Play & Chill: queríamos esos números y no existían en ningún sitio. Así que construimos la herramienta y la abrimos a todos.',
+            body: 'Cuando Stake Engine abrió, los estudios publicaban a ciegas: ningún dato público sobre la audiencia de los juegos. Imposible saber cuántos jugadores hay en tu propio juego, y menos en los de otros. Para un ecosistema donde cada juego representa meses de producción, era un punto ciego enorme.\n\nEngine Players nació de nuestra propia necesidad en Play & Chill: queríamos esos números y no existían en ningún sitio. Así que construimos la herramienta y la abrimos a todos.',
           },
           {
             heading: 'El producto',
@@ -366,120 +257,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
           },
           {
             heading: 'Lo que viene',
-            body: 'La herramienta evoluciona con el ecosistema: nuevas métricas y vistas a medida que Stake Engine crece. Los números están en stakeplayercount.com.',
-          },
-        ],
-      },
-    },
-  },
-  'uefn-store': {
-    slug: 'uefn-store',
-    projectKey: 'uefnstore',
-    title: 'UEFN Store',
-    year: '2026 →',
-    accent: 'bg-violet',
-    image: '/projects/uefnstore.jpg',
-    ogImage: '/og-uefn-store.png',
-    liveUrl: 'https://www.uefnstore.com/',
-    stack: ['UEFN', 'Verse', 'TypeScript', 'Marketplace'],
-    metrics: [
-      {
-        n: '2026',
-        label: { fr: 'Lancé en', en: 'Launched', es: 'Lanzado en' },
-      },
-      {
-        n: '4',
-        label: {
-          fr: 'Types d\'assets (Verse, 3D, UI, templates)',
-          en: 'Asset types (Verse, 3D, UI, templates)',
-          es: 'Tipos de assets (Verse, 3D, UI, templates)',
-        },
-      },
-      {
-        n: '3M+',
-        label: {
-          fr: 'Plays derrière les assets',
-          en: 'Plays behind the assets',
-          es: 'Plays detrás de los assets',
-        },
-      },
-    ],
-    content: {
-      fr: {
-        metaTitle: 'UEFN Store · marketplace d\'assets pour créateurs Fortnite',
-        metaDescription:
-          'Étude de cas : UEFN Store, la marketplace de Simon GAY (simnJS), avec scripts Verse, 3D, UI et templates prêts à l\'emploi pour les créateurs Fortnite Creative.',
-        tag: 'UEFN · Marketplace',
-        intro:
-          'UEFN Store, c\'est simple : une marketplace d\'assets prêts à l\'emploi pour les créateurs Fortnite, avec scripts Verse, modèles 3D, kits UI et templates, issus de la production réelle de Safia Creative.',
-        sections: [
-          {
-            heading: 'Le contexte',
-            body: 'Des dizaines de milliers de créateurs construisent sur UEFN, et tous refont les mêmes choses : systèmes de progression, boutiques en jeu, UI, mécaniques de base en Verse. Chaque studio réinvente la roue dans son coin.\n\nAprès deux ans à produire des maps chez Safia Creative, le constat était simple : nos systèmes internes, éprouvés en production, valaient de l\'or pour les autres créateurs. Autant en faire un produit.',
-          },
-          {
-            heading: 'Le produit',
-            body: 'Une marketplace d\'assets prêts à l\'emploi pour Fortnite Creative : scripts Verse, modèles 3D, kits UI, templates de maps complets. Chaque asset est documenté et pensé pour s\'intégrer en minutes, pas en jours.\n\nLa différence avec un asset store généraliste : tout vient de la production réelle d\'un studio. Ce sont des systèmes déjà validés sur des maps qui totalisent plus de 3 millions de plays.',
-          },
-          {
-            heading: 'Mon rôle',
-            body: 'Je porte le produit de bout en bout : la plateforme web (catalogue, comptes, paiement, livraison des assets) comme le contenu. Les assets Verse sortent directement du pipeline Safia Creative, nettoyés, généralisés et documentés pour la revente.\n\nC\'est la suite logique du studio : la production alimente le store, le store finance la production.',
-          },
-          {
-            heading: 'La suite',
-            body: 'Le store est lancé en 2026 et le catalogue grandit en continu, alimenté par la production du studio. À explorer sur uefnstore.com.',
-          },
-        ],
-      },
-      en: {
-        metaTitle: 'UEFN Store · asset marketplace for Fortnite creators',
-        metaDescription:
-          'Case study: UEFN Store, the marketplace by Simon GAY (simnJS), with ready-to-use Verse scripts, 3D, UI and templates for Fortnite Creative creators.',
-        tag: 'UEFN · Marketplace',
-        intro:
-          'UEFN Store is simple: a marketplace of ready-to-use assets for Fortnite creators, with Verse scripts, 3D models, UI kits and templates, straight from Safia Creative\'s real production.',
-        sections: [
-          {
-            heading: 'Context',
-            body: 'Tens of thousands of creators build on UEFN, and they all rebuild the same things: progression systems, in-game shops, UI, core Verse mechanics. Every studio reinvents the wheel in its corner.\n\nAfter two years shipping maps at Safia Creative, the conclusion was obvious: our internal, production-proven systems were gold for other creators. Might as well make them a product.',
-          },
-          {
-            heading: 'The product',
-            body: 'A marketplace of ready-to-use assets for Fortnite Creative: Verse scripts, 3D models, UI kits, full map templates. Every asset is documented and designed to integrate in minutes, not days.\n\nThe difference with a generic asset store: everything comes from a studio\'s real production. These are systems already validated on maps totalling over 3 million plays.',
-          },
-          {
-            heading: 'My role',
-            body: 'I own the product end to end: the web platform (catalogue, accounts, payment, asset delivery) and the content. Verse assets come straight out of the Safia Creative pipeline, cleaned up, generalised and documented for resale.\n\nIt\'s the studio\'s logical next step: production feeds the store, the store funds production.',
-          },
-          {
-            heading: 'What\'s next',
-            body: 'The store launched in 2026 and the catalogue keeps growing, fed by the studio\'s production. Browse it at uefnstore.com.',
-          },
-        ],
-      },
-      es: {
-        metaTitle: 'UEFN Store · marketplace de assets para creadores de Fortnite',
-        metaDescription:
-          'Caso de estudio: UEFN Store, la marketplace de Simon GAY (simnJS), con scripts Verse, 3D, UI y templates listos para usar para creadores de Fortnite Creative.',
-        tag: 'UEFN · Marketplace',
-        intro:
-          'UEFN Store es simple: una marketplace de assets listos para usar para creadores de Fortnite, con scripts Verse, modelos 3D, kits de UI y templates, salidos de la producción real de Safia Creative.',
-        sections: [
-          {
-            heading: 'El contexto',
-            body: 'Decenas de miles de creadores construyen en UEFN, y todos rehacen las mismas cosas: sistemas de progresión, tiendas en juego, UI, mecánicas básicas en Verse. Cada estudio reinventa la rueda por su cuenta.\n\nTras dos años publicando mapas en Safia Creative, la conclusión era obvia: nuestros sistemas internos, probados en producción, valían oro para otros creadores. Mejor convertirlos en producto.',
-          },
-          {
-            heading: 'El producto',
-            body: 'Una marketplace de assets listos para usar para Fortnite Creative: scripts Verse, modelos 3D, kits de UI, templates de mapas completos. Cada asset está documentado y pensado para integrarse en minutos, no en días.\n\nLa diferencia con un asset store genérico: todo viene de la producción real de un estudio. Son sistemas ya validados en mapas que suman más de 3 millones de plays.',
-          },
-          {
-            heading: 'Mi rol',
-            body: 'Llevo el producto de punta a punta: la plataforma web (catálogo, cuentas, pago, entrega de assets) y el contenido. Los assets Verse salen directamente del pipeline de Safia Creative, limpiados, generalizados y documentados para la venta.\n\nEs el paso lógico del estudio: la producción alimenta la store, la store financia la producción.',
-          },
-          {
-            heading: 'Lo que viene',
-            body: 'La store se lanzó en 2026 y el catálogo crece en continuo, alimentado por la producción del estudio. Explóralo en uefnstore.com.',
+            body: 'La herramienta evoluciona con el ecosistema: nuevas métricas y vistas a medida que Stake Engine crece. Los números están en engineplayers.com.',
           },
         ],
       },
@@ -639,7 +417,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'Le contexte',
-            body: 'Roblox est la plus grosse plateforme UGC du monde : des dizaines de millions de joueurs quotidiens et un modèle qui rémunère directement les studios. Après Fortnite Creative avec Safia et Stake Engine avec Play & Chill, c\'était la suite logique : appliquer la même recette (production rapide, itération guidée par les données) au plus gros marché.\n\nJ\'ai fondé Play\'n Chill début 2026 avec une ambition affichée dans la description du groupe : « Creating the next generation of Roblox games ».',
+            body: 'Roblox est la plus grosse plateforme UGC du monde : des dizaines de millions de joueurs quotidiens et un modèle qui rémunère directement les studios. Après Stake Engine avec Play & Chill, c\'était la suite logique : appliquer la même recette (production rapide, itération guidée par les données) au plus gros marché.\n\nJ\'ai fondé Play\'n Chill début 2026 avec une ambition affichée dans la description du groupe : « Creating the next generation of Roblox games ».',
           },
           {
             heading: 'Les jeux',
@@ -665,7 +443,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'Context',
-            body: 'Roblox is the biggest UGC platform in the world: tens of millions of daily players and a model that pays studios directly. After Fortnite Creative with Safia and Stake Engine with Play & Chill, it was the logical next step: apply the same recipe (fast production, data-driven iteration) to the biggest market.\n\nI founded Play\'n Chill in early 2026 with the ambition stated in the group description: "Creating the next generation of Roblox games".',
+            body: 'Roblox is the biggest UGC platform in the world: tens of millions of daily players and a model that pays studios directly. After Stake Engine with Play & Chill, it was the logical next step: apply the same recipe (fast production, data-driven iteration) to the biggest market.\n\nI founded Play\'n Chill in early 2026 with the ambition stated in the group description: "Creating the next generation of Roblox games".',
           },
           {
             heading: 'The games',
@@ -691,7 +469,7 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
         sections: [
           {
             heading: 'El contexto',
-            body: 'Roblox es la plataforma UGC más grande del mundo: decenas de millones de jugadores diarios y un modelo que paga directamente a los estudios. Después de Fortnite Creative con Safia y Stake Engine con Play & Chill, era el paso lógico: aplicar la misma receta (producción rápida, iteración guiada por datos) al mercado más grande.\n\nFundé Play\'n Chill a principios de 2026 con la ambición escrita en la descripción del grupo: «Creating the next generation of Roblox games».',
+            body: 'Roblox es la plataforma UGC más grande del mundo: decenas de millones de jugadores diarios y un modelo que paga directamente a los estudios. Después de Stake Engine con Play & Chill, era el paso lógico: aplicar la misma receta (producción rápida, iteración guiada por datos) al mercado más grande.\n\nFundé Play\'n Chill a principios de 2026 con la ambición escrita en la descripción del grupo: «Creating the next generation of Roblox games».',
           },
           {
             heading: 'Los juegos',

@@ -1,21 +1,7 @@
 @import "tailwindcss";
 
-/* Polices self-hostées (subsets latin, variable) — évite les requêtes
-   tierces vers Google Fonts, bloquantes pour le rendu. */
-@font-face {
-  font-family: "Archivo Black";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/archivo-black.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Space Grotesk";
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/fonts/space-grotesk.woff2") format("woff2");
-}
+/* Police self-hostée (subset latin, variable) — évite les requêtes tierces
+   vers Google Fonts, bloquantes pour le rendu. */
 @font-face {
   font-family: "JetBrains Mono";
   font-style: normal;
@@ -24,69 +10,129 @@
   src: url("/fonts/jetbrains-mono.woff2") format("woff2");
 }
 
+/* Thème « Boykisser Dark » : le schéma Windows Terminal de simnJS, à l'identique. */
 @theme {
-  --color-bg: #FAF7F0;
-  --color-ink: #0A0A0A;
-  --color-yellow: #FFE500;
-  --color-coral: #FF6B6B;
-  --color-cyan: #4ECDC4;
-  --color-violet: #9B5DE5;
+  --color-chrome: #0b0b10;
+  --color-bg: #101016;
+  --color-panel: #16161e;
+  --color-line: #26263a;
+  --color-select: #33334a;
+  --color-fg: #dcdce4;
+  --color-dim: #9a9aae;
+  --color-muted: #6c6c80;
+  --color-cat: #ececf4;
+  --color-pink: #f5a3c7;
+  --color-mauve: #c9a3f5;
+  --color-blue: #8fb4f5;
+  --color-green: #9fd8a4;
+  --color-yellow: #f2d38a;
+  --color-red: #f07a8c;
+  --color-cyan: #8fd8e0;
+  --color-black: #1c1c24;
 
-  --font-display: "Archivo Black", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-
-  --shadow-brutal: 8px 8px 0 0 var(--color-ink);
-  --shadow-brutal-sm: 4px 4px 0 0 var(--color-ink);
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: var(--font-mono);
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#app {
-  min-height: 100%;
-}
-
-body {
-  margin: 0;
-  background: var(--color-bg);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Grille discrète — fond de la section Clients, pour la détacher des sections
-   crème voisines sans introduire de couleur supplémentaire. */
-.bg-grid-ink {
-  background-image:
-    linear-gradient(
-      to right,
-      color-mix(in srgb, var(--color-ink) 7%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-ink) 7%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 28px 28px;
-}
-
-@keyframes row-in {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
+@layer base {
+  * {
+    box-sizing: border-box;
   }
-  to {
+
+  html {
+    color-scheme: dark;
+    background: var(--color-chrome);
+    scroll-padding-top: 4.5rem;
+  }
+
+  html,
+  body,
+  #app {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-chrome);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-select);
+    color: #f0f0f6;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-pink);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+}
+
+/* Une ligne de terminal : hauteur fixe pour que tout s'aligne sur la grille. */
+.term-line {
+  min-height: 1.6em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Curseur barre, comme dans Windows Terminal (cursorShape: bar). */
+@keyframes caret-blink {
+  0%,
+  50% {
     opacity: 1;
-    transform: translateY(0);
+  }
+  50.01%,
+  100% {
+    opacity: 0;
   }
 }
 
-.animate-row-in {
-  animation: row-in 350ms ease-out;
+.caret {
+  animation: caret-blink 1.1s infinite;
 }
 
+/* Le texte de commande se tape au chargement, puis la sortie s'imprime ligne
+   par ligne : pas de fondu, comme un vrai terminal. Pur CSS, donc visible dès
+   le HTML rendu côté serveur. */
+@keyframes type-in {
+  from {
+    width: 0;
+  }
+}
+
+.typed {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  white-space: nowrap;
+  width: calc(var(--chars, 9) * 1ch);
+  animation: type-in var(--type-ms, 600ms) steps(var(--chars, 9), end) var(--type-delay, 250ms) both;
+}
+
+@keyframes print-in {
+  from {
+    visibility: hidden;
+  }
+}
+
+.printed {
+  animation: print-in 0s linear calc(var(--print-delay, 900ms) + var(--i, 0) * 32ms) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret,
+  .typed,
+  .printed {
+    animation: none;
+  }
+}
