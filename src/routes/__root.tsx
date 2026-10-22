@@ -11,7 +11,9 @@ const SITE_URL = 'https://simnjs.fr'
 const SITE_TITLE = 'simnJS (Simon GAY), software engineer in Lyon'
 const SITE_DESC =
   "Portfolio de Simon GAY, alias simnJS, software engineer à Lyon. Il dirige Play'n Chill (slots pour Stake Engine, jeux Roblox) et construit des outils Verse pour les créateurs Fortnite."
-const OG_IMAGE = `${SITE_URL}/og.png`
+// ?v= force Discord, Twitter et LinkedIn à recharger l'aperçu après un changement d'image.
+const OG_IMAGE = `${SITE_URL}/og.png?v=2`
+const OG_ALT = 'simnJS : Simon GAY, software engineer à Lyon, avec le boykisser en points'
 
 const JSONLD = JSON.stringify({
   '@context': 'https://schema.org',
@@ -92,7 +94,8 @@ export const Route = createRootRoute({
         content:
           "simnJS, Simon GAY, UEFN, Fortnite Creative, Roblox, Stake Engine, slot games, Verse, Luau, s&box, Rust, TypeScript, Lyon, freelance, Play'n Chill",
       },
-      { name: 'theme-color', content: '#101016' },
+      // Aussi la couleur de la barre des aperçus Discord.
+      { name: 'theme-color', content: '#f5a3c7' },
       { name: 'color-scheme', content: 'dark' },
       { name: 'robots', content: 'index, follow, max-image-preview:large' },
 
@@ -105,7 +108,7 @@ export const Route = createRootRoute({
       { property: 'og:image', content: OG_IMAGE },
       { property: 'og:image:width', content: '1200' },
       { property: 'og:image:height', content: '630' },
-      { property: 'og:image:alt', content: 'simnJS portfolio' },
+      { property: 'og:image:alt', content: OG_ALT },
       { property: 'og:locale', content: 'fr_FR' },
       { property: 'og:locale:alternate', content: 'en_US' },
       { property: 'og:locale:alternate', content: 'es_ES' },
@@ -115,7 +118,7 @@ export const Route = createRootRoute({
       { name: 'twitter:title', content: SITE_TITLE },
       { name: 'twitter:description', content: SITE_DESC },
       { name: 'twitter:image', content: OG_IMAGE },
-      { name: 'twitter:image:alt', content: 'simnJS portfolio' },
+      { name: 'twitter:image:alt', content: OG_ALT },
     ],
     links: [
       { rel: 'stylesheet', href: appCss },

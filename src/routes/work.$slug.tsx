@@ -21,7 +21,7 @@ export const Route = createFileRoute('/work/$slug')({
     // Le SSR rend la locale par défaut (fr) : les meta suivent.
     const c = cs.content.fr
     const url = `${SITE_URL}/work/${cs.slug}`
-    const og = `${SITE_URL}${cs.ogImage}`
+    const og = `${SITE_URL}${cs.ogImage}?v=2`
     return {
       meta: [
         { title: c.metaTitle },
