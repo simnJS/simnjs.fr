@@ -256,7 +256,7 @@ function RobloxLive({ t, stats }: { t: Dictionary; stats: RbxStats }) {
               href={g.url}
               target="_blank"
               rel="noreferrer"
-              className="grid grid-cols-[2ch_1fr_auto] gap-x-[1ch] px-[1.5ch] py-1.5 transition-colors hover:bg-panel sm:grid-cols-[2ch_1fr_12ch_16ch]"
+              className="grid grid-cols-[2ch_minmax(0,1fr)_auto] gap-x-[1ch] px-[1.5ch] py-1.5 transition-colors hover:bg-panel sm:grid-cols-[2ch_minmax(0,1fr)_12ch_16ch]"
             >
               <span className={g.playing > 0 ? 'text-green' : 'text-muted'}>●</span>
               <span className="truncate text-blue">{g.name}</span>

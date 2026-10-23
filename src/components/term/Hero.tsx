@@ -11,10 +11,12 @@ export function Hero() {
   const now = useNow(15_000)
   const track = useSpotify(30_000)
 
+  // grid-cols-1 borne la colonne à l'écran : sinon, sur mobile, un titre
+  // Spotify long (tronqué, donc sans retour à la ligne) élargit toute la page.
   return (
     <section
       id="top"
-      className="grid min-h-[min(780px,calc(100svh-7rem))] items-center gap-x-10 gap-y-12 py-12 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]"
+      className="grid min-h-[min(780px,calc(100svh-7rem))] grid-cols-1 items-center gap-x-10 gap-y-12 py-12 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]"
     >
       <div>
         <p className="text-dim">

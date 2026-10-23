@@ -441,7 +441,7 @@ export const COMMANDS: Record<string, Command> = {
         blank,
         ...stats.games.map((g) =>
           line(`${g.name} ${g.playing} ${g.visits}`, (
-            <span className="grid grid-cols-[minmax(0,32ch)_10ch_1fr] gap-x-[1ch] max-sm:grid-cols-[1fr_8ch]">
+            <span className="grid grid-cols-[minmax(0,32ch)_10ch_1fr] gap-x-[1ch] max-sm:grid-cols-[minmax(0,1fr)_8ch]">
               <ExtLink href={g.url} className="truncate text-blue">{g.name}</ExtLink>
               <span className="text-green">{num(g.playing)}</span>
               <span className="text-dim max-sm:hidden">{num(g.visits)} {t.roblox.visits}</span>
