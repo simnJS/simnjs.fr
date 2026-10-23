@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import {
   Activity,
   FolderGit2,
+  Globe,
   Layers,
   Mail,
   Minus,
@@ -81,6 +82,7 @@ export function Window({
           <nav aria-label="sections" className="flex min-w-0 flex-1 items-end gap-1 overflow-x-auto">
             {(tabs ? TABS : TABS.slice(0, 1)).map(({ id, label, icon: Icon }) => {
               const on = active === id || !tabs
+              const text = tabs ? label : title
               return (
                 <a
                   key={id}
@@ -91,13 +93,16 @@ export function Window({
                     go(id)
                   }}
                   aria-current={on ? 'true' : undefined}
+                  aria-label={text}
                   className={
-                    'flex h-9 shrink-0 items-center gap-2 rounded-t-lg px-3 text-[13px] transition-colors ' +
+                    'flex h-9 items-center gap-2 rounded-t-lg px-3 text-[13px] transition-colors ' +
+                    (tabs ? 'shrink-0 ' : 'min-w-0 ') +
                     (on ? 'bg-bg text-fg' : 'text-dim hover:bg-panel hover:text-fg')
                   }
                 >
-                  <Icon size={14} strokeWidth={2} className={on ? 'text-pink' : ''} aria-hidden />
-                  <span className={on ? '' : 'hidden md:inline'}>{tabs ? label : title}</span>
+                  <Icon size={14} strokeWidth={2} className={'shrink-0 ' + (on ? 'text-pink' : '')} aria-hidden />
+                  {/* Sur téléphone, les onglets n'ont que leur icône : tous tiennent dans la barre. */}
+                  <span className={!tabs ? 'truncate' : on ? 'hidden sm:inline' : 'hidden md:inline'}>{text}</span>
                 </a>
               )
             })}
@@ -105,13 +110,24 @@ export function Window({
           <button
             type="button"
             onClick={toggleQuake}
-            className="mb-1.5 flex h-7 shrink-0 items-center gap-1.5 rounded-md border border-line px-2 text-[12px] text-dim transition-colors hover:border-pink hover:text-pink"
+            aria-label="terminal"
+            className="mb-1.5 flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-line px-2 text-[12px] text-dim transition-colors hover:border-pink hover:text-pink sm:h-7"
           >
             <SquareTerminal size={13} aria-hidden />
-            terminal
-            <kbd className="hidden font-mono text-muted sm:inline">`</kbd>
+            <span className="hidden sm:inline">terminal</span>
+            <kbd className="hidden font-mono text-muted sm:pointer-fine:inline">`</kbd>
           </button>
-          <div className="flex h-9 items-center gap-1 pl-2 text-[13px]" role="group" aria-label="language">
+          {/* Sur téléphone, un seul bouton fait tourner les langues, assez grand pour le doigt. */}
+          <button
+            type="button"
+            onClick={() => setLocale(LOCALES[(LOCALES.indexOf(locale) + 1) % LOCALES.length])}
+            aria-label={`language: ${locale}`}
+            className="flex h-9 shrink-0 items-center gap-1.5 px-2.5 text-[13px] text-pink sm:hidden"
+          >
+            <Globe size={14} className="text-muted" aria-hidden />
+            {locale}
+          </button>
+          <div className="hidden h-9 items-center gap-1 pl-2 text-[13px] sm:flex" role="group" aria-label="language">
             {LOCALES.map((l) => (
               <button
                 key={l}

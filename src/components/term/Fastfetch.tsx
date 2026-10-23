@@ -138,7 +138,8 @@ export function Fastfetch({
 
   return (
     <div className="grid gap-x-[3ch] gap-y-4 py-[1.6em] md:grid-cols-[auto_1fr]">
-      <div className="pl-[2ch]">
+      {/* Sur téléphone, le logo passe au-dessus : réduit, il laisse le prompt plus près. */}
+      <div className="max-w-[16rem] pl-[2ch] md:max-w-none">
         <Boykisser delay={print ? delay : 0} className="mt-[0.4em]" />
       </div>
       <div className="min-w-0">{lines}</div>

@@ -231,7 +231,8 @@ export function Shell() {
 
       <div ref={promptRef} className="scroll-mb-24">
         <PromptHeader path={displayPath(cwd)} />
-        <div className="term-line relative cursor-text">
+        {/* 16px sur écran tactile : en dessous, iOS zoome sur le champ et la page reste zoomée. */}
+        <div className="term-line relative cursor-text pointer-coarse:text-[16px]">
           <span className="text-pink" aria-hidden>❯ </span>
           <Highlighted text={input} caret={focused ? caret : undefined} ghost={ghost} />
           {!focused && !input && <span className="inline-block h-[1.15em] w-[2px] translate-y-[0.2em] bg-pink/50" aria-hidden />}

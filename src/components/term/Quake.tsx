@@ -50,6 +50,29 @@ export function QuakeTerminal() {
     if (panel.current?.contains(document.activeElement)) (document.activeElement as HTMLElement).blur()
   }, [open, ready])
 
+  // Sur mobile, le clavier virtuel recouvre le bas de l'écran sans redimensionner
+  // la page : le tiroir se cale sur la partie visible pour garder le prompt en vue.
+  useEffect(() => {
+    const vv = window.visualViewport
+    const el = panel.current
+    if (!open || !vv || !el) return
+    const fit = () => {
+      el.style.setProperty('--vv-top', `${vv.offsetTop}px`)
+      el.style.setProperty('--vv-h', `${vv.height}px`)
+      const focused = document.activeElement as HTMLElement | null
+      if (focused && el.contains(focused)) focused.scrollIntoView({ block: 'nearest' })
+    }
+    fit()
+    vv.addEventListener('resize', fit)
+    vv.addEventListener('scroll', fit)
+    return () => {
+      vv.removeEventListener('resize', fit)
+      vv.removeEventListener('scroll', fit)
+      el.style.removeProperty('--vv-top')
+      el.style.removeProperty('--vv-h')
+    }
+  }, [open])
+
   return (
     <>
       {open && <div className="fixed inset-0 z-40 bg-chrome/60" onClick={() => setOpen(false)} aria-hidden />}
@@ -58,7 +81,7 @@ export function QuakeTerminal() {
         role="dialog"
         aria-label="terminal"
         inert={!open}
-        className={`fixed inset-x-0 top-0 z-50 mx-auto flex h-[78svh] max-w-[1180px] flex-col border-x border-b border-line bg-bg shadow-[0_30px_80px_rgba(0,0,0,0.6)] transition-transform duration-200 ease-out motion-reduce:transition-none sm:rounded-b-xl ${
+        className={`fixed inset-x-0 top-[var(--vv-top,0px)] z-50 mx-auto flex h-[min(78svh,var(--vv-h,78svh))] max-w-[1180px] flex-col border-x border-b border-line bg-bg shadow-[0_30px_80px_rgba(0,0,0,0.6)] transition-transform duration-200 ease-out motion-reduce:transition-none sm:rounded-b-xl ${
           open ? 'translate-y-0' : '-translate-y-[105%]'
         }`}
       >
@@ -67,7 +90,7 @@ export function QuakeTerminal() {
             <SquareTerminal size={14} className="text-pink" aria-hidden />
             pwsh
           </span>
-          <span className="hidden text-muted sm:inline">{t.quake.hint}</span>
+          <span className="hidden text-muted sm:pointer-fine:inline">{t.quake.hint}</span>
           <button
             type="button"
             onClick={() => setOpen(false)}

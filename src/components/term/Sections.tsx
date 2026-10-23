@@ -13,7 +13,7 @@ import { useGithubActivity, useGithubProfile } from './live'
 
 function SectionTitle({ id, children, aside }: { id?: string; children: ReactNode; aside?: ReactNode }) {
   return (
-    <div className="mb-8 mt-28 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+    <div className="mb-8 mt-20 flex flex-wrap items-end justify-between gap-x-6 gap-y-2 sm:mt-28">
       <h2 id={id} className="text-[clamp(1.75rem,4vw,2.5rem)] font-extrabold tracking-[-0.03em]">
         <span className="text-pink">❯ </span>
         {children}
@@ -30,7 +30,7 @@ const KEYWORDS = /^(using|class|for|let|in|return|override|suspends|void|int|str
 /** Coloration minimale, juste assez pour qu'un extrait se lise comme du code. */
 function CodeArt({ code }: { code: string }) {
   return (
-    <pre className="h-full overflow-hidden bg-bg p-5 text-[12.5px] leading-[1.7] text-fg">
+    <pre className="relative h-full overflow-hidden bg-bg p-4 text-[11px] leading-[1.7] text-fg sm:p-5 sm:text-[12.5px]">
       {code.split('\n').map((line, i) => (
         <div key={i}>
           {line.split(/("[^"]*"|#.*$|\/\/.*$|\$|\b\d[\d_.]*\b|\b[A-Za-z_]+\b)/).map((tok, j) => {
@@ -51,6 +51,8 @@ function CodeArt({ code }: { code: string }) {
           {line === '' && ' '}
         </div>
       ))}
+      {/* Les lignes trop longues pour la carte s'effacent au bord au lieu d'être coupées net. */}
+      <span className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-linear-to-l from-bg" aria-hidden />
     </pre>
   )
 }
@@ -296,6 +298,11 @@ export function Stack() {
 
 const HEAT = ['#1c1c24', '#4b3342', '#7c4f68', '#b7789b', '#f5a3c7']
 
+// Sur mobile, la grille déborde : elle s'ouvre sur les semaines récentes, comme sur GitHub.
+function scrollToEnd(el: HTMLDivElement | null) {
+  if (el) el.scrollLeft = el.scrollWidth
+}
+
 export function Activity() {
   const t = useTerm()
   const profile = useGithubProfile()
@@ -311,7 +318,7 @@ export function Activity() {
 
       {profile.status === 'ok' && (
         <div className="mb-8 rounded-lg border border-line bg-panel p-5">
-          <div className="overflow-x-auto pb-1">
+          <div ref={scrollToEnd} className="overflow-x-auto pb-1">
             <div className="flex w-max gap-[3px]" role="img" aria-label={t.contributions(profile.data.totalContributions)}>
               {profile.data.weeks.map((w, i) => (
                 <div key={i} className="flex flex-col gap-[3px]">
@@ -420,7 +427,7 @@ export function Contact() {
 
 export function Exit() {
   return (
-    <footer className="mt-28 border-t border-line pt-6 text-[13px] text-muted">
+    <footer className="mt-20 border-t border-line pt-6 text-[13px] text-muted sm:mt-28">
       <p>[process exited with code 0 (0x00000000)]</p>
       <p>
         © {new Date().getFullYear()} {ME.fullName} ({ME.handle})
