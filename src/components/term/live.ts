@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react'
-import { getGithubActivity, getGithubProfile, type GhEvent, type GhProfile } from '../../lib/github'
+import {
+  getActivityProfiles,
+  getGithubActivity,
+  getGithubProfile,
+  type ActivityProfiles,
+  type GhEvent,
+  type GhProfile,
+} from '../../lib/github'
 import { getSpotifyTrack, type SpotifyTrack } from '../../lib/spotify'
 
 // Données live partagées : une seule requête par source, même quand le
@@ -70,6 +77,30 @@ export function useGithubActivity(refreshMs: number): Remote<GhEvent[]> {
         // Une erreur pendant un rafraîchissement garde l'ancien affichage.
         setState((prev) => (events ? { status: 'ok', data: events } : prev.status === 'ok' ? prev : { status: 'error' }))
       })
+    load()
+    const id = setInterval(() => document.visibilityState === 'visible' && load(), refreshMs)
+    return () => {
+      alive = false
+      clearInterval(id)
+    }
+  }, [refreshMs])
+  return state
+}
+
+// Profils Lore et GitHub + Lore (service gh-stats). Recalculés au plus toutes
+// les 10 min côté VPS : un rafraîchissement toutes les quelques minutes suffit.
+export function useActivityProfiles(refreshMs: number): Remote<ActivityProfiles> {
+  const [state, setState] = useState<Remote<ActivityProfiles>>({ status: 'loading' })
+  useEffect(() => {
+    let alive = true
+    const load = () =>
+      getActivityProfiles()
+        .catch(() => null)
+        .then((data) => {
+          if (!alive) return
+          // Une erreur pendant un rafraîchissement garde l'ancien affichage.
+          setState((prev) => (data ? { status: 'ok', data } : prev.status === 'ok' ? prev : { status: 'error' }))
+        })
     load()
     const id = setInterval(() => document.visibilityState === 'visible' && load(), refreshMs)
     return () => {

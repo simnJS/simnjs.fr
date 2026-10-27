@@ -6,7 +6,8 @@ import { ME, PROJECTS, STACK, type Project } from '../../content/site'
 import { useTerm } from '../../i18n/term'
 import { eventLine } from '../../term/shell'
 import { ExtLink } from './bits'
-import { useGithubActivity, useGithubProfile } from './live'
+import type { CombinedProfile, GhProfile, LoreProfile } from '../../lib/github'
+import { useActivityProfiles, useGithubActivity, useGithubProfile } from './live'
 
 // Les sections de la page d'accueil : visuelles d'abord, avec le terminal
 // en filigrane (titres en ❯, fenêtres, code coloré).
@@ -303,10 +304,79 @@ function scrollToEnd(el: HTMLDivElement | null) {
   if (el) el.scrollLeft = el.scrollWidth
 }
 
+type Source = 'all' | 'github' | 'lore'
+
+type HeatDay = { date: string; count: number; level: 0 | 1 | 2 | 3 | 4; title: string }
+
+type Heatmap = {
+  weeks: Array<{ days: HeatDay[] }>
+  total: number
+  stats: Array<[number | string, string]>
+}
+
+// Les trois calendriers partagent la même grille de semaines : changer
+// d'onglet ne fait varier que les couleurs et les chiffres.
+function heatmapOf(source: Source, github: GhProfile, lore: LoreProfile | null, combined: CombinedProfile | null): Heatmap {
+  if (source === 'lore' && lore) {
+    return {
+      weeks: lore.weeks.map((w) => ({
+        days: w.days.map((d) => {
+          const detail = Object.entries(d.projects ?? {})
+            .map(([p, n]) => `${p} ${n}`)
+            .join(', ')
+          return { ...d, title: `${d.date}: ${d.count}${detail ? ` (${detail})` : ''}` }
+        }),
+      })),
+      total: lore.totalContributions,
+      stats: [
+        [lore.totalCommits, 'lore revisions, 12 months'],
+        [lore.projects.length, 'UEFN projects'],
+        [`${lore.longestStreak}d`, 'best streak'],
+        [`${lore.currentStreak}d`, 'streak'],
+      ],
+    }
+  }
+  if (source === 'all' && combined) {
+    return {
+      weeks: combined.weeks.map((w) => ({
+        days: w.days.map((d) => ({
+          ...d,
+          title: `${d.date}: ${d.count} (github ${d.github ?? 0}, lore ${d.lore ?? 0})`,
+        })),
+      })),
+      total: combined.totalContributions,
+      stats: [
+        [combined.totalContributions, 'contributions'],
+        [combined.totalCommits, 'commits + revisions, 12 months'],
+        [combined.totalPRs, 'pull requests'],
+        [`${combined.currentStreak}d`, 'streak'],
+      ],
+    }
+  }
+  return {
+    weeks: github.weeks.map((w) => ({ days: w.days.map((d) => ({ ...d, title: `${d.date}: ${d.count}` })) })),
+    total: github.totalContributions,
+    stats: [
+      [github.totalContributions, 'contributions'],
+      [github.totalCommits, 'commits, 12 months'],
+      [github.totalPRs, 'pull requests'],
+      [`${github.currentStreak}d`, 'streak'],
+    ],
+  }
+}
+
 export function Activity() {
   const t = useTerm()
   const profile = useGithubProfile()
+  const extra = useActivityProfiles(300_000)
   const events = useGithubActivity(60_000)
+  const [source, setSource] = useState<Source>('all')
+  const lore = extra.status === 'ok' ? extra.data.lore : null
+  const combined = extra.status === 'ok' ? extra.data.combined : null
+  // Sans données Lore (service muet, rien encore reçu), seul GitHub s'affiche, sans onglets.
+  const sources: Source[] = lore && combined ? ['all', 'github', 'lore'] : ['github']
+  const active = sources.includes(source) ? source : 'github'
+  const heat = profile.status === 'ok' ? heatmapOf(active, profile.data, lore, combined) : null
   return (
     <section>
       <SectionTitle
@@ -316,16 +386,34 @@ export function Activity() {
         {t.titles.activity}
       </SectionTitle>
 
-      {profile.status === 'ok' && (
+      {heat && (
         <div className="mb-8 rounded-lg border border-line bg-panel p-5">
+          {sources.length > 1 && (
+            <div role="tablist" aria-label="source" className="mb-4 flex gap-5 text-[13px]">
+              {sources.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  role="tab"
+                  aria-selected={active === s}
+                  onClick={() => setSource(s)}
+                  className={active === s ? 'text-pink' : 'text-dim hover:text-fg'}
+                >
+                  <span className={active === s ? '' : 'invisible'}>[</span>
+                  {s}
+                  <span className={active === s ? '' : 'invisible'}>]</span>
+                </button>
+              ))}
+            </div>
+          )}
           <div ref={scrollToEnd} className="overflow-x-auto pb-1">
-            <div className="flex w-max gap-[3px]" role="img" aria-label={t.contributions(profile.data.totalContributions)}>
-              {profile.data.weeks.map((w, i) => (
+            <div className="flex w-max gap-[3px]" role="img" aria-label={t.contributions(heat.total)}>
+              {heat.weeks.map((w, i) => (
                 <div key={i} className="flex flex-col gap-[3px]">
                   {w.days.map((d) => (
                     <span
                       key={d.date}
-                      title={`${d.date}: ${d.count}`}
+                      title={d.title}
                       className="block size-[11px] rounded-[2px]"
                       style={{ background: HEAT[d.level] }}
                     />
@@ -335,14 +423,7 @@ export function Activity() {
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-x-8 gap-y-2">
-            {(
-              [
-                [profile.data.totalContributions, 'contributions'],
-                [profile.data.totalCommits, 'commits, 12 months'],
-                [profile.data.totalPRs, 'pull requests'],
-                [`${profile.data.currentStreak}d`, 'streak'],
-              ] as Array<[number | string, string]>
-            ).map(([v, k]) => (
+            {heat.stats.map(([v, k]) => (
               <span key={k}>
                 <span className="text-lg font-bold text-pink">{typeof v === 'number' ? v.toLocaleString('en') : v}</span>{' '}
                 <span className="text-dim">{k}</span>
