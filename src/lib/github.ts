@@ -1027,35 +1027,89 @@ function revalidateProfile(): Promise<GhProfile | null> {
 
 const STATS_TIMEOUT_MS = 2_000
 
-async function fetchStatsService(): Promise<GhProfile | null> {
-  const url = process.env.STATS_URL?.trim()
-  if (!url) return null
+const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null)
+
+// Un profil au format GhProfile, ou null si la réponse n'en est pas un.
+function toProfile(p: Partial<GhProfile> | null): GhProfile | null {
+  const totalCommits = num(p?.totalCommits)
+  if (!p || totalCommits === null || !Array.isArray(p.weeks) || !p.weeks.length) return null
+  return {
+    totalContributions: num(p.totalContributions) ?? 0,
+    totalCommits,
+    totalPRs: num(p.totalPRs) ?? 0,
+    totalIssues: num(p.totalIssues) ?? 0,
+    totalActiveRepos: num(p.totalActiveRepos) ?? 0,
+    longestStreak: num(p.longestStreak) ?? 0,
+    currentStreak: num(p.currentStreak) ?? 0,
+    weeks: p.weeks,
+    fetchedAt: typeof p.fetchedAt === 'string' ? p.fetchedAt : new Date().toISOString(),
+  }
+}
+
+async function fetchStatsJson(url: string | URL): Promise<Record<string, unknown> | null> {
   try {
     const res = await fetch(url, {
       headers: { accept: 'application/json' },
       signal: AbortSignal.timeout(STATS_TIMEOUT_MS),
     })
     if (!res.ok) return null
-    const p = (await res.json()) as Partial<GhProfile> | null
-    const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null)
-    const totalCommits = num(p?.totalCommits)
-    if (!p || totalCommits === null || !Array.isArray(p.weeks) || !p.weeks.length) return null
-    return {
-      totalContributions: num(p.totalContributions) ?? 0,
-      totalCommits,
-      totalPRs: num(p.totalPRs) ?? 0,
-      totalIssues: num(p.totalIssues) ?? 0,
-      totalActiveRepos: num(p.totalActiveRepos) ?? 0,
-      longestStreak: num(p.longestStreak) ?? 0,
-      currentStreak: num(p.currentStreak) ?? 0,
-      weeks: p.weeks,
-      fetchedAt: typeof p.fetchedAt === 'string' ? p.fetchedAt : new Date().toISOString(),
-    }
+    return (await res.json()) as Record<string, unknown> | null
   } catch (err) {
     console.log('[github] stats service unreachable:', err instanceof Error ? err.message : String(err))
     return null
   }
 }
+
+async function fetchStatsService(): Promise<GhProfile | null> {
+  const url = process.env.STATS_URL?.trim()
+  if (!url) return null
+  return toProfile(await fetchStatsJson(url))
+}
+
+// ─── Activité Lore (UEFN) ──────────────────────────────────────────────────
+// Lore n'a pas d'API web : un exporteur sur le PC envoie l'historique local
+// des projets UEFN au service gh-stats, qui le publie agrégé par jour
+// (/lore/profile) et additionné à GitHub (/combined/profile), sur la même
+// grille de semaines que le calendrier GitHub. Même hôte que STATS_URL.
+
+export type LoreProfile = Omit<GhProfile, 'weeks'> & {
+  weeks: Array<{ days: Array<GhDay & { projects?: Record<string, number> }> }>
+  projects: Array<{ name: string; revisions: number }>
+}
+
+export type CombinedProfile = Omit<GhProfile, 'weeks'> & {
+  weeks: Array<{ days: Array<GhDay & { github?: number; lore?: number }> }>
+}
+
+export type ActivityProfiles = { lore: LoreProfile | null; combined: CombinedProfile | null }
+
+export const getActivityProfiles = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<ActivityProfiles> => {
+    const base = process.env.STATS_URL?.trim()
+    if (!base) return { lore: null, combined: null }
+    let loreUrl: URL
+    let combinedUrl: URL
+    try {
+      loreUrl = new URL('/lore/profile', base)
+      combinedUrl = new URL('/combined/profile', base)
+    } catch {
+      return { lore: null, combined: null }
+    }
+    const [loreRaw, combinedRaw] = await Promise.all([fetchStatsJson(loreUrl), fetchStatsJson(combinedUrl)])
+    edgeCache(60, 600)
+    const lore = toProfile(loreRaw as Partial<GhProfile> | null)
+    const combined = toProfile(combinedRaw as Partial<GhProfile> | null)
+    const projects = Array.isArray(loreRaw?.projects)
+      ? (loreRaw.projects as Array<{ name?: unknown; revisions?: unknown }>).flatMap((p) =>
+          typeof p?.name === 'string' && num(p.revisions) !== null ? [{ name: p.name, revisions: p.revisions as number }] : [],
+        )
+      : []
+    return {
+      lore: lore ? { ...lore, projects } : null,
+      combined,
+    }
+  },
+)
 
 export const getGithubProfile = createServerFn({ method: 'GET' }).handler(
   async (): Promise<GhProfile> => {
